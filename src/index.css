@@ -131,6 +131,16 @@ then in :root below:
     content-visibility: auto;
     contain-intrinsic-size: auto 720px;
   }
+
+  /* Parent voices move as one calm continuous strip; the duplicate cards make
+     the loop seamless. It stops entirely under reduced motion below. */
+  .tt-marquee-track {
+    animation: tt-marquee 46s linear infinite;
+  }
+
+  @keyframes tt-marquee {
+    to { transform: translateX(-50%); }
+  }
 }
 
 /* ==========================================================================

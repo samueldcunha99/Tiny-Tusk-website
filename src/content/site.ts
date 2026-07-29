@@ -49,7 +49,7 @@ export const SECTIONS = [
   { id: 'journey', number: '01', label: 'The Journey' },
   { id: 'services', number: '02', label: 'Services' },
   { id: 'ria', number: '03', label: "Ria's Journey" },
-  { id: 'team', number: '04', label: 'Our Team' },
+  { id: 'team', number: '04', label: 'Dr. Nupur' },
   { id: 'brush', number: '05', label: 'The 2-Minute Brush' },
   { id: 'parents', number: '06', label: "Parents' Corner" },
   { id: 'voices', number: '07', label: 'Parent Voices' },

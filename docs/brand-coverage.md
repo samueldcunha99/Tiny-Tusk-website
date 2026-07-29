@@ -107,3 +107,24 @@ divider (p22) sits *before* the colour pages it should follow.
 brand-sanctioned but measures ~2.2:1. Per the brief it is restricted to display type
 ≥32px at 600+ weight; body copy on coral is cobalt or white. Every pairing used and
 its measured ratio goes in `docs/contrast-audit.md`.
+
+## Phase 2 verification
+
+The handoff scope is now represented in live code: `<Preloader>` carries the
+logo draw and tagline arc; `<RiaJourney>`, `<Team>`, `<ParentsCorner>`,
+`<Testimonials>`, `<Faq>`, and `<Booking>` supply the remaining parent-facing
+sections; the four requested routes resolve to their real section views.
+
+Coverage completed in this pass: the four core doodles (p30), all four
+supporting marks (p31), all three stylised CTA fills (p33), and monochrome
+watermarks on the testimonial surface (p27). The generic TextOnPath, Footer,
+Brush Timer, BrandImage and Circled primitives remain explicitly deferred to
+the client-approved second pass.
+
+## Dr. Nupur page verification
+
+`<Team>` is now a single-practitioner editorial page at `/dr-nupur`, rather
+than a card grid. It carries the p26 official cobalt-and-white pairing for the
+credentials panel; the p32 image-tile treatment through `<BrandImage>`; the
+p31 lasso through `<Circled>`; and the p35 arc treatment through
+`<TextOnPath>`. The generic roundel and repeating-ring modes remain deferred.

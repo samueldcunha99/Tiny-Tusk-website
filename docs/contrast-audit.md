@@ -59,6 +59,23 @@ This is enforced, not merely documented:
 Applied at: the Journey "Care" panel and the Services "Cavity care" card, and
 the coral variant of `<StylisedCTA>` (which gains a cobalt label plate).
 
+## Phase 2 usage verification
+
+The following new sections reuse only pairings already measured above; no new
+colour interaction was introduced.
+
+| Section | Surface / element | Ratio | Treatment |
+|---|---|---:|---|
+| Ria's Journey | powder / cobalt; paper / cobalt | 4.92; 7.44 | storytelling cards and copy |
+| Team | paper / cobalt; powder / cobalt | 7.44; 4.92 | portrait cards and accents |
+| Parents' Corner | canary / cobalt; paper / cobalt | 6.37; 7.44 | marketing surface and article cards |
+| Parent Voices | cobalt / canary; cobalt / white | 6.37; 7.97 | heading, quotes and metadata |
+| FAQ and booking | paper / cobalt; paper / powder | 7.44; 1.51 | official copy and decorative borders |
+| Coral CTAs | coral field / cobalt panel / canary label | 6.37 on the panel | `<StylisedCTA>` label plate; never direct coral text |
+
+The testimonials' white supporting marks remain at 33% opacity over cobalt,
+as specified by the monochrome register (p27); they are decorative only.
+
 **Alternative if you would rather keep type directly on coral:** add a darker
 coral tint used *only* as a text bed, exactly as the guide already sanctions a
 lighter cobalt tint for the official pairing (p26). Roughly `#B4432F` or darker

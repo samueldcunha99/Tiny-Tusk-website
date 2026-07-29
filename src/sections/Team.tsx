@@ -1,0 +1,112 @@
+import { useEffect, useRef } from 'react'
+import { BrandImage } from '@/components/BrandImage'
+import { Circled } from '@/components/Circled'
+import { Doodle } from '@/components/Doodle'
+import { MixedWeightLabel } from '@/components/MixedWeightLabel'
+import { SectionNumber } from '@/components/SectionNumber'
+import { StylisedCTA } from '@/components/StylisedCTA'
+import { TextOnPath } from '@/components/TextOnPath'
+import { colourVar } from '@/components/BrandArtView'
+import { DR_NUPUR } from '@/content/team'
+import { SECTIONS } from '@/content/site'
+import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
+
+export function Team() {
+  const rootRef = useRef<HTMLElement>(null)
+  const reduced = usePrefersReducedMotion()
+  const meta = SECTIONS[4]
+
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root || reduced) return
+    const ctx = gsap.context(() => {
+      gsap.from('[data-nupur-panel]', {
+        y: 36,
+        opacity: 0,
+        duration: 0.72,
+        ease: EASE.entrance,
+        stagger: STAGGER,
+        scrollTrigger: { trigger: root, start: 'top 72%', once: true },
+      })
+    }, root)
+    return () => ctx.revert()
+  }, [reduced])
+
+  return (
+    <section
+      id="dr-nupur"
+      ref={rootRef}
+      className="tt-section bg-paper px-6 py-24 md:px-10 md:py-32"
+      aria-labelledby="nupur-heading"
+    >
+      <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+        <aside className="lg:sticky lg:top-28 lg:self-start" aria-label="Dr. Nupur portrait">
+          <BrandImage
+            placeholder
+            alt={DR_NUPUR.portrait.alt}
+            width={800}
+            height={1000}
+            title={{ lead: 'Meet', rest: 'Dr. Nupur', fill: 'powder', href: '/dr-nupur' }}
+            logoTone="cobalt"
+            doodle="doodleHeart"
+            doodleTone="canary"
+            className="aspect-[4/5]"
+          />
+          <p className="mt-4 font-sans text-sm leading-relaxed text-cobalt">{DR_NUPUR.portrait.todo}</p>
+        </aside>
+
+        <div className="space-y-8">
+          <header data-nupur-panel data-animate>
+            <SectionNumber number={meta.number} label="Dr. Nupur" tone="cobalt" />
+            <h1 id="nupur-heading" className="mt-4 font-display text-h1 text-cobalt">
+              <MixedWeightLabel lead="Meet" rest="Dr." display />{' '}
+              <Circled tone="cobalt"><span style={{ fontWeight: 400 }}>Nupur</span></Circled>
+            </h1>
+          </header>
+
+          <section data-nupur-panel data-surface="cobalt" className="rounded-[2rem] bg-cobalt p-7 md:p-10">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-white">Qualifications</p>
+            <p className="mt-3 font-display text-h2 text-white">{DR_NUPUR.credentials}</p>
+          </section>
+
+          <section data-nupur-panel className="overflow-hidden rounded-[2rem] bg-powder p-7 md:p-10" data-surface="powder">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">A calm start</p>
+            <blockquote className="mt-4 font-display text-h2 text-cobalt">{DR_NUPUR.philosophy.quote}</blockquote>
+            <TextOnPath text={DR_NUPUR.philosophy.quote} tone="cobalt" className="mt-3 h-auto w-full" />
+            <p className="mt-2 max-w-measure font-sans text-body text-cobalt">{DR_NUPUR.philosophy.body}</p>
+          </section>
+
+          <section data-nupur-panel aria-labelledby="nupur-expect-heading">
+            <h2 id="nupur-expect-heading" className="font-display text-h2 text-cobalt">What to expect when you meet her</h2>
+            <p className="mt-3 max-w-measure font-sans text-body text-cobalt">A gentle visit is often made from small, ordinary choices. Here is what those choices can look like.</p>
+            <div className="mt-7 grid gap-5">
+              {DR_NUPUR.expectations.map((beat) => (
+                <article
+                  key={beat.title}
+                  className="grid gap-5 rounded-[1.75rem] p-6 sm:grid-cols-[92px_1fr] sm:items-center"
+                  style={{ background: colourVar(beat.surface) }}
+                  data-surface={beat.surface}
+                >
+                  <Doodle name={beat.glyph} tone={beat.element} drawOnScroll className="w-20" />
+                  <div>
+                    <h3 className="font-display text-h2" style={{ color: colourVar(beat.element) }}>{beat.title}</h3>
+                    <p className="mt-2 max-w-measure font-sans text-base leading-relaxed" style={{ color: colourVar(beat.element) }}>{beat.body}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section data-nupur-panel className="rounded-[2rem] border-2 border-powder bg-white p-7 md:p-10">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">A warm human detail</p>
+            <p className="mt-4 max-w-measure font-display text-h2 text-cobalt">{DR_NUPUR.favouritePart}</p>
+          </section>
+
+          <div data-nupur-panel>
+            <StylisedCTA lead="Schedule" rest="Appointment" href="/book" fill="canary" />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

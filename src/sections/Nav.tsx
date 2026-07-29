@@ -5,12 +5,14 @@ import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { CLINIC } from '@/content/site'
 
 /**
- * Links to sections that exist on the page today. Sections still in content
- * form are deliberately absent rather than linked to an empty anchor.
+ * Every destination below has a real route or home-page section. Keeping this
+ * list small makes the navigation useful rather than a contents page.
  */
 const LINKS = [
-  { href: '#journey', label: 'The Journey' },
-  { href: '#services', label: 'Services' },
+  { href: '/services', label: 'Services' },
+  { href: '/dr-nupur', label: 'Meet Dr. Nupur' },
+  { href: '/parents-corner', label: "Parents' Corner" },
+  { href: '/book', label: 'Book a visit' },
 ] as const
 
 export function Nav() {
