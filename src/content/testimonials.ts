@@ -50,3 +50,26 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     child: 'Visit type pending',
   },
 ] as const
+
+export const TESTIMONIAL_PROMPTS = [
+  {
+    title: 'A moment that felt easier',
+    body: 'The small detail that helped a child settle in.',
+    glyph: 'doodleHeart',
+  },
+  {
+    title: 'Something your child enjoyed',
+    body: 'A favourite choice, conversation, or part of the room.',
+    glyph: 'doodleFace',
+  },
+  {
+    title: 'What you wish you knew',
+    body: 'The reassurance that might help another family before a visit.',
+    glyph: 'markDashes',
+  },
+] as const satisfies readonly {
+  title: string
+  body: string
+  glyph: DoodleName
+}[]
+import type { DoodleName } from '@/components/Doodle'

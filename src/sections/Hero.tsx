@@ -4,12 +4,12 @@ import { StylisedCTA } from '@/components/StylisedCTA'
 import { Doodle } from '@/components/Doodle'
 import { SectionNumber } from '@/components/SectionNumber'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { HERO, SECTIONS } from '@/content/site'
+import { HERO, sectionMeta } from '@/content/site'
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = SECTIONS[0]
+  const meta = sectionMeta('hero')
 
   useEffect(() => {
     const root = ref.current

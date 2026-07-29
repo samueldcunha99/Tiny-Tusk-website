@@ -1,8 +1,15 @@
 node_modules/
 dist/
+tmp/
 *.tsbuildinfo
 .DS_Store
 *.local
+.env
+.env.*
+!.env.example
+
+supabase/.temp/
+supabase/functions/.env
 
 # Release archives produced by `git archive` — build artefacts of a commit,
 # so they are never committed back into the repo.

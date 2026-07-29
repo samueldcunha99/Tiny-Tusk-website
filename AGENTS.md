@@ -1,13 +1,21 @@
 # Tiny Tusk — developer briefing
 
-Front-end-only marketing site for **Tiny Tusk Pediatric Dental Clinic**.
-Vite + React 18 + TypeScript (strict) + Tailwind + GSAP/ScrollTrigger. No backend.
+Marketing site for **Tiny Tusk Pediatric Dental Clinic** with a prepared,
+not-yet-deployed appointment-request backend.
+
+Front end: Vite + React 18 + TypeScript (strict) + Tailwind +
+GSAP/ScrollTrigger. Backend: Supabase Postgres + Edge Functions, Cloudflare
+Turnstile, and Resend. The website remains safe in disconnected mode until
+clinic-owned service credentials are configured.
 
 ```sh
 npm install
 npm run dev          # http://localhost:5173
 npm run typecheck    # tsc -b --noEmit  — must stay clean
 npm run build
+npm run backend:start   # requires Docker
+npm run backend:status
+npm run backend:stop
 ```
 
 `@` resolves to `src/`. Brand source of truth is `TINY_TUSK_Visual_Identity_Guide.pdf`
@@ -17,7 +25,7 @@ npm run build
 and every item below is cross-referenced to it. Read it before picking up work;
 update it as you go. Other docs: `docs/brief-01-main.md` and
 `docs/brief-02-coverage-addendum.md` (client requirements, verbatim),
-`docs/contrast-audit.md`, `docs/brand-coverage.md`.
+`docs/contrast-audit.md`, `docs/brand-coverage.md`, and `docs/backend.md`.
 
 ---
 
@@ -39,9 +47,19 @@ Three facts about this project's content that are easy to get wrong:
   supplies real quotes **with written consent** and agreed attribution.
   (audit #1)
 
-- **Photography licensing is unconfirmed.** Everything in `public/images/` was
-  extracted from the client's own brand book. Clearance for web use has not been
-  obtained. Noted in `README.md`. (audit #3)
+- **Photography licensing is unconfirmed for the original brand-book images.**
+  The older assets in `public/images/` were extracted from the client's brand
+  book; web clearance has not been obtained. The three `clinic-*.png/.webp`
+  assets are newly generated concept images, not brand-book photography.
+  `InsideClinic.tsx` must retain its visible "concept imagery / not photographs
+  of the completed clinic" disclosure until approved real photography replaces
+  them. (audit #3)
+
+- **Contact information is not verified.** `MOCK_CONTACT` in
+  `src/content/site.ts` exists only for development layout work. `Footer.tsx`
+  may render it only behind `import.meta.env.DEV` and the visible "Development
+  sample — not clinic information" label. Production builds must contain none
+  of those sample values. The nav must link to `/book`, never the mock phone.
 
 General rule: never invent clinical claims, credentials, prices, hours,
 addresses or statistics. Where a real fact is needed, leave a `TODO` **in the
@@ -51,7 +69,7 @@ strings were reaching visitors and have been removed (audit #2).
 Voice: warm, plain-spoken, parent-to-parent. Never babyish, never clinical.
 `content/journey.ts` and `content/services.ts` are the reference.
 
-## 2. What Phase 1a fixed (all verified in a browser)
+## 2. What is now implemented (browser-verified)
 
 Integrity: #1 testimonials de-fabricated · #2 leaked `TODO:` strings removed ·
 #3 licensing note confirmed in README.
@@ -62,25 +80,95 @@ Bugs: #4 `fetchPriority` → `fetchpriority` (console now clean) · #5 duplicate
 and third card overflowing · #9 section numbering skipping `05` · #10 unknown
 URLs silently rendering the homepage.
 
-Verified after the fixes: one `h1`, numbering continuous `00–08`, zero rendered
-`TODO`, no invented names, no console errors, no horizontal overflow, `/404`
+Later work added the footer structure, all three `TextOnPath` modes, the
+2-Minute Brush timer, the real booking form states, the Supabase backend
+foundation, and the branded Inside the Clinic concept section. The preloader
+now measures the nav-logo landing position. `BrandImage` has a designed
+placeholder instead of the bare "N". Standalone marketing routes use
+`CoralPageAccent` to bring the guide's coral colour spread into the site as a
+graphic field with a white-at-33% brand loop; Booking deliberately stays in the
+official, quieter register.
+
+The home-page section sequence is now continuous `00–11`; every section uses
+`sectionMeta(id)`. React Router was removed because this site only needs a small
+native pathname switch in `App.tsx`; all current routes and the 404 remain
+working.
+
+Latest verified state: one home-page `h1`, zero rendered `TODO`, no invented
+testimonial names, no console errors, no horizontal overflow at 1440×900 or
+390×844, all three generated clinic images load at 1536×1024, and `/404`
 resolves to `<NotFound>`.
+
+Coral full-field usage is deliberate and limited to playful marketing:
+`RiaJourney` is the homepage's full coral chapter, and `/games` uses coral
+across its intro and brushing-game sections. Both use low-contrast white loop
+fields and place every word on cobalt through `<TextPanel>`. The Games route
+also forces a paper nav surface at the top so navigation never sits on coral.
+On the homepage, `ParentsCorner` owns an 8px cobalt top border because it
+directly follows the canary Brush Timer; keep that divider unless one of those
+two section surfaces changes.
+
+`HomePaths` is the interactive `01 Start Here` module immediately after Hero.
+It combines the homepage density pass: a magazine-style split layout, restrained
+loop artwork, three accessible `aria-pressed` choices, and links into existing
+approved routes. Its copy lives in `content/homePaths.ts`; do not turn it into
+clinical advice or add unverified facts. Homepage instances of shared routed
+sections use tighter `py-20 md:py-24` spacing, while standalone pages retain
+their larger `py-24 md:py-32` chapter spacing.
+
+The density/interaction pass also added:
+
+- directional navbar visibility (down hides, up reveals), with the mobile menu
+  and near-top state always forcing it visible; the independent coral rail is
+  the real page-progress indicator;
+- three additional local-only games in `GamesArcade` (memory pairs, brushing
+  sequence, sticker board) after the existing timer;
+- selectable clinic concept rooms and a selectable Ria storybook whose progress
+  bar follows the active moment;
+- Parents' Corner category filters and a five-card asymmetric grid;
+- FAQ search/category filters and a useful sticky sidebar;
+- a two-column Booking layout with a navigable completed-step guide; and
+- a compact footer with verified internal route links.
+
+These controls are intentionally client-side mock interactions. Do not connect
+them to analytics, storage, user accounts, or external services until the
+clinic requests that work.
 
 ## 3. What remains
 
-**Do not treat the site as finished.** Everything written after `Services` was
-implemented without a browser and is untuned. Full list with numbers in
-`docs/audit-2026-07-29.md`:
+**Do not treat the site as finished.** Use `docs/audit-2026-07-29.md` as the
+standing list; several original entries are now resolved and annotated there.
 
-- **Visual tuning (#11–19):** preloader's hardcoded landing position, Ria's fake
-  mood indicator, bare "N" image placeholder, image-title CTAs sitting across
-  faces, sparse FAQ / Testimonials / Booking, untuned reveal thresholds, and
-  `Booking.tsx` written as a few enormous single lines that need reformatting to
-  house style before extension.
-- **Missing scope (#20–28):** no footer at all, minimal 404, `TextOnPath` missing
-  its `roundel` and `ring` modes, no brush-timer section, no per-route SEO,
-  README is a stub, plus all of Phase 2 content, the Phase 3 through-line, and
-  Phase 4 polish.
+- **Content/client blockers:** real testimonials with consent, licensing for
+  brand-book photography, verified clinic contact facts, and approval or
+  replacement of generated clinic concepts.
+- **Visual tuning:** image-title CTA placement on existing people photography,
+  and reveal-threshold tuning across later sections.
+- **Missing scope:** full 404 treatment, deeper Phase 2 content and legal pages,
+  the Phase 3 continuous stroke/route-transition system, sitemap, Lighthouse
+  pass, and restraint edit.
+- **README:** backend/setup guidance now exists, but the full token-system,
+  Avenir swap, and image-replacement documentation still needs completing.
+
+## 3a. Appointment backend
+
+Read `docs/backend.md` before changing or deploying the booking pipeline.
+
+- `supabase/migrations/202607300001_create_booking_backend.sql` creates the
+  minimal appointment table, admin allowlist, RLS policies, 90-day expiry, and
+  daily `pg_cron` cleanup.
+- `supabase/functions/submit-booking/` is the only public submission path. It
+  enforces an exact origin allowlist, 12 KB body limit, strict server validation,
+  honeypot, Turnstile verification, and UUID idempotency.
+- The browser never receives a service-role key and has no direct insert
+  permission. Only authenticated users listed in `admin_users` may read/update
+  requests.
+- Resend notifications contain the reference code only — never names, phone
+  numbers, email addresses, child details, or request bodies.
+- The live stack is **not connected yet**. Missing Vite configuration must
+  render the honest unavailable state and must never produce fake success.
+- Keep server secrets in `supabase secrets`; never prefix secrets with `VITE_`
+  or commit them. `.env.example` documents the public values.
 
 ## 4. Design system
 
@@ -147,8 +235,17 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
   `contrast="high"` crosses colours, `"low"` is tonal. Both must appear on the
   finished site.
 - **`<BrandImage>`** — the guide's image-tile treatment (logo watermark, title
-  ellipse, doodle + coral dash overlays). Placeholder state is still crude
-  (audit #13).
+  ellipse, doodle + coral dash overlays). Its placeholder is now a designed
+  brand field. Inside the Clinic uses it for the three `clinic-*` concept
+  images; do not remove their section-level disclosure.
+- **`<TextOnPath>`** — supports `arc | roundel | ring`. Footer uses `roundel`;
+  keep at least one real use of every required mode before declaring coverage
+  complete.
+- **`<CoralPageAccent>`** — standalone marketing-page treatment: one thin,
+  consistent coral rule at the page edge. The earlier floating desktop corner
+  fields were visually disconnected from the layouts and have been removed.
+  Coral is also used as the active-nav underline. Do not add either treatment
+  to text surfaces.
 - **`<BrandArtView>`** renders any `ART[name]`; exports `colourVar()`.
   **`<MixedWeightLabel>`**, **`<SectionNumber>`** as described above.
 - **`sectionMeta(id)` in `content/site.ts`** — always look sections up by id.
@@ -174,7 +271,16 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
 6. **Strict TS stays on**, including `exactOptionalPropertyTypes` — optional
    props on shared components need explicit `| undefined`. Zero `any`.
 7. **Verify in a browser yourself**: screenshot desktop and mobile, check
-   `scrollWidth === innerWidth`, check the console, check reduced motion.
+   `document.documentElement.scrollWidth <=
+   document.documentElement.clientWidth`, check the console, and check reduced
+   motion. (`innerWidth` includes the scrollbar in Chromium and is not the
+   reliable overflow comparison.)
+8. **Generated clinic interiors are concepts, not factual photography.** Keep
+   the disclosure visible and alt text prefixed with "Concept image" until real,
+   approved photography is supplied.
+9. **Development contact mock must not reach production.** After footer/contact
+   changes, build and search `dist/` for `Maple Row`, `7946`,
+   `hello@tinytusk.example`, and `Development sample`; all must be absent.
 
 ## 7. Traps already hit — don't rediscover them
 
@@ -190,5 +296,27 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
 - `ART` uses `satisfies Record<string, BrandArt>` so keys stay literal — that is
   what makes `DoodleName` a real union. Don't widen it.
 - React 18 needs lowercase `fetchpriority` on `<img>`.
+- There is no React Router dependency. `App.tsx` switches on the normalized
+  native pathname; nav links use normal anchors. Do not add a routing library
+  back for the current static routes without a concrete need. Every navbar
+  destination has a standalone pathname:
+  `/services`, `/inside-clinic`, `/dr-nupur`, `/games`,
+  `/parents-corner`, `/faq`, and `/book`.
+- `/games` is the public **Games for Kids** destination and currently contains
+  the 2-Minute Brushing Game plus memory, sequence, and sticker-board
+  activities. `/brush-timer` renders the same page only as a `noindex,
+  nofollow` compatibility route; do not put it back in the navbar.
+- Shared routed sections accept `asPage`. Home renders them without it so their
+  headings remain `h2`; standalone routes pass `asPage` so each page owns
+  exactly one `h1`. `RouteMeta` updates the title, description, Open Graph,
+  Twitter, and robots metadata for every route.
+- `public/images/clinic-reception`, `clinic-treatment-room`, and
+  `clinic-family-corner` each have PNG and WebP variants at 1536×1024. They were
+  generated specifically for this project with the official palette and are
+  consumed through `content/clinic.ts`.
+- The Supabase CLI is installed as a dev dependency, but the local backend
+  requires Docker. Typecheck/build success does not prove the migration or Edge
+  Function has run against a live project; record live end-to-end verification
+  only after credentials are connected.
 - **Do not edit source files with PowerShell string replacement** — the
   round-trip mangles em-dashes into mojibake. Use an editor that writes UTF-8.

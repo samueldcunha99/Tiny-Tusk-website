@@ -8,9 +8,75 @@ export interface TextOnPathProps {
   className?: string | undefined
 }
 
-/** A restrained arc treatment for pull quotes and short editorial statements. */
-export function TextOnPath({ text, tone = 'cobalt', className }: TextOnPathProps) {
+export type TextOnPathMode = 'arc' | 'roundel' | 'ring'
+
+export interface TextOnPathProps {
+  text: string
+  mode?: TextOnPathMode | undefined
+  tone?: BrandColour | 'current' | undefined
+  className?: string | undefined
+}
+
+/**
+ * Text on a path supporting arc, roundel, and repeating-ring modes (identity guide p35).
+ */
+export function TextOnPath({ text, mode = 'arc', tone = 'cobalt', className }: TextOnPathProps) {
   const pathId = useId().replace(/:/g, '')
+
+  if (mode === 'roundel') {
+    return (
+      <svg
+        viewBox="0 0 300 300"
+        className={className}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <path id={pathId} d="M 30 150 A 120 120 0 1 1 270 150 A 120 120 0 1 1 30 150" fill="none" />
+        </defs>
+        <text
+          fill={colourVar(tone)}
+          className="font-sans text-[15px] font-semibold tracking-[0.14em] uppercase"
+        >
+          <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
+            {text}
+          </textPath>
+        </text>
+        <path
+          d="M 90 205 Q 150 250 210 205"
+          fill="none"
+          stroke={colourVar(tone)}
+          strokeWidth="6"
+          strokeLinecap="round"
+        />
+      </svg>
+    )
+  }
+
+  if (mode === 'ring') {
+    const ringText = `${text} • ${text} • `
+    return (
+      <svg
+        viewBox="0 0 240 240"
+        className={className}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <path id={pathId} d="M 20 120 A 100 100 0 1 1 220 120 A 100 100 0 1 1 20 120" fill="none" />
+        </defs>
+        <text
+          fill={colourVar(tone)}
+          className="font-sans text-[13px] font-semibold tracking-[0.12em] uppercase"
+        >
+          <textPath href={`#${pathId}`} startOffset="0%">
+            {ringText}
+          </textPath>
+        </text>
+      </svg>
+    )
+  }
+
   return (
     <svg
       viewBox="0 0 720 220"

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Doodle } from '@/components/Doodle'
+import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { SectionNumber } from '@/components/SectionNumber'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { colourVar } from '@/components/BrandArtView'
@@ -7,7 +8,7 @@ import { TextPanel } from '@/components/TextPanel'
 import { carriesText, type BrandColour } from '@/design/pairings'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { SERVICES, type Service } from '@/content/services'
-import { SECTIONS } from '@/content/site'
+import { sectionMeta } from '@/content/site'
 
 const SPAN_CLASS: Record<Service['span'], string> = {
   hero: 'md:col-span-4',
@@ -16,9 +17,16 @@ const SPAN_CLASS: Record<Service['span'], string> = {
   regular: 'md:col-span-2',
 }
 
-function ServiceCard({ service }: { service: Service }) {
+function ServiceCard({
+  service,
+  headingLevel = 'h3',
+}: {
+  service: Service
+  headingLevel?: 'h2' | 'h3' | undefined
+}) {
   const [hovered, setHovered] = useState(false)
   const reduced = usePrefersReducedMotion()
+  const CardHeading = headingLevel
 
   // Nothing in the palette is legible on coral (best is white at 2.99:1), so a
   // coral card keeps its field and floats its copy on a cobalt panel.
@@ -61,12 +69,12 @@ function ServiceCard({ service }: { service: Service }) {
       </div>
 
       <TextPanel surface={service.surface}>
-        <h3
+        <CardHeading
           className="font-display text-[clamp(1.75rem,2.6vw,2.25rem)] leading-tight"
           style={{ color: colourVar(textTone) }}
         >
           <MixedWeightLabel lead={service.title.lead} rest={service.title.rest} display />
-        </h3>
+        </CardHeading>
         <p
           className="mt-4 max-w-measure font-sans text-[clamp(0.95rem,1.1vw,1.0625rem)] leading-relaxed"
           style={{ color: colourVar(onPanel ? 'white' : textTone) }}
@@ -78,10 +86,11 @@ function ServiceCard({ service }: { service: Service }) {
   )
 }
 
-export function Services() {
+export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
   const ref = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = SECTIONS[2]
+  const meta = sectionMeta('services')
+  const Heading = asPage ? 'h1' : 'h2'
 
   useEffect(() => {
     const root = ref.current
@@ -104,24 +113,32 @@ export function Services() {
       id="services"
       ref={ref}
       aria-labelledby="services-heading"
-      className="tt-section relative bg-paper px-6 py-24 md:px-10 md:py-32"
+      className={[
+        'tt-section relative bg-paper px-6 md:px-10',
+        asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
+      ].join(' ')}
     >
-      <div className="mx-auto max-w-[1600px]">
+      {asPage ? <CoralPageAccent /> : null}
+      <div className="relative z-10 mx-auto max-w-[1600px]">
         <SectionNumber number={meta.number} label={meta.label} tone="cobalt" />
-        <h2
+        <Heading
           id="services-heading"
           className="mt-4 max-w-3xl font-display text-h1 text-cobalt"
           data-animate
         >
           What we look after
-        </h2>
+        </Heading>
         <p className="mt-5 max-w-measure font-sans text-body text-cobalt" data-animate>
           Six things, explained the way we would explain them to you in the room.
         </p>
 
         <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-6">
           {SERVICES.map((s) => (
-            <ServiceCard key={s.id} service={s} />
+            <ServiceCard
+              key={s.id}
+              service={s}
+              headingLevel={asPage ? 'h2' : 'h3'}
+            />
           ))}
         </div>
       </div>

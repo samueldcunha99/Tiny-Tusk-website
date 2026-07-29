@@ -80,7 +80,7 @@ implemented without a browser and is untuned. Full list with numbers in
 - **Missing scope (#20–28):** no footer at all, minimal 404, `TextOnPath` missing
   its `roundel` and `ring` modes, no brush-timer section, no per-route SEO,
   README is a stub, plus all of Phase 2 content, the Phase 3 through-line, and
-  Phase 4 polish.
+  Phase 4 polish (favicon added).
 
 ## 4. Design system
 

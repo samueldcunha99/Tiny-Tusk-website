@@ -58,18 +58,25 @@ export function BrandImage({
         <div
           role="img"
           aria-label={alt}
-          className="grid h-full min-h-[320px] place-items-center bg-powder"
+          className="relative grid h-full min-h-[320px] place-items-center bg-powder p-8 text-center"
         >
-          <span className="font-display text-[clamp(5rem,15vw,9rem)] text-cobalt">N</span>
+          <div className="pointer-events-none absolute inset-0 opacity-20">
+            <Logo variant="mark" tone="cobalt" size={240} className="h-full w-full" />
+          </div>
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            <Doodle name="doodleHeart" tone="cobalt" className="w-16" />
+            <span className="font-display text-h2 text-cobalt">{title.lead} {title.rest}</span>
+            <span className="font-sans text-xs uppercase tracking-[0.15em] text-cobalt-80">Tiny Tusk Photography</span>
+          </div>
         </div>
       ) : null}
-      <div className="pointer-events-none absolute left-2 top-2" aria-hidden="true">
+      <div className="pointer-events-none absolute left-2 top-2 z-10" aria-hidden="true">
         <Logo variant="mark" tone={logoTone} size={64} clearSpace />
       </div>
-      <Doodle name={doodle} tone={doodleTone} drawOnScroll className="pointer-events-none absolute right-4 top-[15%] w-[24%] max-w-28" />
-      <Doodle name="markDashes" tone="coral" drawOnScroll className="pointer-events-none absolute right-5 top-5 w-12" />
-      <div className="absolute bottom-3 left-3 right-3 z-10 sm:bottom-5 sm:left-5 sm:right-5">
-        <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full text-center" />
+      <Doodle name={doodle} tone={doodleTone} drawOnScroll className="pointer-events-none absolute right-4 top-[10%] z-10 w-[20%] max-w-24 opacity-90" />
+      <Doodle name="markDashes" tone="coral" drawOnScroll className="pointer-events-none absolute right-4 top-4 z-10 w-10" />
+      <div className="absolute bottom-2 left-2 right-2 z-20 sm:bottom-3 sm:left-3 sm:right-3">
+        <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full text-center shadow-lg" />
       </div>
     </figure>
   )

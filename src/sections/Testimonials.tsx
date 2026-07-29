@@ -1,6 +1,10 @@
 import { Doodle } from '@/components/Doodle'
 import { SectionNumber } from '@/components/SectionNumber'
-import { AWAITING_REAL_TESTIMONIALS, TESTIMONIALS } from '@/content/testimonials'
+import {
+  AWAITING_REAL_TESTIMONIALS,
+  TESTIMONIAL_PROMPTS,
+  TESTIMONIALS,
+} from '@/content/testimonials'
 import { sectionMeta } from '@/content/site'
 
 /**
@@ -19,7 +23,7 @@ export function Testimonials() {
   return (
     <section
       id="voices"
-      className="tt-section overflow-hidden bg-cobalt py-24 md:py-32"
+      className="tt-section overflow-hidden bg-cobalt py-20 md:py-24"
       data-surface="cobalt"
       aria-labelledby="voices-heading"
     >
@@ -50,26 +54,54 @@ export function Testimonials() {
         </div>
       </div>
 
-      <div className="tt-marquee-track mt-12 flex w-max gap-5 px-6 md:px-10" aria-hidden={AWAITING_REAL_TESTIMONIALS}>
-        {cards.map((item, index) => (
-          <figure
-            key={index}
-            className="flex w-[min(82vw,430px)] shrink-0 flex-col justify-between rounded-[2rem] bg-white p-7 text-cobalt md:p-9"
-          >
-            <blockquote className="font-display text-[clamp(1.6rem,2.5vw,2.4rem)] leading-tight">
-              {AWAITING_REAL_TESTIMONIALS ? (
-                <span className="text-cobalt-60">Awaiting a parent&rsquo;s words</span>
-              ) : (
-                <>&ldquo;{item.quote}&rdquo;</>
-              )}
-            </blockquote>
-            <figcaption className="mt-8 border-t border-powder pt-4 font-sans text-sm">
-              <span className="block font-semibold">{item.parent}</span>
-              <span>{item.child}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      {AWAITING_REAL_TESTIMONIALS ? (
+        <div className="relative z-10 mx-auto mt-10 grid max-w-[1400px] gap-5 px-6 md:grid-cols-3 md:px-10">
+          {TESTIMONIAL_PROMPTS.map((prompt, index) => (
+            <article
+              key={prompt.title}
+              className={[
+                'rounded-[2rem] p-7 text-cobalt md:p-9',
+                index === 1 ? 'bg-canary' : index === 2 ? 'bg-powder' : 'bg-white',
+              ].join(' ')}
+            >
+              <Doodle name={prompt.glyph} tone="cobalt" className="w-16" />
+              <p className="mt-6 font-display text-h2">{prompt.title}</p>
+              <p className="mt-3 font-sans text-base leading-relaxed">{prompt.body}</p>
+            </article>
+          ))}
+          <div className="rounded-[2rem] border-2 border-white/30 p-7 text-white md:col-span-3 md:flex md:items-center md:justify-between md:gap-8 md:p-8">
+            <div>
+              <p className="font-display text-h2 text-canary">Consent comes first</p>
+              <p className="mt-2 max-w-2xl font-sans text-base leading-relaxed">
+                A family chooses what is shared and how they are attributed. No quote appears here before that is agreed.
+              </p>
+            </div>
+            <a
+              href="/book"
+              className="mt-6 inline-flex min-h-12 shrink-0 items-center rounded-full bg-canary px-6 font-sans font-semibold text-cobalt md:mt-0"
+            >
+              Plan a visit
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="tt-marquee-track mt-12 flex w-max gap-5 px-6 md:px-10">
+          {cards.map((item, index) => (
+            <figure
+              key={index}
+              className="flex w-[min(82vw,430px)] shrink-0 flex-col justify-between rounded-[2rem] bg-white p-7 text-cobalt md:p-9"
+            >
+              <blockquote className="font-display text-[clamp(1.6rem,2.5vw,2.4rem)] leading-tight">
+                &ldquo;{item.quote}&rdquo;
+              </blockquote>
+              <figcaption className="mt-8 border-t border-powder pt-4 font-sans text-sm">
+                <span className="block font-semibold">{item.parent}</span>
+                <span>{item.child}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

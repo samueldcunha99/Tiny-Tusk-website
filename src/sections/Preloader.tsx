@@ -31,11 +31,25 @@ export function Preloader() {
     const ctx = gsap.context(() => {
       paths.forEach((path) => primeDraw(path, false))
       const arcLength = primeDraw(arc, false)
+
+      const targetNav = document.getElementById('nav-logo')
+      let targetX = -180
+      let targetY = -240
+      let targetScale = 0.24
+
+      if (targetNav && unit) {
+        const targetRect = targetNav.getBoundingClientRect()
+        const unitRect = unit.getBoundingClientRect()
+        targetScale = (targetRect.width || 64) / unitRect.width
+        targetX = targetRect.left + targetRect.width / 2 - (unitRect.left + unitRect.width / 2)
+        targetY = targetRect.top + targetRect.height / 2 - (unitRect.top + unitRect.height / 2)
+      }
+
       const tl = gsap.timeline({ onComplete: finish })
       tl.to(paths, { strokeDashoffset: 0, duration: 0.62, ease: EASE.entrance, stagger: 0.08 })
         .to(arc, { strokeDashoffset: 0, duration: 0.36, ease: EASE.entrance }, 0.3)
         .fromTo('[data-tagline]', { rotation: -12, opacity: 0 }, { rotation: 0, opacity: 1, duration: 0.34, ease: EASE.entrance }, 0.42)
-        .to(unit, { scale: 0.22, xPercent: -165, yPercent: -125, duration: 0.34, ease: EASE.transform }, 1.05)
+        .to(unit, { scale: targetScale, x: targetX, y: targetY, duration: 0.38, ease: EASE.transform }, 1.05)
         .to(root, { opacity: 0, duration: 0.22, ease: EASE.entrance }, 1.48)
       gsap.set(arc, { strokeDashoffset: arcLength })
     }, root)

@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef } from 'react'
 import { BrandImage } from '@/components/BrandImage'
+import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
@@ -11,10 +12,11 @@ import { DR_NUPUR } from '@/content/team'
 import { CLINIC, sectionMeta } from '@/content/site'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
-export function Team() {
+export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
   const meta = sectionMeta('team')
+  const Heading = asPage ? 'h1' : 'h2'
 
   useEffect(() => {
     const root = rootRef.current
@@ -36,10 +38,14 @@ export function Team() {
     <section
       id="dr-nupur"
       ref={rootRef}
-      className="tt-section bg-paper px-6 py-24 md:px-10 md:py-32"
+      className={[
+        'tt-section relative bg-paper px-6 md:px-10',
+        asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
+      ].join(' ')}
       aria-labelledby="nupur-heading"
     >
-      <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+      {asPage ? <CoralPageAccent /> : null}
+      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
         <aside className="lg:sticky lg:top-28 lg:self-start" aria-label="Dr. Nupur portrait">
           <BrandImage
             placeholder
@@ -59,12 +65,10 @@ export function Team() {
         <div className="space-y-8">
           <header data-nupur-panel data-animate>
             <SectionNumber number={meta.number} label="Dr. Nupur" tone="cobalt" />
-            {/* h2, not h1: this renders as a section of the home page, where
-                the hero already owns the single h1. */}
-            <h2 id="nupur-heading" className="mt-4 font-display text-h1 text-cobalt">
+            <Heading id="nupur-heading" className="mt-4 font-display text-h1 text-cobalt">
               <MixedWeightLabel lead="Meet" rest="Dr." display />{' '}
               <Circled tone="cobalt"><span style={{ fontWeight: 400 }}>Nupur</span></Circled>
-            </h2>
+            </Heading>
           </header>
 
           <section data-nupur-panel data-surface="cobalt" className="rounded-[2rem] bg-cobalt p-7 md:p-10">

@@ -6,7 +6,7 @@ import { TextPanel } from '@/components/TextPanel'
 import { carriesText } from '@/design/pairings'
 import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import { JOURNEY } from '@/content/journey'
-import { SECTIONS } from '@/content/site'
+import { sectionMeta } from '@/content/site'
 
 /**
  * The signature section: the guide's four beats as a pinned horizontal scroll.
@@ -24,7 +24,7 @@ export function Journey() {
   const trackRef = useRef<HTMLDivElement>(null)
   const connectorRef = useRef<SVGPathElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = SECTIONS[1]
+  const meta = sectionMeta('journey')
 
   useEffect(() => {
     const root = rootRef.current
@@ -98,7 +98,7 @@ export function Journey() {
     >
       {/* The header reserves its own row rather than floating over the track,
           so a panel can never ride up over the heading. */}
-      <div className="relative z-20 shrink-0 px-6 pb-2 pt-28 md:px-10 md:pt-32">
+      <div className="relative z-20 shrink-0 px-6 pb-2 pt-20 md:px-10 md:pt-24">
         <SectionNumber number={meta.number} label={meta.label} tone="cobalt" />
         <h2 id="journey-heading" className="mt-3 max-w-measure font-display text-h1 text-cobalt">
           How a visit actually goes

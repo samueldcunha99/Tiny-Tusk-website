@@ -9,6 +9,11 @@ export const CLINIC = {
   fullName: 'Tiny Tusk Pediatric Dental Clinic',
   tagline: 'Gentle Care for Growing Smiles',
   tag: 'Pediatric Dental Clinic',
+} as const
+
+// TODO: Add address, phone, email, opening hours, and official social URLs only
+// after the clinic supplies and verifies them. Do not render guessed fallbacks.
+export const MOCK_CONTACT = {
   phone: '+44 20 7946 0321',
   phoneHref: 'tel:+442079460321',
   email: 'hello@tinytusk.example',
@@ -21,10 +26,6 @@ export const CLINIC = {
     { days: 'Monday – Friday', time: '8:30am – 5:30pm' },
     { days: 'Saturday', time: '9:00am – 1:00pm' },
     { days: 'Sunday', time: 'Closed' },
-  ],
-  socials: [
-    { label: 'Instagram', href: 'https://instagram.com' },
-    { label: 'Facebook', href: 'https://facebook.com' },
   ],
 } as const
 
@@ -55,14 +56,17 @@ export const HERO = {
  */
 export const SECTIONS = [
   { id: 'hero', number: '00', label: 'Welcome' },
-  { id: 'journey', number: '01', label: 'The Journey' },
-  { id: 'services', number: '02', label: 'Services' },
-  { id: 'ria', number: '03', label: "Ria's Journey" },
-  { id: 'team', number: '04', label: 'Dr. Nupur' },
-  { id: 'parents', number: '05', label: "Parents' Corner" },
-  { id: 'voices', number: '06', label: 'Parent Voices' },
-  { id: 'faq', number: '07', label: 'Questions' },
-  { id: 'book', number: '08', label: 'Book a Visit' },
+  { id: 'paths', number: '01', label: 'Start Here' },
+  { id: 'journey', number: '02', label: 'The Journey' },
+  { id: 'services', number: '03', label: 'Services' },
+  { id: 'clinic', number: '04', label: 'Inside the Clinic' },
+  { id: 'ria', number: '05', label: "Ria's Journey" },
+  { id: 'team', number: '06', label: 'Dr. Nupur' },
+  { id: 'brush-timer', number: '07', label: '2-Min Brush' },
+  { id: 'parents', number: '08', label: "Parents' Corner" },
+  { id: 'voices', number: '09', label: 'Parent Voices' },
+  { id: 'faq', number: '10', label: 'Questions' },
+  { id: 'book', number: '11', label: 'Book a Visit' },
 ] as const
 
 export type SectionId = (typeof SECTIONS)[number]['id']
