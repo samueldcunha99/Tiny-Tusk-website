@@ -36,6 +36,8 @@ export interface DoodleProps {
   play?: boolean | undefined
   duration?: number | undefined
   stagger?: number | undefined
+  /** Pass `"none"` to stretch the mark to its box (see `<Circled>`). */
+  preserveAspectRatio?: string | undefined
 }
 
 /**
@@ -54,6 +56,7 @@ export function Doodle({
   play,
   duration = 0.9,
   stagger = 0.12,
+  preserveAspectRatio,
 }: DoodleProps) {
   const ref = useRef<SVGSVGElement>(null)
   const reduced = usePrefersReducedMotion()
@@ -122,6 +125,14 @@ export function Doodle({
   if (!art) return null
 
   return (
-    <BrandArtView ref={ref} art={art} tone={tone} className={className} title={title} drawable />
+    <BrandArtView
+      ref={ref}
+      art={art}
+      tone={tone}
+      className={className}
+      title={title}
+      preserveAspectRatio={preserveAspectRatio}
+      drawable
+    />
   )
 }

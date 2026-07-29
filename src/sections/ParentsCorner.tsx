@@ -3,10 +3,10 @@ import { Circled } from '@/components/Circled'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { PARENT_ARTICLES } from '@/content/parents'
-import { SECTIONS } from '@/content/site'
+import { sectionMeta } from '@/content/site'
 
 export function ParentsCorner() {
-  const meta = SECTIONS[6]
+  const meta = sectionMeta('parents')
 
   return (
     <section
@@ -31,10 +31,12 @@ export function ParentsCorner() {
               className="flex overflow-hidden rounded-[2rem] bg-paper shadow-[0_10px_30px_rgba(24,82,142,0.10)]"
             >
               <div className="flex w-full flex-col p-5 sm:p-7">
-                <h3 className="font-display text-h2 text-cobalt">
-                  <Circled tone="cobalt">
-                    <MixedWeightLabel lead={article.title.lead} rest={article.title.rest} display />
-                  </Circled>
+                {/* No lasso here: circling an entire multi-word title forces
+                    nowrap and clips the heading mid-word. The guide's lasso
+                    encloses a single word — it is used on the section heading
+                    above, where it belongs. */}
+                <h3 className="text-balance font-display text-h2 text-cobalt">
+                  <MixedWeightLabel lead={article.title.lead} rest={article.title.rest} display />
                 </h3>
                 <BrandImage
                   webp={`/images/${article.image.stem}.webp`}

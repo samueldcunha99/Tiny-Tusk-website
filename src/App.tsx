@@ -9,6 +9,7 @@ import { ParentsCorner } from '@/sections/ParentsCorner'
 import { Testimonials } from '@/sections/Testimonials'
 import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
+import { NotFound } from '@/sections/NotFound'
 import { Route, Routes } from 'react-router-dom'
 
 function Home() {
@@ -30,7 +31,8 @@ export default function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/parents-corner" element={<ParentsCorner />} />
           <Route path="/book" element={<Booking />} />
-          <Route path="*" element={<Home />} />
+          {/* Unknown URLs must not silently render the homepage. */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </>

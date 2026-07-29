@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { BrandImage } from '@/components/BrandImage'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
@@ -8,13 +8,13 @@ import { StylisedCTA } from '@/components/StylisedCTA'
 import { TextOnPath } from '@/components/TextOnPath'
 import { colourVar } from '@/components/BrandArtView'
 import { DR_NUPUR } from '@/content/team'
-import { SECTIONS } from '@/content/site'
+import { CLINIC, sectionMeta } from '@/content/site'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
 export function Team() {
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = SECTIONS[4]
+  const meta = sectionMeta('team')
 
   useEffect(() => {
     const root = rootRef.current
@@ -52,16 +52,19 @@ export function Team() {
             doodleTone="canary"
             className="aspect-[4/5]"
           />
-          <p className="mt-4 font-sans text-sm leading-relaxed text-cobalt">{DR_NUPUR.portrait.todo}</p>
+          {/* The portrait production note is deliberately NOT rendered: it is
+              an internal brief for the photographer, see content/team.ts. */}
         </aside>
 
         <div className="space-y-8">
           <header data-nupur-panel data-animate>
             <SectionNumber number={meta.number} label="Dr. Nupur" tone="cobalt" />
-            <h1 id="nupur-heading" className="mt-4 font-display text-h1 text-cobalt">
+            {/* h2, not h1: this renders as a section of the home page, where
+                the hero already owns the single h1. */}
+            <h2 id="nupur-heading" className="mt-4 font-display text-h1 text-cobalt">
               <MixedWeightLabel lead="Meet" rest="Dr." display />{' '}
               <Circled tone="cobalt"><span style={{ fontWeight: 400 }}>Nupur</span></Circled>
-            </h1>
+            </h2>
           </header>
 
           <section data-nupur-panel data-surface="cobalt" className="rounded-[2rem] bg-cobalt p-7 md:p-10">
@@ -72,8 +75,10 @@ export function Team() {
           <section data-nupur-panel className="overflow-hidden rounded-[2rem] bg-powder p-7 md:p-10" data-surface="powder">
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">A calm start</p>
             <blockquote className="mt-4 font-display text-h2 text-cobalt">{DR_NUPUR.philosophy.quote}</blockquote>
-            <TextOnPath text={DR_NUPUR.philosophy.quote} tone="cobalt" className="mt-3 h-auto w-full" />
-            <p className="mt-2 max-w-measure font-sans text-body text-cobalt">{DR_NUPUR.philosophy.body}</p>
+            <p className="mt-4 max-w-measure font-sans text-body text-cobalt">{DR_NUPUR.philosophy.body}</p>
+            {/* The arc carries the brand tagline, not a second copy of the
+                quote above it: that duplication was a bug. */}
+            <TextOnPath text={CLINIC.tagline} tone="cobalt" className="mt-6 h-auto w-full max-w-md" />
           </section>
 
           <section data-nupur-panel aria-labelledby="nupur-expect-heading">
@@ -97,10 +102,14 @@ export function Team() {
             </div>
           </section>
 
-          <section data-nupur-panel className="rounded-[2rem] border-2 border-powder bg-white p-7 md:p-10">
-            <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">A warm human detail</p>
-            <p className="mt-4 max-w-measure font-display text-h2 text-cobalt">{DR_NUPUR.favouritePart}</p>
-          </section>
+          {/* Renders only once the clinic supplies real words — never a
+              placeholder standing in for them. */}
+          {DR_NUPUR.hasFavouritePart ? (
+            <section data-nupur-panel className="rounded-[2rem] border-2 border-powder bg-white p-7 md:p-10">
+              <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">A warm human detail</p>
+              <p className="mt-4 max-w-measure font-display text-h2 text-cobalt">{DR_NUPUR.favouritePart}</p>
+            </section>
+          ) : null}
 
           <div data-nupur-panel>
             <StylisedCTA lead="Schedule" rest="Appointment" href="/book" fill="canary" />

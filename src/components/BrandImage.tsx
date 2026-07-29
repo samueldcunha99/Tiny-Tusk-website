@@ -48,7 +48,9 @@ export function BrandImage({
             width={width}
             height={height}
             loading={eager ? 'eager' : 'lazy'}
-            fetchPriority={eager ? 'high' : 'auto'}
+            // React 18 passes this through verbatim, so it must be the
+            // lowercase DOM attribute name or it logs a console error.
+            {...{ fetchpriority: eager ? 'high' : 'auto' }}
             className="block h-full w-full object-cover"
           />
         </picture>

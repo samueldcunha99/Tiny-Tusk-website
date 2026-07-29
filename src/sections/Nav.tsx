@@ -9,6 +9,7 @@ import { CLINIC } from '@/content/site'
  * list small makes the navigation useful rather than a contents page.
  */
 const LINKS = [
+  { href: '/', label: 'Home' },
   { href: '/services', label: 'Services' },
   { href: '/dr-nupur', label: 'Meet Dr. Nupur' },
   { href: '/parents-corner', label: "Parents' Corner" },

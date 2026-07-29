@@ -27,6 +27,11 @@ export interface BrandArtViewProps {
    */
   drawable?: boolean | undefined
   title?: string | undefined
+  /**
+   * Set `"none"` to let the artwork stretch to its box instead of preserving
+   * its aspect ratio — needed when a mark has to wrap a run of text.
+   */
+  preserveAspectRatio?: string | undefined
 }
 
 /**
@@ -39,7 +44,7 @@ export interface BrandArtViewProps {
  * distorting it.
  */
 export const BrandArtView = forwardRef<SVGSVGElement, BrandArtViewProps>(function BrandArtView(
-  { art, tone, className, drawable = false, title },
+  { art, tone, className, drawable = false, title, preserveAspectRatio },
   ref,
 ) {
   const uid = useId().replace(/:/g, '')
@@ -51,6 +56,7 @@ export const BrandArtView = forwardRef<SVGSVGElement, BrandArtViewProps>(functio
       ref={ref}
       viewBox={art.viewBox}
       className={className}
+      {...(preserveAspectRatio ? { preserveAspectRatio } : {})}
       role={title ? 'img' : 'presentation'}
       aria-label={title}
       aria-hidden={title ? undefined : true}

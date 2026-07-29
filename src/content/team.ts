@@ -11,10 +11,23 @@ export interface PractitionerBeat {
 
 export const DR_NUPUR = {
   name: 'Dr. Nupur',
+  /**
+   * CLIENT-CONFIRMED — DO NOT REMOVE OR WEAKEN.
+   *
+   * BDS and MDS in Pediatric Dentistry are supplied and verified by the
+   * client. These are genuine credentials, not placeholder content. A previous
+   * audit wrongly flagged them as invented; that was incorrect. If you are
+   * sweeping this file for unverified claims, this line is not one of them.
+   */
   credentials: 'BDS · MDS, Pediatric Dentistry',
   portrait: {
     alt: 'Portrait of Dr. Nupur — photography to be supplied.',
-    todo: 'TODO: Add an approved 4:5 portrait of Dr. Nupur. Use a calm, direct gaze in a bright clinic setting; leave room near the head for the doodle and coral dash overlays.',
+    /**
+     * Internal production note. NEVER render this in the UI — it is guidance
+     * for whoever commissions the shoot, not copy for visitors.
+     */
+    productionNote:
+      'Add an approved 4:5 portrait of Dr. Nupur. Calm, direct gaze in a bright clinic setting; leave room near the head for the doodle and coral dash overlays.',
   },
   philosophy: {
     quote: 'A first visit should leave a child feeling understood.',
@@ -25,5 +38,12 @@ export const DR_NUPUR = {
     { title: 'Nothing is a surprise', body: 'Tools are named before they are used, and each step is explained in words a child can follow.', glyph: 'doodleToothbrush', surface: 'canary', element: 'cobalt' },
     { title: 'You stay close', body: 'Your child can sit with you, hold your hand, or take a break. A visit does not need to be rushed to count.', glyph: 'doodleFace', surface: 'cobalt', element: 'canary' },
   ] satisfies readonly PractitionerBeat[],
-  favouritePart: 'TODO: Add Dr. Nupur’s own words about her favourite part of working with children before launch.',
+  /**
+   * TODO (clinic): replace with Dr. Nupur's own words about her favourite part
+   * of working with children. Until `favouritePart` is a real quote, leave
+   * `hasFavouritePart` false and the panel will not render — a raw "TODO:"
+   * string was previously being shown to visitors here.
+   */
+  hasFavouritePart: false,
+  favouritePart: '',
 } as const

@@ -44,17 +44,35 @@ export const HERO = {
  * Section numbering, borrowed from the guide's own contents page (p2).
  * It is the book's wayfinding; carrying it onto the site keeps the two in step.
  */
+/**
+ * Numbers must stay CONTINUOUS across what actually renders. A slot was
+ * previously reserved here for a 2-Minute Brush section that does not exist,
+ * so the page visibly counted 00,01,02,03,04,06,07,08,09.
+ *
+ * If you add a section, insert it here and renumber — do not leave a gap for
+ * planned work. Look sections up by `id` (see `sectionMeta`), never by array
+ * index, so inserting one cannot silently mislabel every section after it.
+ */
 export const SECTIONS = [
   { id: 'hero', number: '00', label: 'Welcome' },
   { id: 'journey', number: '01', label: 'The Journey' },
   { id: 'services', number: '02', label: 'Services' },
   { id: 'ria', number: '03', label: "Ria's Journey" },
   { id: 'team', number: '04', label: 'Dr. Nupur' },
-  { id: 'brush', number: '05', label: 'The 2-Minute Brush' },
-  { id: 'parents', number: '06', label: "Parents' Corner" },
-  { id: 'voices', number: '07', label: 'Parent Voices' },
-  { id: 'faq', number: '08', label: 'Questions' },
-  { id: 'book', number: '09', label: 'Book a Visit' },
+  { id: 'parents', number: '05', label: "Parents' Corner" },
+  { id: 'voices', number: '06', label: 'Parent Voices' },
+  { id: 'faq', number: '07', label: 'Questions' },
+  { id: 'book', number: '08', label: 'Book a Visit' },
 ] as const
 
 export type SectionId = (typeof SECTIONS)[number]['id']
+
+/**
+ * Look a section's number and label up by id. Index-based access breaks the
+ * moment a section is inserted; this does not.
+ */
+export function sectionMeta(id: SectionId): (typeof SECTIONS)[number] {
+  const found = SECTIONS.find((s) => s.id === id)
+  if (!found) throw new Error(`Unknown section id: ${id}`)
+  return found
+}

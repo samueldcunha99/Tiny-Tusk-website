@@ -1,17 +1,17 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
 import { BrandImage } from '@/components/BrandImage'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { RIA_JOURNEY } from '@/content/ria'
-import { SECTIONS } from '@/content/site'
+import { sectionMeta } from '@/content/site'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
 export function RiaJourney() {
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = SECTIONS[3]
+  const meta = sectionMeta('ria')
 
   useEffect(() => {
     const root = rootRef.current
@@ -50,7 +50,7 @@ export function RiaJourney() {
             <li key={moment.id} data-ria-moment className="grid gap-6 rounded-[2rem] bg-paper p-7 shadow-[0_12px_35px_rgba(24,82,142,0.08)] sm:grid-cols-[112px_1fr] sm:items-center md:p-10" data-animate>
               <div className="w-24 sm:w-28"><Doodle name={moment.glyph} tone="cobalt" drawOnScroll /></div>
               <div>
-                <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">0{index + 1} · {moment.eyebrow}</p>
+                <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">0{index + 1} Â· {moment.eyebrow}</p>
                 <h3 className="mt-3 font-display text-h2 text-cobalt">{moment.title}</h3>
                 <p className="mt-3 max-w-measure font-sans text-body text-cobalt">{moment.body}</p>
               </div>

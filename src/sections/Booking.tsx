@@ -1,8 +1,8 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+﻿import { FormEvent, useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
 import { SectionNumber } from '@/components/SectionNumber'
 import { CONCERNS, EMPTY_BOOKING, TIMES, type BookingValues } from '@/content/booking'
-import { SECTIONS } from '@/content/site'
+import { sectionMeta } from '@/content/site'
 import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 
 type Errors = Partial<Record<keyof BookingValues, string>>
@@ -21,7 +21,7 @@ function validate(values: BookingValues, step: number): Errors {
 
 export function Booking() {
   const [step, setStep] = useState(0); const [values, setValues] = useState<BookingValues>(EMPTY_BOOKING); const [errors, setErrors] = useState<Errors>({}); const [complete, setComplete] = useState(false)
-  const progressRef = useRef<SVGPathElement>(null); const successRef = useRef<HTMLDivElement>(null); const reduced = usePrefersReducedMotion(); const meta = SECTIONS[9]
+  const progressRef = useRef<SVGPathElement>(null); const successRef = useRef<HTMLDivElement>(null); const reduced = usePrefersReducedMotion(); const meta = sectionMeta('book')
   useEffect(() => { const path = progressRef.current; if (!path) return; const length = primeDraw(path, reduced); if (reduced) return; gsap.fromTo(path, { strokeDashoffset: length }, { strokeDashoffset: length * (1 - (step + 1) / 4), duration: 0.48, ease: EASE.entrance, overwrite: true }) }, [reduced, step])
   useEffect(() => { const root = successRef.current; if (!complete || !root) return; const paths = Array.from(root.querySelectorAll<SVGPathElement>('[data-draw]')); if (reduced) { paths.forEach((path) => primeDraw(path, true)); return } const ctx = gsap.context(() => { paths.forEach((path) => primeDraw(path, false)); gsap.to(paths, { strokeDashoffset: 0, duration: 0.65, ease: EASE.entrance, stagger: 0.08 }) }, root); return () => ctx.revert() }, [complete, reduced])
   const update = (field: keyof BookingValues, value: string) => { setValues((current) => ({ ...current, [field]: value })); setErrors((current) => ({ ...current, [field]: undefined })) }
