@@ -3,3 +3,8 @@ dist/
 *.tsbuildinfo
 .DS_Store
 *.local
+
+# Release archives produced by `git archive` — build artefacts of a commit,
+# so they are never committed back into the repo.
+tiny-tusk-website.zip
+*.zip
