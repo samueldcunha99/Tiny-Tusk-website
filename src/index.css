@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   FONTS
+
+   The brand faces are Avenir Next and Avenir Next Condensed (guide pp. 17-19).
+   Neither is licensed for web use here, so we ship metric-sympathetic
+   stand-ins, self-hosted -- no Google Fonts CDN call is made at runtime.
+
+   TO SWAP IN LICENSED AVENIR NEXT: drop the woff2 files into public/fonts/,
+   uncomment the two @font-face blocks below, and change the two custom
+   properties in :root. Nothing else in the codebase references a family name.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/figtree-300-900.woff2') format('woff2-variations');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  src: url('/fonts/barlow-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  src: url('/fonts/barlow-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- licensed Avenir Next goes here -------------------------------------
+@font-face {
+  font-family: 'Avenir Next';
+  src: url('/fonts/AvenirNext-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir Next Condensed';
+  src: url('/fonts/AvenirNextCondensed-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+then in :root below:
+  --font-sans: 'Avenir Next', system-ui, sans-serif;
+  --font-display: 'Avenir Next Condensed', 'Avenir Next', system-ui, sans-serif;
+------------------------------------------------------------------------- */
+
+:root {
+  --font-sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Barlow Semi Condensed', 'Figtree', system-ui, sans-serif;
+
+  /* Authoritative palette, guide p23. Mirrored in tailwind.config.ts. */
+  --tt-cobalt: #18528e;
+  --tt-coral: #f16c59;
+  --tt-canary: #ffe497;
+  --tt-powder: #c1cbe7;
+  --tt-paper: #f7f7f7;
+  --tt-white: #ffffff;
+
+  /* Cobalt tints, for the "official" cobalt-on-cobalt pairing (p26). */
+  --tt-cobalt-80: #46759f;
+  --tt-cobalt-60: #7498b5;
+  --tt-cobalt-40: #a3bbcf;
+  --tt-cobalt-20: #d1dde7;
+
+  /* p27: supporting shapes on a solid brand colour are white at 33%. */
+  --tt-monochrome-opacity: 0.33;
+
+  /* The logo's stroke width in its own viewBox units, and the clear space the
+     guide requires around it (p7) -- equal to the mark's own height. */
+  --tt-logo-stroke: 43.7;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  /* Lenis drives scrolling; native smooth scroll would fight it. */
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--tt-paper);
+    color: var(--tt-cobalt);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Visible focus in cobalt, per the accessibility bar. Never remove it. */
+  :focus-visible {
+    outline: 3px solid var(--tt-cobalt);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  /* On cobalt surfaces the cobalt ring would vanish; flip it to canary. */
+  [data-surface='cobalt'] :focus-visible,
+  [data-surface='coral'] :focus-visible {
+    outline-color: var(--tt-canary);
+  }
+
+  ::selection {
+    background: var(--tt-canary);
+    color: var(--tt-cobalt);
+  }
+}
+
+@layer components {
+  .tt-skip-link {
+    @apply absolute left-4 top-4 z-[100] -translate-y-[200%] rounded-full bg-cobalt px-6 py-3
+           text-white opacity-0 transition-transform focus-visible:translate-y-0
+           focus-visible:opacity-100;
+  }
+
+  /* Long sections skip layout/paint work until they approach the viewport. */
+  .tt-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+
+   The rule from the brief: a fully static, complete, beautiful site. No
+   content may depend on motion to become visible. Every element that GSAP
+   would animate from opacity:0 is forced visible here, so even if a timeline
+   never runs the page is whole.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-animate],
+  [data-animate] * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  /* Stroke-draw animations resolve to their finished state. */
+  [data-draw] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .tt-marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+}
