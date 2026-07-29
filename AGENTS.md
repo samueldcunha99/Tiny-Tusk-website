@@ -1,193 +1,212 @@
-# Tiny Tusk — handoff briefing
+# Tiny Tusk — current developer briefing
 
-Front-end-only marketing site for a pediatric dental clinic. Vite + React 18 +
-TypeScript strict + Tailwind + GSAP/ScrollTrigger. No backend. Brand source of
-truth: `TINY_TUSK_Visual_Identity_Guide.pdf` in the repo root — page refs below
-(p7, p24…) point into it. Client requirements live in `docs/brief-01-main.md`
-and `docs/brief-02-coverage-addendum.md`; the page-by-page brand map is
-`docs/brand-coverage.md`.
+Front-end marketing site for **Tiny Tusk Pediatric Dental Clinic**. It is a
+Vite + React 18 + TypeScript (strict) + Tailwind + GSAP/ScrollTrigger project;
+there is no backend. The brand source of truth is
+`TINY_TUSK_Visual_Identity_Guide.pdf`. Source requirements and audits live in
+`docs/brief-01-main.md`, `docs/brief-02-coverage-addendum.md`,
+`docs/brand-coverage.md`, and `docs/contrast-audit.md`.
 
+```sh
+npm install
+npm run dev                 # http://localhost:5173
+npm run typecheck           # tsc -b --noEmit
+npm run build
 ```
-npm install && npm run dev     # http://localhost:5173/
-npx tsc -b --noEmit            # must stay clean
-```
 
----
+`@` resolves to `src/`. `src/assets/brand/paths.ts` is generated artwork from
+the brand book: do not hand-edit or regenerate it.
 
-## 1. What's finished (do not touch) and what you're building
+## Status — code as it exists today
 
-**Finished and verified:** the brand asset module (`src/assets/brand/paths.ts`),
-the design system (`tailwind.config.ts`, `src/index.css`,
-`src/design/pairings.ts`, `src/lib/motion.ts`), every component in
-`src/components/`, and four sections — `Nav`, `Hero`, `Journey` (pinned
-horizontal scroll), `Services` — wired in `src/App.tsx`. All verified at
-360/390/768/1440/1920: no horizontal overflow, clean console, reduced-motion
-complete. `tools/*.py` is the pipeline that produced the assets; you will not
-need to run it.
+“Done” means implemented in code. **The entire phase-two pass was not
+visually verified in a browser after implementation**: its timing, responsive
+spacing, overflow, console state, and reduced-motion presentation remain
+untuned. Do that before calling the site finished.
 
-**This pass (client-agreed scope):**
+### Shared shell and home page
 
-1. **Preloader** — the logo's single stroke draws canary-on-cobalt (the `LOGO`
-   asset is a true centreline, ready to draw), the tagline arc rotates in, the
-   unit scales down into the nav's top-left slot. Max 1.8s, skippable, once per
-   session (`sessionStorage`).
-2. **Typed content files** in `src/content/` for: Ria's Journey, Team, Parents'
-   Corner, Testimonials, FAQ, Booking. Match the voice of `journey.ts` /
-   `services.ts`: warm, plain-spoken, parent-to-parent — never babyish, never
-   clinical.
-3. **Route stubs** for `/team`, `/services`, `/parents-corner`, `/book`
-   (react-router-dom is installed; no router mounted yet). **Do not link the
-   nav to stubbed routes.** `Nav.tsx` `LINKS` lists only sections that exist.
-
-**Second pass (needs client go-ahead):** full sections for those content files,
-Footer, the 2-Minute Brush timer, `<TextOnPath>` (arc/roundel/ring),
-`<Circled>`, `<SectionDivider>`, `<DoodleField>`, `<BrandImage>`, custom
-cursor, Lenis wiring (installed, CSS hooks in `index.css`, never initialised),
-`docs/photography-brief.md`, Lighthouse (≥95/100/100/≥95). Client requirements
-to satisfy across the finished site: all three CTA fills appear, both LoopField
-contrast modes appear, all four doodles + all four supporting marks appear
-(always stroke-drawn, never static), all three TextOnPath modes appear.
-
----
-
-## 2. Design system and motion vocabulary
-
-### Colour tokens — the only legal colour sources
-
-| Token | Hex | Notes |
+| Area | Status | Notes |
 |---|---|---|
-| `cobalt` | `#18528E` | tints `cobalt-80/60/40/20` exist for the official cobalt-on-cobalt pairing (p26) |
-| `coral` | `#F16C59` | **cannot carry text — §4.1** |
-| `canary` | `#FFE497` | hex is authoritative; the guide's printed RGB is a book typo |
-| `powder` | `#C1CBE7` | |
-| `paper` | `#F7F7F7` | page background |
-| `white` | `#FFFFFF` | at 33% opacity for monochrome supporting shapes (p27) |
+| `Nav` | done | Desktop links plus accessible mobile overlay. Links are `/services`, `/dr-nupur`, `/parents-corner`, `/book`. |
+| `Preloader` | partial | Canary logo draw on cobalt, tagline arc, skip control, sessionStorage gate, and reduced-motion exit exist. Its 1.8s timing/transition into nav has not been visually tuned. |
+| `Hero` | done | Existing phase-one hero with loop field and CTA. |
+| `Journey` | done | Pinned horizontal Detection → Treatment → Care → Smile sequence. Treat its layout as high-risk; do not position new elements over its track. |
+| `Services` | done | Editorial six-card grid. Service image tiles and full service detail pages do not exist. |
+| `RiaJourney` | partial | Sticky-column story with the Ria hero photo and three beats. Layout and image treatment need browser QA. |
+| `Team` / Dr. Nupur | partial | Now one editorial practitioner spread, not a three-card grid. Uses a branded portrait placeholder until approved photography is supplied. |
+| `ParentsCorner` | partial | Five image-led article cards with real supplied images. Their “Read the guide” links return to `/parents-corner`; individual article pages are not built. |
+| `Testimonials` | partial | Cobalt marquee with duplicated quote cards and monochrome doodles. Marquee seam, speed, and small-screen behavior are unverified. |
+| `Faq` | partial | Accessible stateful accordion; no browser keyboard pass has been run. |
+| `Booking` | partial | Four-step, client-side-only form with kind validation and success state. It does not submit data anywhere. |
+| Footer | not started | No footer, contact block, map, legal links, or final tagline unit. |
+| 2-minute brush timer | not started | `EASE.celebrate` remains reserved for this. |
 
-Tokens exist in exactly two files, kept in sync: `tailwind.config.ts`
-(utilities) and `:root` in `src/index.css` (runtime, via `colourVar()`).
+`App.tsx` renders all of the above on `/`. There is no lazy loading.
 
-### Type
+### Routes
 
-- `--font-sans` = Figtree (stand-in for Avenir Next), `--font-display` = Barlow
-  Semi Condensed (stand-in for Avenir Next Condensed). Self-hosted woff2 in
-  `public/fonts/`, no CDN. Licensed-Avenir swap = two custom properties; the
-  procedure is a comment block in `index.css`.
-- Scale (p20): `text-display` clamp(4rem,13vw,13rem) / 1.05 / −0.025em ·
-  `text-h1` clamp(2.5rem,5vw,4rem) / 1.125 / −0.02em · `text-h2`
-  clamp(1.5rem,2.5vw,2rem) / 1.125 / −0.01em · `text-body`
-  clamp(1rem,1.2vw,1.25rem) / 1.6 / −0.01em.
-- Mixed-weight convention (p20/p33): DemiBold first word + Regular rest, always
-  through `<MixedWeightLabel>` — every CTA and card title.
+| Route | Status | What it renders |
+|---|---|---|
+| `/` | done | Full single-page sequence. |
+| `/dr-nupur` | partial | The Dr. Nupur practitioner page only. |
+| `/services` | done | Services section only. |
+| `/parents-corner` | partial | Parents’ Corner cards only; no article detail routes. |
+| `/book` | partial | Booking section only; form has no backend. |
+| `/team` | intentionally removed | Do not restore the old team-grid route. Consider a redirect only if legacy traffic requires it. |
+| `*` | implemented | Falls back to the home page. |
 
-### Motion — import gsap only from `src/lib/motion.ts`
+The router is `BrowserRouter`; production hosting must serve `index.html` for
+deep links such as `/dr-nupur`.
 
-- `EASE.entrance` = `power3.out` · `EASE.transform` = `power2.inOut` ·
-  `EASE.celebrate` = `elastic.out(1, 0.6)` — **reserved for the brush-timer
-  completion and nothing else**. Do not add easings. `STAGGER = 0.08`.
-- **Everything derives from one continuous stroke: artwork and sections draw
-  in, never fade in.** Text enters by clip reveal.
-- **Max two animation systems visible at once.** Journey = connector draw +
-  panel lift, nothing else. Adding a third means removing one.
-- Animate `transform`/`opacity` only. Create triggers inside `gsap.context`
-  and revert on unmount (every existing section shows the pattern).
-- **Reduced motion is two layers and both are required:** CSS in `index.css`
-  forces `[data-animate]` visible and `[data-draw]` complete; components check
-  `usePrefersReducedMotion()` and skip timeline creation. No content may
-  depend on motion to become visible. Tag accordingly: `data-animate` on
-  anything a timeline fades/moves, `data-draw` on drawable strokes.
-- `primeDraw(path, reduced)` sets up dasharray/offset and returns the length
-  (clears instead under reduced motion). Use it; don't hand-roll dash math.
+## Dr. Nupur page
 
----
+`src/sections/Team.tsx` and `src/content/team.ts` are the single source for
+the practitioner page. The only confirmed qualifications are **BDS · MDS,
+Pediatric Dentistry**. Do not invent years of experience, education,
+memberships, awards, publications, patient numbers, or biographical facts.
 
-## 3. Brand primitives (`src/components/`)
+The content intentionally contains two visible TODOs: an approved portrait and
+Dr. Nupur’s own “favourite part of the job” wording. Replace them only with
+client-confirmed material.
 
-**`<Logo>`** — the mark as a real single-stroke SVG. `variant`: `'mark' |
-'wordmark' | 'wordmark-mark' | 'wordmark-mark-tag'` · `tone` · `size` px —
-**≥64 always (p7); a dev warn fires below it — fix the call site, never the
-guard** · `clearSpace` pads by the mark's own height per p7 · `drawable` adds
-`data-draw` to the stroke paths · `title` for a11y (omit → `aria-hidden`).
-The exported `<Wordmark>` is **outlined artwork (heart-dotted 'i'), extracted
-verbatim — never re-set it in any typeface.**
+The page deliberately splits the registers:
 
-**`<Doodle>`** — named brand doodle/mark with draw-on behaviour. `name` is a
-typed union of asset keys. `drawOnScroll` draws once at 85% viewport;
-`play` replays the gesture for hover/focus cards — **doodles always rest
-complete: `play` re-runs the draw, it never gates visibility** (never-hovered
-cards and touch devices must show finished art).
+- Credentials use the **official** cobalt background + white text pairing
+  (guide p26): restrained, clinical, and precise.
+- Philosophy and expectation beats use the **playful** powder/cobalt,
+  canary/cobalt, and cobalt/canary pairings: reassuring and child-friendly.
 
-**`<LoopField>`** — oversized looping background strokes (pp28–29).
-`surface`, `contrast: 'high'` (crosses colours: canary on powder, white on
-cobalt) `| 'low'` (tonal), `depth` (parallax 0.2–0.5×), `count` 1–3. Always
-decorative (`aria-hidden`).
+That contrast is intentional: it is the brand’s “meticulous practice with room
+for playfulness” principle. Do not turn qualifications into a playful card or
+put clinical copy directly on coral.
 
-**`<StylisedCTA>`** — signature button (p33): fill ellipse + offset hand-drawn
-cobalt outline that redraws on hover, magnetic (capped ±12/8px), both skipped
-under reduced motion. `lead`/`rest`, `href` or `onClick`, `fill: 'canary' |
-'powder' | 'coral'`. **The coral fill auto-adds a cobalt label plate (§4.1) —
-don't work around it.**
+The portrait is a 4:5 `BrandImage` placeholder. The required replacement shot
+is specified in `docs/photography-brief.md`.
 
-**`<TextPanel>`** — legibility enforcement for copy on coloured surfaces.
-No-op on surfaces that can carry text; on coral it beds children on a cobalt
-panel. **Wrap unconditionally** — the rule can't be forgotten if the wrapper
-is always there. Helper: `textToneFor(surface, preferred)`.
+## Photography
 
-**`<BrandArtView>`** — renders any `ART[name]` asset (handles all three part
-kinds incl. mask plumbing). Exports `colourVar(colour)` — use it for any
-runtime colour. **`<MixedWeightLabel>`** — `lead` (600) + `rest` (400) as one
-element so screen readers get one phrase; `display` switches face.
-**`<SectionNumber>`** — the guide's `00–04` wayfinding (p2); numbers come from
-`SECTIONS` in `src/content/site.ts`, never hardcoded.
+Each supplied image has a `.webp` primary and a `.png` fallback in
+`public/images/`. `BrandImage` renders the WebP through `<picture>` and carries
+the image-tile treatment: a top-left logo watermark, coral dashes, one drawn
+doodle, and a stylised CTA title at the bottom. Image dimensions below refer to
+both formats.
 
-**Pairing API** (`src/design/pairings.ts`): `PAIRINGS` transcribes every
-permitted surface/element pair from pp24–27 with its source page;
-`isPermitted`, `resolveElement` (throws in dev on an illegal pair),
-`carriesText`, `assertLegibleText`.
+| Asset stem | Dimensions / ratio | Subject | Current slot |
+|---|---|---|---|
+| `rias-journey-hero` | 1600×1050, 32:21 landscape | Girl laughing in a dental chair | Ria’s Journey lead tile |
+| `child-pointing-smile` | 800×1200, 2:3 portrait | Girl pointing to her teeth in clinic | Parents’ Corner: “Mythbusting the 2-minute rule” |
+| `cavities-stages` | 1199×1798, ~2:3 portrait | Boy in chair under blue curing light | Parents’ Corner: “Cavities stages” |
+| `brushing-demo` | 711×799, ~0.89:1 portrait | Hand brushing a denture model | Parents’ Corner: toothpaste guide |
+| `toothbrush-product` | 649×704, ~0.92:1 product portrait | Toothbrush on white | Parents’ Corner: “Do not use these!” |
+| `retainer-product` | 901×305, ~2.95:1 wide product | Clear retainer on white | Parents’ Corner: retainers guide |
 
----
+**Licensing is unconfirmed.** The images were extracted from the client’s brand
+book; confirm rights and web-use permission with the client before launch.
+`README.md` carries the same launch warning.
 
-## 4. Rules that will bite you
+## Component contracts
 
-1. **Coral cannot carry text. At any size. In any colour.** Measured: canary
-   on coral **2.39:1**, cobalt **2.67:1**, white **2.99:1** — all fail even
-   the 3:1 large-text floor (white by 0.01). The original brief's "display
-   ≥32px" mitigation is superseded — the surface itself cannot host type.
-   Coral stays a full-strength field and graphic colour; copy over it goes on
-   a cobalt panel via `<TextPanel>`. Full table: `docs/contrast-audit.md`.
-2. **The variable-width doodles keep their exact artwork.** Toothbrush
-   bristles, toothpaste squiggle, curved arrow are tapering brush strokes —
-   no constant-width stroke path can reproduce them (attempts cap at ~67%
-   fidelity). They ship as exact fills revealed by an animatable
-   skeleton-stroke mask (`maskedFill` parts). **Never convert them to stroke
-   paths.** Related: `src/assets/brand/paths.ts` is a generated, validated
-   artifact — do not hand-edit or regenerate it.
-3. **Pairings are directional and registered.** Powder bg + cobalt elements is
-   legal; the reverse is not. The `official` register (p26) governs booking,
-   legal and clinical surfaces; playful registers govern marketing. Don't
-   blur them.
-4. **No raw hex in components.** Token classes, CSS vars, or `colourVar()`
-   only.
-5. **The dev-time throws/warns are the enforcement layer — never catch,
-   silence, or soften them.** If a guard fires, the call site is wrong (the
-   64px logo warn has already caught one real regression).
-6. **Strict TS stays fully on**, including `exactOptionalPropertyTypes` —
-   optional props on shared components need explicit `| undefined`. Zero
-   `any`, zero console errors.
-7. **Verify in the browser yourself** — screenshot desktop + mobile, check
-   `scrollWidth === innerWidth`, the console, and a reduced-motion pass. The
-   client will not check for you.
+All brand-facing components live in `src/components/`. Reuse these primitives;
+do not redraw their artwork or reimplement their rules.
 
-### Traps already hit once — don't rediscover them
+| Component | Contract |
+|---|---|
+| `BrandArtView` | `art` (required `BrandArt`), `tone?`, `className?`, `drawable?`, `title?`. Renders stroke, fill, and exact masked-fill artwork. Exports `colourVar(BrandColour \| 'current')` for runtime SVG/CSS colour values. |
+| `Logo` | `variant?: 'mark' \| 'wordmark' \| 'wordmark-mark' \| 'wordmark-mark-tag'`, `tone?`, `size?`, `className?`, `clearSpace?`, `drawable?`, `title?`. `Wordmark` is separately exported with `tone?`, `width?`, `className?`, `title?`. |
+| `Doodle` | `name` is the `DoodleName` union (four doodles, four supporting marks, five journey glyphs); `tone?`, `className?`, `title?`, `drawOnScroll?`, `play?`, `duration?`, `stagger?`. It always rests complete; `play` only replays the gesture. |
+| `LoopField` | `surface` required; `contrast?: 'high' \| 'low'`, `className?`, `depth?` (0.2–0.5 intent), `count?: 1 \| 2 \| 3`. Decorative only. |
+| `MixedWeightLabel` | `lead`, `rest` required; `className?`, `display?`, `style?`. Use for CTA and card-title first-word DemiBold / remainder Regular treatment. |
+| `SectionNumber` | `number`, `label` required; `tone?`, `className?`. Numbers come from `SECTIONS`, never hardcode them. |
+| `StylisedCTA` | `lead`, `rest` required; `href?` **or** `onClick?`, `fill?: 'canary' \| 'powder' \| 'coral'`, `className?`. Coral gets an automatic cobalt label plate. |
+| `TextPanel` | `surface`, `children` required; `className?`. Always wrap copy when its parent may be coral. `textToneFor(surface, preferred)` returns the safe text tone. |
+| `BrandImage` | `webp?` + `png?` for a real image **or** `placeholder`; plus required `alt`, `width`, `height`, `title: { lead, rest, fill, href }`, `logoTone: 'white' \| 'cobalt'`, `doodle`, `doodleTone: 'canary' \| 'coral'`; `className?`, `eager?`. Do not bypass it for branded image tiles. |
+| `Circled` | `children` required; `tone?`. Inline lasso treatment; it draws `markLasso` on scroll. |
+| `TextOnPath` | `text` required; `tone?`, `className?`. Current implementation supports **only a single arc** and is decorative (`aria-hidden`); keep a semantic text equivalent next to it. Roundel and repeating-ring modes are not implemented. |
 
-- `maskUnits="userSpaceOnUse"` needs explicit `x/y/width/height`: the default
-  region is −10%…120% *of the viewport*, and this artwork lives at large
-  viewBox coordinates — without bounds the mask silently renders nothing.
-  `BrandArtView` does it right; copy it.
-- HTML `hidden` loses to a Tailwind `flex` utility. The mobile nav drives
-  visibility from the class list and uses `inert` (not in React 18 typings —
-  spread with a narrow cast, see `Nav.tsx`).
-- In `Journey`, the header owns its own flex row and the canary connector is
-  positioned against the *track*, not the section. Don't absolutely position
-  anything over the pinned track — panels ride up under it.
-- `ART` uses `satisfies Record<string, BrandArt>` so keys stay literal — that
-  is what makes `DoodleName` a real union. Don't widen it.
+## Design, pairing, motion, and accessibility rules
+
+### Tokens and typography
+
+Only legal colour sources are Tailwind tokens, `var(--tt-*)`, or `colourVar()`:
+
+| Token | Hex |
+|---|---|
+| cobalt | `#18528E` |
+| coral | `#F16C59` |
+| canary | `#FFE497` |
+| powder | `#C1CBE7` |
+| paper | `#F7F7F7` |
+| white | `#FFFFFF` |
+
+No raw hex values in handwritten section/component code. Figtree and Barlow
+Semi Condensed are self-hosted stand-ins controlled only by `--font-sans` and
+`--font-display` in `src/index.css`.
+
+`src/design/pairings.ts` is the directional register. Do not invert pairings:
+powder/cobalt is legal, cobalt/powder is not. Use the official p26 register
+for booking, qualifications, legal, and clinical material; use the playful
+register for marketing. Supporting marks on a solid brand surface are white at
+33% opacity only.
+
+### Non-negotiable guardrails
+
+1. **Coral cannot carry text.** Measured contrast: canary on coral **2.39:1**,
+   cobalt on coral **2.67:1**, white on coral **2.99:1**. White misses even
+   the 3:1 large-text floor. Coral remains a full-strength graphic field; put
+   every bit of copy on a cobalt `TextPanel` over it. Never tint or darken
+   coral to evade this rule.
+2. **Logo minimum is 64px.** `Logo` logs a development warning below **64px**;
+   fix the call site rather than shrinking the mark or silencing the warning.
+   Clear space is one mark height when `clearSpace` is enabled.
+3. **Development throws and warnings are guardrails.** `resolveElement()` and
+   `assertLegibleText()` intentionally throw in development for illegal
+   pairings / coral text. Fix the call site; never catch, remove, or weaken the
+   enforcement.
+4. **Keep variable-width doodles exact.** Toothbrush bristles, toothpaste
+   squiggle, and curved arrow are masked fills revealed by skeleton masks, not
+   constant-width stroke paths. Never convert them.
+5. **Preserve strict TypeScript.** `exactOptionalPropertyTypes` is enabled;
+   no `any`, no ignored errors, and no console errors.
+
+### Motion and reduced motion
+
+Import GSAP only from `src/lib/motion.ts`. Use `EASE.entrance` (`power3.out`),
+`EASE.transform` (`power2.inOut`), `STAGGER` (`0.08`), and reserve
+`EASE.celebrate` (`elastic.out(1, 0.6)`) for the unbuilt brush-timer finish.
+Animate only `transform` and `opacity`; create ScrollTriggers in
+`gsap.context()` and revert them on unmount. Keep no more than two visible
+animation systems at once.
+
+Reduced motion is two-layered and mandatory: mark JS-animated content with
+`data-animate`, drawable geometry with `data-draw`, use
+`usePrefersReducedMotion()` to skip timelines, and let `index.css` resolve all
+content and strokes to their completed state. Nothing may rely on motion to
+become visible.
+
+## Known gaps — the next developer’s honest to-do list
+
+- Perform full browser QA at 360 / 390 / 768 / 1024 / 1440 / 1920: screenshots,
+  `scrollWidth === innerWidth`, route loading, console, keyboard path, and a
+  reduced-motion pass. Phase-two animation timing and spacing are unverified.
+- Replace the Dr. Nupur portrait placeholder and both content TODOs with
+  client-approved materials. Confirm all six supplied image licenses before
+  launch.
+- Build individual Parents’ Corner article pages; cards currently link back to
+  their index. Add real service detail pages if required.
+- Add the Footer, clinic contact/legal information, map, and final tagline
+  lockup. The hard-coded clinic contact details in `src/content/site.ts` are
+  not client-confirmed and need review before launch.
+- Finish the 2-minute brush timer, generic `TextOnPath` roundel/ring modes,
+  `SectionDivider`, `DoodleField`, and custom cursor only after confirming
+  scope. `TextOnPath` currently implements an arc only.
+- Tune/validate the preloader once-per-session flow, testimonial marquee seam,
+  FAQ keyboard behavior, Booking validation/success flow, and mobile nav in a
+  real browser.
+- Connect Booking to an approved backend or third-party scheduling flow; it
+  currently stores nothing. Add success/error handling and privacy language.
+- Add a production SPA fallback for deep routes, metadata/OG images,
+  `Dentist`/LocalBusiness schema, favicon, performance budget, and a real
+  Lighthouse run. No Lighthouse scores are available.
+- Review `content-visibility` with pinned Journey and sticky pages in actual
+  target browsers; those combinations can have layout edge cases.
