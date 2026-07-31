@@ -5,7 +5,7 @@ import {
   TESTIMONIAL_PROMPTS,
   TESTIMONIALS,
 } from '@/content/testimonials'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
  * Parent voices — a slow marquee of quote cards on cobalt, with white-at-33%
@@ -16,7 +16,7 @@ import { sectionMeta } from '@/content/site'
  * text that a visitor could read as a real review. See content/testimonials.ts.
  */
 export function Testimonials() {
-  const meta = sectionMeta('voices')
+  const meta = useSectionMeta('voices')
   // Duplicated so the marquee loop is seamless.
   const cards = [...TESTIMONIALS, ...TESTIMONIALS]
 

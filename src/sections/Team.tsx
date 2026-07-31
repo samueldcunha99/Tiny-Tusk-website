@@ -9,13 +9,14 @@ import { StylisedCTA } from '@/components/StylisedCTA'
 import { TextOnPath } from '@/components/TextOnPath'
 import { colourVar } from '@/components/BrandArtView'
 import { DR_NUPUR } from '@/content/team'
-import { CLINIC, sectionMeta } from '@/content/site'
+import { CLINIC } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
 export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = sectionMeta('team')
+  const meta = useSectionMeta('team')
   const Heading = asPage ? 'h1' : 'h2'
 
   useEffect(() => {

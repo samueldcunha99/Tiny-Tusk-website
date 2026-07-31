@@ -5,12 +5,12 @@ import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { HOME_PATHS } from '@/content/homePaths'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 export function HomePaths() {
   const [selectedId, setSelectedId] =
     useState<(typeof HOME_PATHS)[number]['id']>('visit')
-  const meta = sectionMeta('paths')
+  const meta = useSectionMeta('paths')
   const selected =
     HOME_PATHS.find((path) => path.id === selectedId) ?? HOME_PATHS[0]!
 

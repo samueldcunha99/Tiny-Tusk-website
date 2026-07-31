@@ -135,15 +135,18 @@ export function Footer() {
           </div>
         </div>
 
+        {/* `min-h-11` on the rows, not `gap-y`: as bare inline text these were
+            20px tall, which is a miss on a phone however wide the label is. The
+            appointment link above already sets the same floor. */}
         <nav
-          className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 border-t border-white/15 pt-6 lg:justify-start"
+          className="mt-8 flex flex-wrap justify-center gap-x-6 border-t border-white/15 pt-4 lg:justify-start"
           aria-label="Footer"
         >
           {quickLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="font-sans text-sm font-semibold text-canary underline decoration-transparent underline-offset-4 transition-colors hover:decoration-canary"
+              className="inline-flex min-h-11 items-center font-sans text-sm font-semibold text-canary underline decoration-transparent underline-offset-4 transition-colors hover:decoration-canary"
             >
               {link.label}
             </a>

@@ -8,14 +8,14 @@ import { SectionNumber } from '@/components/SectionNumber'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { TextPanel } from '@/components/TextPanel'
 import { RIA_JOURNEY } from '@/content/ria'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
 export function RiaJourney() {
   const [activeIndex, setActiveIndex] = useState(0)
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = sectionMeta('ria')
+  const meta = useSectionMeta('ria')
   const activeMoment = RIA_JOURNEY[activeIndex] ?? RIA_JOURNEY[0]!
 
   useEffect(() => {

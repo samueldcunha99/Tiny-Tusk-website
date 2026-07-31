@@ -3,14 +3,14 @@ import { Doodle } from '@/components/Doodle'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { SectionNumber } from '@/components/SectionNumber'
 import { FAQS, type FaqCategory } from '@/content/faq'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
   const categories = ['All', 'Visits', 'At home', 'Support'] as const
   const [open, setOpen] = useState<string | null>(FAQS[0]?.question ?? null)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<'All' | FaqCategory>('All')
-  const meta = sectionMeta('faq')
+  const meta = useSectionMeta('faq')
   const Heading = asPage ? 'h1' : 'h2'
   const ItemHeading = asPage ? 'h2' : 'h3'
   const normalisedQuery = query.trim().toLocaleLowerCase()

@@ -5,14 +5,14 @@ import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { SectionNumber } from '@/components/SectionNumber'
 import { CLINIC_CONCEPTS } from '@/content/clinic'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 export function InsideClinic({ asPage = false }: { asPage?: boolean | undefined }) {
   const [selectedId, setSelectedId] =
     useState<(typeof CLINIC_CONCEPTS)[number]['id']>(
       CLINIC_CONCEPTS[0]!.id,
     )
-  const meta = sectionMeta('clinic')
+  const meta = useSectionMeta('clinic')
   const Heading = asPage ? 'h1' : 'h2'
   const selected =
     CLINIC_CONCEPTS.find((concept) => concept.id === selectedId) ??

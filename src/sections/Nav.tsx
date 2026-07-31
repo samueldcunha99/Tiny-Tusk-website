@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
 import { Doodle } from '@/components/Doodle'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
+import { useIsMobile } from '@/lib/viewport'
 import { CLINIC } from '@/content/site'
 
 /**
@@ -25,6 +26,7 @@ export function Nav() {
   const panelRef = useRef<HTMLDivElement>(null)
   const lastScrollRef = useRef(0)
   const reduced = usePrefersReducedMotion()
+  const isMobile = useIsMobile()
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
   const needsTopNavSurface =
     currentPath === '/games' || currentPath === '/brush-timer'
@@ -79,10 +81,12 @@ export function Nav() {
     const panel = panelRef.current
     if (!panel || !open || reduced) return
     const items = panel.querySelectorAll('[data-nav-item]')
+    // Short travel: the panel is a card now, not a full screen, so a 28px
+    // rise would read as items sliding in from outside their own container.
     const tl = gsap.fromTo(
       items,
-      { y: 28, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, ease: EASE.entrance, stagger: STAGGER },
+      { y: 12, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.42, ease: EASE.entrance, stagger: STAGGER * 0.6 },
     )
     return () => {
       tl.kill()
@@ -112,7 +116,13 @@ export function Nav() {
         aria-label="Primary"
         className={[
           'mx-auto flex items-center justify-between transition-all duration-300',
-          condensed
+          // On a phone the bar never takes a surface -- the mark and the menu
+          // button float directly on the page. Branching in JS rather than with
+          // a `max-md:` override so the desktop string stays byte-identical
+          // and cannot depend on Tailwind's class-ordering.
+          isMobile
+            ? 'max-w-[1600px] bg-transparent'
+            : condensed
             ? 'max-w-5xl rounded-full bg-white/85 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] backdrop-blur-md md:px-6'
             : needsTopNavSurface
               ? 'max-w-[1600px] rounded-full bg-paper/95 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.12)] backdrop-blur-md md:px-6'
@@ -185,9 +195,38 @@ export function Nav() {
           </span>
         </button>
       </nav>
+      </header>
 
-      {/* Mobile: full-screen powder overlay with staggered reveal and a
-          doodle-filled corner, per the brief. */}
+      {/* Tapping anywhere off the panel closes it, which a dropdown needs and
+          a full-screen overlay did not. Transparent: the page stays visible,
+          that is the point of anchoring the menu rather than covering with it. */}
+      {open ? (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-30 cursor-default md:hidden"
+        >
+          <span className="sr-only">Close menu</span>
+        </button>
+      ) : null}
+
+      {/* Mobile: a powder dropdown anchored to the top right, under the menu
+          button, with the staggered reveal and a doodle in its corner.
+
+          This MUST stay a sibling of the header, never a child. The header
+          carries a `translate-y` for its hide-on-scroll, and any transform
+          other than `none` makes an element the containing block for its
+          `position: fixed` descendants -- so nested here, the panel resolved
+          against the ~90px header box instead of the viewport. The links
+          simply overflowed it with no background behind them, and whatever
+          was underneath showed through. It read as correct only while the
+          page behind happened to be powder too.
+
+          `top-28` clears the header in both its normal and condensed states.
+          The header is transparent but still takes pointer events, so a panel
+          tucked any higher would have its first link swallowed by it. */}
       <div
         id="mobile-nav"
         ref={panelRef}
@@ -200,11 +239,21 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed inset-0 z-40 flex-col justify-center bg-powder px-8 md:hidden',
+          'fixed right-3 top-28 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
+          'overflow-hidden rounded-[1.5rem] bg-powder px-4 py-4',
+          // The hero is powder too, so a powder card on it had only its shadow
+          // to say where the panel stopped and the page began. A white edge
+          // separates it on any surface -- the same white-on-powder rule the
+          // divider below the links already uses.
+          'ring-1 ring-white/70',
+          'shadow-[0_18px_50px_rgba(24,82,142,0.22)] md:hidden',
           open ? 'flex' : 'hidden',
         ].join(' ')}
       >
-        <ul className="flex flex-col gap-6">
+        {/* Spacing lives in each row's padding, not in the gap between rows:
+            at `gap-4` with no padding the links measured 22px tall, half the
+            44px a thumb needs, with dead space between them doing nothing. */}
+        <ul className="flex flex-col gap-1">
           {LINKS.map((l) => {
             const active = isCurrent(l.href)
             return (
@@ -213,44 +262,53 @@ export function Nav() {
                   href={l.href}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setOpen(false)}
-                  className="relative font-display text-[2.5rem] leading-none text-cobalt"
+                  className="block rounded-2xl px-2 py-3 font-display text-[1.4rem] leading-none text-cobalt"
                 >
-                  {l.label}
-                  {active ? (
-                    <span
-                      className="absolute -bottom-2 left-0 h-1 w-14 rounded-full bg-coral"
-                      aria-hidden="true"
-                    />
-                  ) : null}
+                  {/* The rule tracks the word, not the tap target, so it stays
+                      tight under the label now that the row is padded out. */}
+                  <span className="relative inline-block">
+                    {l.label}
+                    {active ? (
+                      <span
+                        className="absolute -bottom-1.5 left-0 h-[3px] w-9 rounded-full bg-coral"
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                  </span>
                 </a>
               </li>
             )
           })}
-          <li data-nav-item>
+          {/* Booking is the one action worth separating from the list. In the
+              full-screen panel its size did that; in a dropdown, a rule and a
+              filled row do it instead. */}
+          <li data-nav-item className="mx-2 mt-2 border-t-2 border-white/70 pt-4">
             <a
               href="/book"
               aria-current={currentPath === '/book' ? 'page' : undefined}
               onClick={() => setOpen(false)}
-              className="relative font-display text-[2.5rem] leading-none text-cobalt"
+              className={[
+                'block rounded-full bg-cobalt px-5 py-3 text-center font-display text-[1.25rem]',
+                'leading-none text-white',
+                currentPath === '/book' ? 'ring-2 ring-coral ring-offset-2 ring-offset-powder' : '',
+              ].join(' ')}
             >
               Book a visit
-              {currentPath === '/book' ? (
-                <span
-                  className="absolute -bottom-2 left-0 h-1 w-14 rounded-full bg-coral"
-                  aria-hidden="true"
-                />
-              ) : null}
             </a>
           </li>
         </ul>
-        <div className="pointer-events-none absolute bottom-6 right-4 w-40 opacity-90">
-          <Doodle name="doodleFace" tone="cobalt" />
-        </div>
-        <div className="pointer-events-none absolute bottom-40 right-10 w-16 opacity-80">
-          <Doodle name="markDashes" tone="cobalt" />
+
+        {/* Kept from the full-screen panel, sized for a card. It rests
+            complete, so it is art rather than a third animation system. */}
+        <div className="pointer-events-none mt-5 flex justify-end gap-2 opacity-90" aria-hidden="true">
+          <span className="w-8 self-start pt-1">
+            <Doodle name="markDashes" tone="cobalt" />
+          </span>
+          <span className="w-16">
+            <Doodle name="doodleFace" tone="cobalt" />
+          </span>
         </div>
       </div>
-      </header>
     </>
   )
 }

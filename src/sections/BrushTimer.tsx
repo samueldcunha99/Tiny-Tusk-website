@@ -5,7 +5,7 @@ import { SectionNumber } from '@/components/SectionNumber'
 import { LoopField } from '@/components/LoopField'
 import { TextPanel } from '@/components/TextPanel'
 import { BRUSH_ROUNDS } from '@/content/games'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 import { gsap, EASE, usePrefersReducedMotion } from '@/lib/motion'
 
 const TOTAL_SECONDS = 120
@@ -23,7 +23,7 @@ export function BrushTimer({
   const circleRef = useRef<SVGCircleElement>(null)
   const confettiRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = sectionMeta('brush-timer')
+  const meta = useSectionMeta('brush-timer')
   const Heading = asPage ? 'h1' : 'h2'
   const elapsedSeconds = TOTAL_SECONDS - secondsLeft
   const activeRound = Math.min(

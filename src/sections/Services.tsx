@@ -8,7 +8,7 @@ import { TextPanel } from '@/components/TextPanel'
 import { carriesText, type BrandColour } from '@/design/pairings'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { SERVICES, type Service } from '@/content/services'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 const SPAN_CLASS: Record<Service['span'], string> = {
   hero: 'md:col-span-4',
@@ -89,7 +89,7 @@ function ServiceCard({
 export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
   const ref = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = sectionMeta('services')
+  const meta = useSectionMeta('services')
   const Heading = asPage ? 'h1' : 'h2'
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import {
   TIMES,
   type BookingValues,
 } from '@/content/booking'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 import {
   isBookingApiConfigured,
   submitBooking,
@@ -73,7 +73,7 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
   const successRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const reduced = usePrefersReducedMotion()
-  const meta = sectionMeta('book')
+  const meta = useSectionMeta('book')
   const bookingConfigured = isBookingApiConfigured()
   const Heading = asPage ? 'h1' : 'h2'
 

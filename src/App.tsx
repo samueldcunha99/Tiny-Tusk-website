@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react'
 import { RouteMeta } from '@/components/RouteMeta'
+import { SectionOrder } from '@/content/sectionOrder'
+import type { SectionId } from '@/content/site'
+import { useIsMobile } from '@/lib/viewport'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
+import { HomeMobile } from '@/sections/Home.mobile'
 import { HomePaths } from '@/sections/HomePaths'
 import { Journey } from '@/sections/Journey'
 import { Services } from '@/sections/Services'
@@ -18,9 +22,34 @@ import { Booking } from '@/sections/Booking'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
 
+/**
+ * What the desktop home renders, in order. The section numbers are counted off
+ * this list rather than off the registry, so dropping or reordering a section
+ * here renumbers the rest instead of leaving a gap (see `sectionOrder.tsx`).
+ * Keep it in step with the JSX below.
+ */
+const HOME_ORDER: readonly SectionId[] = [
+  'hero',
+  'paths',
+  'journey',
+  'services',
+  'clinic',
+  'ria',
+  'team',
+  'brush-timer',
+  'parents',
+  'voices',
+  'faq',
+  'book',
+]
+
 function Home() {
+  // Mobile gets a different page, not a narrower one: see `Home.mobile.tsx`.
+  // The desktop composition below is untouched and never mounts under `md`.
+  if (useIsMobile()) return <HomeMobile />
+
   return (
-    <>
+    <SectionOrder ids={HOME_ORDER}>
       <Hero />
       <HomePaths />
       <Journey />
@@ -33,7 +62,7 @@ function Home() {
       <Testimonials />
       <Faq />
       <Booking />
-    </>
+    </SectionOrder>
   )
 }
 

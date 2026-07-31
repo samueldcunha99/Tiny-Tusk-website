@@ -5,12 +5,12 @@ import { Circled } from '@/components/Circled'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { PARENT_ARTICLES } from '@/content/parents'
-import { sectionMeta } from '@/content/site'
+import { useSectionMeta } from '@/content/sectionOrder'
 
 export function ParentsCorner({ asPage = false }: { asPage?: boolean | undefined }) {
   const filters = ['All', 'Routines', 'Guides', 'Products'] as const
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
-  const meta = sectionMeta('parents')
+  const meta = useSectionMeta('parents')
   const Heading = asPage ? 'h1' : 'h2'
   const CardHeading = asPage ? 'h2' : 'h3'
   const articles = filter === 'All'

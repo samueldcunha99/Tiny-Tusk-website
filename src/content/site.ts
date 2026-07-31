@@ -38,6 +38,11 @@ export const HERO = {
     'We believe every child deserves a dental experience that feels safe, gentle, and even ' +
     "a little magical. From a baby's very first tooth to growing confident smiles, we are " +
     'here to walk beside your child through every tiny milestone.',
+  // The opening sentence of `body`, verbatim. The mobile hero is a lede into a
+  // hub rather than the whole welcome, so it carries this alone -- not a
+  // reworded summary, so the guide's p34 copy is never paraphrased.
+  bodyLede:
+    'Where little smiles are cared for with kindness, patience, and a whole lot of heart.',
   cta: { lead: 'Schedule', rest: 'Appointment', href: '#book' },
 } as const
 
@@ -53,6 +58,13 @@ export const HERO = {
  * If you add a section, insert it here and renumber — do not leave a gap for
  * planned work. Look sections up by `id` (see `sectionMeta`), never by array
  * index, so inserting one cannot silently mislabel every section after it.
+ *
+ * The `number` below is the registry number — the brand book's own contents
+ * page (p2), and what a section shows when it renders alone on its own route.
+ * A page that renders some other running order (the mobile home drops seven
+ * sections) counts its own numbers off `<SectionOrder>`; components should read
+ * `useSectionMeta` in `sectionOrder.tsx` rather than calling `sectionMeta`
+ * directly, so the number always matches what the visitor can actually count.
  */
 export const SECTIONS = [
   { id: 'hero', number: '00', label: 'Welcome' },
@@ -70,6 +82,17 @@ export const SECTIONS = [
 ] as const
 
 export type SectionId = (typeof SECTIONS)[number]['id']
+
+/**
+ * A section's wayfinding as rendered. `number` widens to `string` because a
+ * page recounts it against its own running order (`sectionOrder.tsx`); the
+ * literal union on `SECTIONS` is the registry, not the rendered value.
+ */
+export type SectionMeta = {
+  readonly id: SectionId
+  readonly number: string
+  readonly label: string
+}
 
 /**
  * Look a section's number and label up by id. Index-based access breaks the
