@@ -9,15 +9,23 @@
    Neither is licensed for web use here, so we ship metric-sympathetic
    stand-ins, self-hosted -- no Google Fonts CDN call is made at runtime.
 
+   Hanken Grotesk stands in for Avenir Next; Barlow Semi Condensed stands in
+   for Avenir Next Condensed. Both are OFL and fetched by tools/get-fonts.py.
+
+   NOTE: docs/brief-01-main.md names Figtree as the Avenir Next stand-in. That
+   file is the client brief kept verbatim and is not edited; the client has
+   since asked for Hanken Grotesk instead. This is the current instruction --
+   do not "restore" Figtree from the brief.
+
    TO SWAP IN LICENSED AVENIR NEXT: drop the woff2 files into public/fonts/,
    uncomment the two @font-face blocks below, and change the two custom
    properties in :root. Nothing else in the codebase references a family name.
    ========================================================================== */
 
 @font-face {
-  font-family: 'Figtree';
-  src: url('/fonts/figtree-300-900.woff2') format('woff2-variations');
-  font-weight: 300 900;
+  font-family: 'Hanken Grotesk';
+  src: url('/fonts/hanken-grotesk-100-900.woff2') format('woff2-variations');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -55,8 +63,8 @@ then in :root below:
 ------------------------------------------------------------------------- */
 
 :root {
-  --font-sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Barlow Semi Condensed', 'Figtree', system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Barlow Semi Condensed', 'Hanken Grotesk', system-ui, sans-serif;
 
   /* Authoritative palette, guide p23. Mirrored in tailwind.config.ts. */
   --tt-cobalt: #18528e;

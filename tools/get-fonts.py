@@ -1,14 +1,14 @@
 """Download the stand-in faces as woff2 for self-hosting (no runtime CDN calls)."""
 import re, pathlib, urllib.request
 
-DEST = pathlib.Path(r"c:\Users\HP\OneDrive\Desktop\My websites\Tiny Tusk website\public\fonts")
+DEST = pathlib.Path(__file__).resolve().parent.parent / "public" / "fonts"
 DEST.mkdir(parents=True, exist_ok=True)
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
 SPECS = {
     # variable weight axis, latin subset
-    "figtree": "https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap",
+    "hanken-grotesk": "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&display=swap",
     "barlow": "https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600&display=swap",
 }
 
