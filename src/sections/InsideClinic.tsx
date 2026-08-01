@@ -91,7 +91,13 @@ export function InsideClinic({ asPage = false }: { asPage?: boolean | undefined 
             logoTone={selected.image.logoTone}
             doodle={selected.image.doodle}
             doodleTone={selected.image.doodleTone}
-            className="aspect-[16/8]"
+            // A fixed height rather than an aspect ratio: 16/8 came out ~700px
+            // tall at the 1400px cap and ate a whole desktop viewport. Note
+            // `aspect-[…] max-h-[…]` does NOT work here -- with an auto width
+            // the ratio re-derives the width from the clamped height, so the
+            // tile shrinks sideways and leaves a gap. The image object-covers,
+            // so height alone is safe to set.
+            className="h-[clamp(220px,52svh,560px)] w-full"
           />
         </div>
 

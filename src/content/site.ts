@@ -11,23 +11,108 @@ export const CLINIC = {
   tag: 'Pediatric Dental Clinic',
 } as const
 
-// TODO: Add address, phone, email, opening hours, and official social URLs only
-// after the clinic supplies and verifies them. Do not render guessed fallbacks.
+/**
+ * The clinic's real address. CLIENT-VERIFIED — supplied by the client on
+ * 2026-08-01, so unlike `MOCK_CONTACT` below this renders in production and
+ * goes into structured data. Do not strip it during a sweep for unverified
+ * facts, and do not add a `lat`/`lng`: exact coordinates were not supplied,
+ * and the map resolves the address by text rather than guessing a pin.
+ */
+export const CLINIC_ADDRESS = {
+  unit: 'Shop No. 21, Ground Floor, Plot No. 3',
+  society: 'Mahaavir Heritage Co-Operative Housing Society Ltd',
+  sector: 'Sector 35G',
+  landmark: 'Next to Empyrean School, near Tata Memorial Cancer Hospital',
+  locality: 'Kharghar',
+  city: 'Navi Mumbai',
+  region: 'Maharashtra',
+  postcode: '410210',
+  country: 'IN',
+} as const
+
+/** One-line form, for map queries and structured data. */
+export const CLINIC_ADDRESS_LINE = [
+  CLINIC_ADDRESS.unit,
+  CLINIC_ADDRESS.society,
+  CLINIC_ADDRESS.sector,
+  CLINIC_ADDRESS.locality,
+  `${CLINIC_ADDRESS.city} ${CLINIC_ADDRESS.postcode}`,
+  CLINIC_ADDRESS.region,
+].join(', ')
+
+/**
+ * Deliberately shorter than `CLINIC_ADDRESS_LINE`. Geocoding the full line --
+ * shop number, plot and landmarks included -- makes Google fall back to a
+ * scattered area search with no pin. Society + sector + locality + postcode
+ * resolves to the single correct place; verified in a browser against both
+ * landmarks the client gave (Empyrean School adjacent, ACTREC-Tata to the
+ * south-west). Re-check the pin if you edit this string.
+ */
+const MAP_QUERY = encodeURIComponent(
+  `${CLINIC_ADDRESS.society}, ${CLINIC_ADDRESS.sector}, ${CLINIC_ADDRESS.locality}, ${CLINIC_ADDRESS.city} ${CLINIC_ADDRESS.postcode}`,
+)
+/** Keyless Google embed — no API key, no billing account, no new dependency. */
+export const MAP_EMBED_SRC = `https://maps.google.com/maps?q=${MAP_QUERY}&output=embed`
+/** Opens the same place in the visitor's own Maps app for directions. */
+export const MAP_DIRECTIONS_HREF = `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`
+
+// TODO: Add phone, email, opening hours, and official social URLs only after
+// the clinic supplies and verifies them. Do not render guessed fallbacks.
+// (The address above IS verified and is deliberately not in this block.)
 export const MOCK_CONTACT = {
   phone: '+44 20 7946 0321',
   phoneHref: 'tel:+442079460321',
   email: 'hello@tinytusk.example',
-  address: {
-    street: '14 Maple Row',
-    city: 'London',
-    postcode: 'N1 4QP',
-  },
   hours: [
     { days: 'Monday – Friday', time: '8:30am – 5:30pm' },
     { days: 'Saturday', time: '9:00am – 1:00pm' },
     { days: 'Sunday', time: 'Closed' },
   ],
 } as const
+
+/**
+ * WhatsApp contact.
+ *
+ * `WHATSAPP_NUMBER` is the single switch for the whole feature. It stays
+ * `null` until the clinic supplies its real WhatsApp Business number: the nav
+ * must never point at `MOCK_CONTACT`, and a parent tapping through to an
+ * invented number is worse than no button at all.
+ *
+ * TODO: replace `null` with the clinic-verified number in `wa.me` format --
+ * country code first, digits only, no `+` and no spaces, e.g. '447700900123'.
+ * That one edit takes the button live in production; nothing else changes.
+ */
+export const WHATSAPP_NUMBER: string | null = null
+
+/**
+ * Layout stand-in so the button can be built and reviewed before the real
+ * number exists. Reachable from `whatsappHref` in `npm run dev` only -- the
+ * production bundle can never resolve to it.
+ */
+const WHATSAPP_DEV_SAMPLE = '442079460321'
+
+/** Message pre-filled into the chat. The site's voice, and short. */
+export const WHATSAPP_GREETING =
+  "Hello Tiny Tusk! I'd like to ask about an appointment for my child."
+
+/**
+ * The `wa.me` link, or `null` when there is nothing safe to link to. Callers
+ * render nothing on `null` rather than falling back to a guessed number.
+ */
+export function whatsappHref(): string | null {
+  const number = WHATSAPP_NUMBER ?? (import.meta.env.DEV ? WHATSAPP_DEV_SAMPLE : null)
+  if (!number) return null
+  return `https://wa.me/${number}?text=${encodeURIComponent(WHATSAPP_GREETING)}`
+}
+
+/**
+ * False while the link resolves to the development sample. The button uses
+ * this to mark itself as unverified in dev, the way the footer labels its own
+ * mock contact block.
+ */
+export function whatsappIsVerified(): boolean {
+  return WHATSAPP_NUMBER !== null
+}
 
 /** The guide's own welcome copy, p34. Used verbatim. */
 export const HERO = {

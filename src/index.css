@@ -83,6 +83,20 @@ then in :root below:
   /* p27: supporting shapes on a solid brand colour are white at 33%. */
   --tt-monochrome-opacity: 0.33;
 
+  /* WhatsApp's own brand green. Deliberately NOT a `--tt-` token: it is a
+     third-party logotype colour, it is outside the guide's palette, and it
+     must never be reached for as a site colour. It lives here only so that
+     no component carries the raw hex (hard rule 3), and it is referenced
+     from exactly one file, `components/WhatsAppButton.tsx`.
+
+     Contrast note: the white glyph reads ~1.98:1 on this green, and the
+     green ~1.22:1 on powder. Both are below the 3:1 non-text floor, and both
+     are permitted only because WCAG exempts logotypes from contrast limits.
+     Reproducing the mark in a legible colour would stop it being the mark.
+     The button therefore also carries a white ring for edge definition, and
+     its accessible name is real text, never conveyed by the colour. */
+  --wa-green: #25d366;
+
   /* The logo's stroke width in its own viewBox units, and the clear space the
      guide requires around it (p7) -- equal to the mark's own height. */
   --tt-logo-stroke: 43.7;

@@ -1,6 +1,12 @@
 import { Logo } from '@/components/Logo'
 import { TextOnPath } from '@/components/TextOnPath'
-import { CLINIC, MOCK_CONTACT } from '@/content/site'
+import {
+  CLINIC,
+  CLINIC_ADDRESS,
+  MAP_DIRECTIONS_HREF,
+  MAP_EMBED_SRC,
+  MOCK_CONTACT,
+} from '@/content/site'
 
 export function Footer() {
   const showDevelopmentMock = import.meta.env.DEV
@@ -53,21 +59,30 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Contact facts remain absent until the clinic verifies them. */}
+          {/* The address is client-verified and ships. Phone, email and hours
+              are still unconfirmed, so they stay behind the dev flag and its
+              label -- the label now covers only what is actually mock. */}
           <div className="flex flex-col gap-4">
             <h3 className="font-display text-xl font-semibold text-canary">
               Plan a visit
             </h3>
+            <address className="max-w-sm font-sans text-sm not-italic leading-relaxed text-white/90">
+              <p className="font-semibold text-white">{CLINIC_ADDRESS.society}</p>
+              <p>{CLINIC_ADDRESS.unit}</p>
+              <p>
+                {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
+              </p>
+              <p>
+                {CLINIC_ADDRESS.city}, {CLINIC_ADDRESS.region} {CLINIC_ADDRESS.postcode}
+              </p>
+              <p className="mt-2 text-white/70">{CLINIC_ADDRESS.landmark}</p>
+            </address>
             {showDevelopmentMock ? (
               <div className="font-sans text-sm leading-relaxed text-white/90">
                 <p className="mb-3 w-fit rounded-full border border-canary px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-canary">
-                  Development sample — not clinic information
+                  Development sample — phone, email and hours only
                 </p>
-                <p>{MOCK_CONTACT.address.street}</p>
-                <p>
-                  {MOCK_CONTACT.address.city}, {MOCK_CONTACT.address.postcode}
-                </p>
-                <p className="mt-2">{MOCK_CONTACT.phone}</p>
+                <p>{MOCK_CONTACT.phone}</p>
                 <p>{MOCK_CONTACT.email}</p>
                 <ul className="mt-4 space-y-1.5 border-t border-white/15 pt-4 text-xs">
                   {MOCK_CONTACT.hours.map((hours) => (
@@ -80,8 +95,8 @@ export function Footer() {
               </div>
             ) : (
               <p className="max-w-sm font-sans text-sm leading-relaxed text-white/90">
-                Official contact details and opening hours will appear here
-                once they have been confirmed by the clinic.
+                Phone, email and opening hours will appear here once they have
+                been confirmed by the clinic.
               </p>
             )}
             <a
@@ -92,46 +107,33 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Decorative placeholder retained without implying a real address. */}
+          {/* Real map now that the address is confirmed. Keyless Google embed:
+              no API key, no billing account, and no map dependency to carry. */}
           <div className="flex flex-col gap-4">
             <h3 className="font-display text-xl font-semibold text-canary">
               Finding Tiny Tusk
             </h3>
-            <div className="relative flex aspect-[4/3] flex-col justify-between overflow-hidden rounded-2xl border-2 border-powder/30 bg-powder/10 p-4">
-              <svg
-                viewBox="0 0 300 200"
-                className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
-                aria-hidden="true"
-              >
-                <path
-                  d="M 0 40 L 300 160 M 80 0 L 220 200 M 0 140 Q 150 100 300 150"
-                  fill="none"
-                  stroke="var(--tt-powder)"
-                  strokeWidth="6"
-                />
-                <path
-                  d="M 120 40 Q 180 120 240 180"
-                  fill="none"
-                  stroke="var(--tt-canary)"
-                  strokeWidth="4"
-                />
-                <circle cx="160" cy="110" r="14" fill="var(--tt-coral)" />
-                <circle cx="160" cy="110" r="6" fill="var(--tt-canary)" />
-              </svg>
-
-              <div className="relative z-10 self-end rounded-lg border border-canary/30 bg-cobalt/80 px-3 py-1.5 font-sans text-xs font-semibold text-canary backdrop-blur-sm">
-                {showDevelopmentMock
-                  ? 'Development map sample'
-                  : 'Location pending confirmation'}
-              </div>
-
-              <div className="relative z-10 self-start rounded-xl bg-white p-3 text-cobalt shadow-lg">
-                <p className="font-display text-sm font-bold">{CLINIC.name}</p>
-                <p className="font-sans text-[11px] text-cobalt/80">
-                  Pediatric Dental Clinic
-                </p>
-              </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-powder/30">
+              <iframe
+                src={MAP_EMBED_SRC}
+                title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 h-full w-full border-0"
+              />
             </div>
+            {/* The embed is not keyboard-friendly and can be blocked by
+                tracking protection, so the address is always reachable as a
+                plain link too. */}
+            <a
+              href={MAP_DIRECTIONS_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 w-fit items-center rounded-full border border-canary px-5 font-sans text-sm font-semibold text-canary"
+            >
+              Get directions
+              <span className="sr-only"> to {CLINIC.fullName} (opens Google Maps in a new tab)</span>
+            </a>
           </div>
         </div>
 
