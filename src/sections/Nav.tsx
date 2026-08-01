@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
 import { Doodle } from '@/components/Doodle'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { useIsMobile } from '@/lib/viewport'
 import { CLINIC } from '@/content/site'
@@ -137,7 +138,16 @@ export function Nav() {
           <span className="sr-only">{CLINIC.fullName}</span>
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
+        {/* `pr` pulls the whole cluster in off the right edge -- the bar read
+            as pinned to the window before, and the booking pill now has the
+            WhatsApp disc outboard of it. Scales with the bar's own condensing
+            so the inset does not jump when the header tightens. */}
+        <ul
+          className={[
+            'hidden items-center gap-8 md:flex',
+            condensed ? 'md:pr-2' : 'md:pr-8 lg:pr-12',
+          ].join(' ')}
+        >
           {LINKS.map((l) => {
             const active = isCurrent(l.href)
             return (
@@ -169,6 +179,13 @@ export function Nav() {
             >
               Book a visit
             </a>
+          </li>
+          {/* Outboard of the booking pill, and smaller than it: booking stays
+              the primary action, WhatsApp is the quicker informal route for a
+              parent who just wants to ask something. Renders nothing until a
+              real number exists. */}
+          <li className="flex items-center">
+            <WhatsAppButton />
           </li>
         </ul>
 
@@ -295,6 +312,11 @@ export function Nav() {
             >
               Book a visit
             </a>
+          </li>
+          {/* Labelled here, unlike the desktop disc: in a list of words an
+              unlabelled icon reads as decoration rather than an action. */}
+          <li data-nav-item className="mx-2 mt-2 flex">
+            <WhatsAppButton variant="row" onNavigate={() => setOpen(false)} />
           </li>
         </ul>
 
