@@ -61,19 +61,13 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
                 <ItemHeading className="font-display text-[clamp(1.05rem,1.5vw,1.3rem)] leading-snug text-cobalt">
                   {item.question}
                 </ItemHeading>
-                <svg
-                  data-chevron
+                <div
+                  data-faq-arrow
                   aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6 shrink-0 text-coral transition-transform duration-300 ease-transform"
+                  className="w-10 h-10 shrink-0 text-coral transition-transform duration-300 ease-transform rotate-90 flex items-center justify-center"
                 >
-                  <path d="M19 9l-7 7-7-7" />
-                </svg>
+                  <Doodle name="markArrow" tone="coral" className="w-8 h-8" />
+                </div>
               </summary>
               <p className="mt-3.5 max-w-measure font-sans text-body leading-relaxed text-cobalt">
                 {item.answer}

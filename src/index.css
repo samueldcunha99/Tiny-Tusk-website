@@ -283,7 +283,7 @@ then in :root below:
     display: none;
   }
 
-  details[open] [data-chevron] {
-    transform: rotate(180deg);
+  details[open] [data-faq-arrow] {
+    transform: rotate(-90deg);
   }
 }
