@@ -149,7 +149,7 @@ export function OpeningSoon() {
 
           {/* ---- the message, and where to find us ---- */}
           <div className="mt-5 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
-            <div className="tt-hop" style={{ animationDelay: '0.5s' }}>
+            <div className="tt-hop flex flex-col items-center text-center lg:items-start lg:text-left" style={{ animationDelay: '0.5s' }}>
               {/* Deliberately still. Splitting this into per-letter spans
                   collapsed the word spaces and pulled the lasso off "soon". */}
               <h1 className="font-display text-[clamp(3rem,5.6vw,5.25rem)] leading-[1.02] tracking-[-0.025em] text-cobalt [text-wrap:pretty]">
@@ -179,11 +179,11 @@ export function OpeningSoon() {
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4">
+              <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-4">
                 <StylisedCTA lead="Get" rest="directions" href={MAP_DIRECTIONS_HREF} fill="canary" />
               </div>
 
-              <p className="mt-5 flex items-center gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt/65">
+              <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt/65">
                 <Doodle name="markArrow" tone="coral" className="w-[34px] shrink-0 rotate-[-8deg]" />
                 Nudge the doodles — they wobble
               </p>
@@ -197,7 +197,7 @@ export function OpeningSoon() {
                 <Doodle name="doodleToothbrush" tone="cobalt" drawOnScroll className="w-full rotate-[18deg]" />
               </span>
               <div
-                className="tt-hop relative z-[2] rounded-[2rem] bg-cobalt p-6 shadow-[0_24px_48px_-24px_rgba(24,82,142,0.55)]"
+                className="tt-hop relative z-[2] rounded-[2rem] bg-cobalt p-6 shadow-[0_24px_48px_-24px_rgba(24,82,142,0.55)] text-center lg:text-left"
                 style={{ animationDelay: '0.8s' }}
               >
                 <h2 className="font-display text-h2 text-canary">Finding {CLINIC.name}</h2>
@@ -211,7 +211,7 @@ export function OpeningSoon() {
                   <p className="text-white/90">
                     {CLINIC_ADDRESS.city}, {CLINIC_ADDRESS.region} {CLINIC_ADDRESS.postcode}
                   </p>
-                  <p className="mt-3 flex gap-2 text-sm text-white/75">
+                  <p className="mt-3 flex gap-2 text-sm text-white/75 justify-center lg:justify-start">
                     <span aria-hidden="true" className="text-coral">
                       ✳
                     </span>
