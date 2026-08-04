@@ -126,7 +126,7 @@ export function OpeningSoon() {
         <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-5 pt-8 md:px-10 lg:px-12">
           {/* ---- the lockup, and the state of things ---- */}
           <div className="flex flex-wrap items-start justify-center md:justify-between gap-8">
-            <div className="flex w-full md:w-auto items-end justify-center md:justify-start gap-7">
+            <div className="relative flex w-full md:w-auto items-end justify-center md:justify-start gap-7">
               <span className="tt-bounce-in tt-springy inline-block cursor-pointer">
                 <Logo
                   variant="wordmark-mark-tag"
@@ -136,7 +136,7 @@ export function OpeningSoon() {
                   title={`${CLINIC.fullName} logo`}
                 />
               </span>
-              <span className="tt-floating-doodle mb-7 block w-[74px]" data-depth="26">
+              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+70px)] md:left-auto bottom-0 md:bottom-auto mb-7 block w-[74px]" data-depth="26">
                 <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-14deg]" />
               </span>
             </div>
@@ -163,7 +163,7 @@ export function OpeningSoon() {
 
               {/* Paper panel: lifts the copy clear of the loop strokes and
                   brings the palette's fourth colour onto the page. */}
-              <div className="mt-6 flex max-w-[60ch] gap-5 rounded-3xl bg-paper p-6 shadow-[0_14px_30px_-22px_rgba(24,82,142,0.45)]">
+              <div className="mt-6 flex max-w-[60ch] gap-5 rounded-3xl bg-paper p-6 shadow-[0_14px_30px_-22px_rgba(24,82,142,0.45)] text-left">
                 <span aria-hidden="true" className="block w-1 shrink-0 rounded-full bg-coral" />
                 <div className="flex flex-col gap-3.5">
                   <p className="font-sans text-[1.0625rem] leading-relaxed text-cobalt">
