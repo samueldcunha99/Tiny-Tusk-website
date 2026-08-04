@@ -44,7 +44,6 @@ import { gsap, usePrefersReducedMotion } from '@/lib/motion'
  */
 export function OpeningSoon() {
   const mainRef = useRef<HTMLElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
@@ -101,12 +100,6 @@ export function OpeningSoon() {
     return () => ctx.revert()
   }, [reduced])
 
-  // The address card rests tilted and straightens when a parent reaches for it.
-  const straighten = (on: boolean) => () => {
-    const card = cardRef.current
-    if (!card || reduced) return
-    card.style.transform = on ? 'rotate(0deg) translateY(-6px)' : 'rotate(-2.2deg)'
-  }
 
   return (
     <>
@@ -204,10 +197,7 @@ export function OpeningSoon() {
                 <Doodle name="doodleToothbrush" tone="cobalt" drawOnScroll className="w-full rotate-[18deg]" />
               </span>
               <div
-                ref={cardRef}
-                onPointerEnter={straighten(true)}
-                onPointerLeave={straighten(false)}
-                className="tt-hop relative z-[2] rounded-[2rem] bg-cobalt p-6 shadow-[0_24px_48px_-24px_rgba(24,82,142,0.55)] transition-transform duration-500 ease-entrance lg:rotate-[-2.2deg]"
+                className="tt-hop relative z-[2] rounded-[2rem] bg-cobalt p-6 shadow-[0_24px_48px_-24px_rgba(24,82,142,0.55)]"
                 style={{ animationDelay: '0.8s' }}
               >
                 <h2 className="font-display text-h2 text-canary">Finding {CLINIC.name}</h2>
