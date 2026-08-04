@@ -284,6 +284,6 @@ then in :root below:
   }
 
   details[open] [data-faq-arrow] {
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
   }
 }

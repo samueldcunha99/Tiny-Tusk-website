@@ -1,8 +1,6 @@
 import { Doodle } from '@/components/Doodle'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { SectionNumber } from '@/components/SectionNumber'
-import { TextOnPath } from '@/components/TextOnPath'
-import { CLINIC } from '@/content/site'
 import { FAQS } from '@/content/faq'
 import { useSectionMeta } from '@/content/sectionOrder'
 
@@ -43,11 +41,6 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
             If your question is not here, ring the clinic and ask. Nothing about a child's teeth is
             too small to check.
           </p>
-
-          <div className="mt-10 flex items-end gap-6">
-            <TextOnPath text={CLINIC.tagline} mode="arc" tone="coral" className="w-[min(17.5rem,60%)]" />
-            <Doodle name="markArrow" tone="cobalt" drawOnScroll className="w-20" />
-          </div>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -64,7 +57,7 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
                 <div
                   data-faq-arrow
                   aria-hidden="true"
-                  className="w-10 h-10 shrink-0 text-coral transition-transform duration-300 ease-transform rotate-90 flex items-center justify-center"
+                  className="w-10 h-10 shrink-0 text-coral transition-transform duration-300 ease-transform flex items-center justify-center"
                 >
                   <Doodle name="markArrow" tone="coral" className="w-8 h-8" />
                 </div>
