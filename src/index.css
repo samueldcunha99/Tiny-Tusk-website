@@ -283,7 +283,7 @@ then in :root below:
     display: none;
   }
 
-  details[open] [data-plus] {
-    transform: rotate(45deg);
+  details[open] [data-chevron] {
+    transform: rotate(180deg);
   }
 }

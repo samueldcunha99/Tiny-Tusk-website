@@ -40,17 +40,6 @@ export const SERVICES: readonly Service[] = [
     span: 'regular',
   },
   {
-    id: 'fluoride',
-    title: { lead: 'Fluoride', rest: '& sealants' },
-    body:
-      'A varnish on the biting surfaces where the grooves are deepest. It takes a minute, ' +
-      'tastes of not very much, and meaningfully cuts the odds of a filling later.',
-    glyph: 'doodleToothpaste',
-    surface: 'paper',
-    element: 'cobalt',
-    span: 'regular',
-  },
-  {
     id: 'cavity-care',
     title: { lead: 'Cavity', rest: 'care' },
     body:
@@ -60,6 +49,17 @@ export const SERVICES: readonly Service[] = [
     surface: 'coral',
     element: 'canary',
     span: 'tall',
+  },
+  {
+    id: 'fluoride',
+    title: { lead: 'Fluoride', rest: '& sealants' },
+    body:
+      'A varnish on the biting surfaces where the grooves are deepest. It takes a minute, ' +
+      'tastes of not very much, and meaningfully cuts the odds of a filling later.',
+    glyph: 'doodleToothpaste',
+    surface: 'paper',
+    element: 'cobalt',
+    span: 'regular',
   },
   {
     id: 'alignment',
