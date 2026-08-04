@@ -197,7 +197,7 @@ function CurrentRoute() {
 export default function App() {
   // Pre-opening gate: every URL renders the holding screen and nothing else
   // mounts. One constant in `content/site.ts` turns the whole site back on.
-  if (OPENING_SOON && !import.meta.env.DEV) return <OpeningSoon />
+  if (OPENING_SOON) return <OpeningSoon />
 
   return (
     <>
