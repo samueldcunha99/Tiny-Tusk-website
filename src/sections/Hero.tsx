@@ -1,7 +1,7 @@
 import { useIsMobile } from '@/lib/viewport'
 // Imported under an alias so `Hero.desktop.tsx` keeps its original export name
 // and stays byte-for-byte the file that shipped. Mobile work never edits it.
-import { Hero as HeroDesktop } from './Hero.desktop'
+import { HeroDesktop } from './Hero.desktop'
 import { HeroMobile } from './Hero.mobile'
 
 /**

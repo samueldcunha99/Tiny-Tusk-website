@@ -1,28 +1,43 @@
-﻿import { useEffect, useRef } from 'react'
-import { Doodle } from '@/components/Doodle'
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { BrandImage } from '@/components/BrandImage'
+import { Doodle } from '@/components/Doodle'
 import { LoopField } from '@/components/LoopField'
-import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { StylisedCTA } from '@/components/StylisedCTA'
-import { TextPanel } from '@/components/TextPanel'
 import { RIA_JOURNEY } from '@/content/ria'
 import { useSectionMeta } from '@/content/sectionOrder'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 
+/**
+ * 05 Ria's Journey -- canary.
+ *
+ * Two changes, both about reading the story rather than operating it:
+ *  - The three moments were behind a tab strip with Previous/Next and a
+ *    progress bar. It is a three-beat narrative; it should just be readable top
+ *    to bottom. All three are now white cards in order, and the controls,
+ *    `activeIndex` state and progressbar are gone.
+ *  - Surface moves coral -> canary. Coral could not carry any of this copy, so
+ *    the whole section lived inside cobalt `TextPanel`s -- a panel-in-panel
+ *    stack. Canary carries cobalt text at 6.37:1, so the panels are unnecessary
+ *    and coral stays what the guide uses it as: an accent.
+ */
 export function RiaJourney() {
-  const [activeIndex, setActiveIndex] = useState(0)
   const rootRef = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
   const meta = useSectionMeta('ria')
-  const activeMoment = RIA_JOURNEY[activeIndex] ?? RIA_JOURNEY[0]!
 
   useEffect(() => {
     const root = rootRef.current
     if (!root || reduced) return
     const ctx = gsap.context(() => {
-      gsap.from('[data-ria-moment]', { y: 34, opacity: 0, duration: 0.72, ease: EASE.entrance, stagger: STAGGER, scrollTrigger: { trigger: root, start: 'top 70%', once: true } })
+      gsap.from('[data-ria-moment]', {
+        y: 34,
+        opacity: 0,
+        duration: 0.72,
+        ease: EASE.entrance,
+        stagger: STAGGER,
+        scrollTrigger: { trigger: root, start: 'top 70%', once: true },
+      })
     }, root)
     return () => ctx.revert()
   }, [reduced])
@@ -31,152 +46,70 @@ export function RiaJourney() {
     <section
       id="ria"
       ref={rootRef}
-      className="tt-section relative min-h-screen overflow-hidden bg-coral px-6 py-20 md:px-10 md:py-24"
-      data-surface="coral"
+      className="tt-section relative overflow-hidden bg-canary px-6 py-20 md:px-10 md:py-24"
+      data-surface="canary"
       aria-labelledby="ria-heading"
     >
-      <LoopField
-        surface="coral"
-        contrast="low"
-        depth={0.2}
-        count={1}
-        className="opacity-[0.33]"
-      />
-      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <TextPanel
-            surface="coral"
-            className="shadow-[0_16px_45px_rgba(24,82,142,0.18)]"
-          >
-            <SectionNumber number={meta.number} label={meta.label} tone="canary" />
-            <h2 id="ria-heading" className="mt-4 font-display text-h1 text-canary">
-              <MixedWeightLabel lead="Ria's" rest="Journey" display />
+      <LoopField surface="canary" contrast="low" depth={0.2} count={2} className="opacity-50" />
+
+      <div className="relative z-10 mx-auto max-w-[1400px]">
+        <SectionNumber number={meta.number} label={meta.label} tone="coral" />
+
+        <div className="mt-4 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+          <div>
+            <h2 id="ria-heading" className="max-w-[20ch] font-display text-h1 text-cobalt">
+              One child, one visit, start to finish
             </h2>
-            <p className="mt-5 max-w-measure font-sans text-body text-white">
-              For a child who feels unsure, the first visit can be about getting
-              comfortable — and nothing more.
+            <p className="mt-5 max-w-measure font-sans text-body text-cobalt">
+              For a child who feels unsure, the first visit can be about getting comfortable — and
+              nothing more.
             </p>
-          </TextPanel>
-          <BrandImage
-            webp="/images/rias-journey-hero.webp"
-            png="/images/rias-journey-hero.png"
-            alt="Ria laughing in the dental chair with the team nearby."
-            width={1600}
-            height={1050}
-            title={{ lead: "Ria's", rest: 'first visit', fill: 'coral', href: '/book' }}
-            logoTone="cobalt"
-            doodle="doodleFace"
-            doodleTone="canary"
-            eager
-            className="mt-8 aspect-[16/10]"
-          />
-          <div className="mt-8">
-            <StylisedCTA
-              lead="Book"
-              rest="a gentle first visit"
-              href="/book"
-              fill="canary"
+            <BrandImage
+              webp="/images/rias-journey-hero.webp"
+              png="/images/rias-journey-hero.png"
+              alt="Ria laughing in the dental chair with the team nearby."
+              width={1600}
+              height={1050}
+              title={{ lead: "Ria's", rest: 'first visit', fill: 'powder', href: '/book' }}
+              logoTone="cobalt"
+              doodle="doodleFace"
+              doodleTone="coral"
+              eager
+              className="mt-8 aspect-[4/3]"
             />
+            <div className="mt-8">
+              <StylisedCTA lead="Book" rest="a gentle first visit" href="/book" fill="powder" />
+            </div>
           </div>
-          <div
-            className="mt-12 hidden h-3 overflow-hidden rounded-full bg-white lg:block"
-            role="progressbar"
-            aria-label="Ria's visit story progress"
-            aria-valuemin={1}
-            aria-valuemax={RIA_JOURNEY.length}
-            aria-valuenow={activeIndex + 1}
-          >
-            <div
-              className="h-full w-full origin-left bg-canary transition-transform duration-500 ease-transform"
-              style={{
-                transform: `scaleX(${(activeIndex + 1) / RIA_JOURNEY.length})`,
-              }}
-            />
-          </div>
-        </div>
-        <div>
-          <div
-            className="grid gap-3 sm:grid-cols-3"
-            aria-label="Choose a moment from Ria's visit"
-          >
-            {RIA_JOURNEY.map((moment, index) => {
-              const active = activeIndex === index
-              return (
-                <button
-                  key={moment.id}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setActiveIndex(index)}
-                  data-surface={active ? 'cobalt' : 'paper'}
-                  className={[
-                    'min-h-20 rounded-2xl border-2 p-4 text-left',
-                    active
-                      ? 'border-cobalt bg-cobalt text-canary'
-                      : 'border-white bg-paper text-cobalt',
-                  ].join(' ')}
-                >
-                  <span className="block font-sans text-xs font-semibold uppercase tracking-[0.14em]">
-                    0{index + 1}
-                  </span>
-                  <span className="mt-2 block font-display text-lg">
+
+          <ol className="flex list-none flex-col gap-5">
+            {RIA_JOURNEY.map((moment, index) => (
+              <li
+                key={moment.id}
+                data-ria-moment
+                data-surface="white"
+                className="flex items-start gap-5 rounded-[2rem] bg-white p-7 md:p-8"
+              >
+                <Doodle
+                  name={moment.glyph}
+                  tone={index === 2 ? 'cobalt' : 'coral'}
+                  drawOnScroll
+                  className="w-14 shrink-0"
+                />
+                <div>
+                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-cobalt-80">
                     {moment.eyebrow}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-
-          <article
-            key={activeMoment.id}
-            data-ria-moment
-            data-surface="paper"
-            data-animate
-            aria-live="polite"
-            className="mt-4 flex min-h-[470px] flex-col justify-between rounded-[2.5rem] bg-paper p-7 shadow-[0_12px_35px_rgba(24,82,142,0.10)] md:p-10"
-          >
-            <div>
-              <Doodle
-                name={activeMoment.glyph}
-                tone="cobalt"
-                drawOnScroll
-                className="w-24 md:w-32"
-              />
-              <p className="mt-8 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-cobalt">
-                0{activeIndex + 1} · {activeMoment.eyebrow}
-              </p>
-              <h3 className="mt-3 font-display text-h1 text-cobalt">
-                {activeMoment.title}
-              </h3>
-              <p className="mt-4 max-w-measure font-sans text-body text-cobalt">
-                {activeMoment.body}
-              </p>
-            </div>
-
-            <div className="mt-8 flex items-center justify-between gap-4 border-t-2 border-powder pt-6">
-              <button
-                type="button"
-                disabled={activeIndex === 0}
-                onClick={() =>
-                  setActiveIndex((current) => Math.max(0, current - 1))
-                }
-                className="min-h-11 rounded-full px-4 font-sans font-semibold text-cobalt underline disabled:opacity-30"
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                disabled={activeIndex === RIA_JOURNEY.length - 1}
-                onClick={() =>
-                  setActiveIndex((current) =>
-                    Math.min(RIA_JOURNEY.length - 1, current + 1),
-                  )
-                }
-                className="min-h-11 rounded-full bg-cobalt px-5 font-sans font-semibold text-white disabled:opacity-30"
-              >
-                Next moment
-              </button>
-            </div>
-          </article>
+                  </p>
+                  <h3 className="mt-2 font-display text-[clamp(1.3rem,2vw,1.7rem)] leading-snug text-cobalt">
+                    {moment.title}
+                  </h3>
+                  <p className="mt-2.5 max-w-measure font-sans text-base leading-relaxed text-cobalt">
+                    {moment.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
