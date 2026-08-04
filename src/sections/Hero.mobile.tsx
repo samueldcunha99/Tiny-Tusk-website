@@ -127,7 +127,7 @@ export function HeroMobile() {
           data-hero-fade
           data-animate
         >
-          {HERO.bodyLede}
+          {HERO.body}
         </p>
 
         <div className="mt-6 flex flex-col items-start gap-3" data-hero-fade data-animate>

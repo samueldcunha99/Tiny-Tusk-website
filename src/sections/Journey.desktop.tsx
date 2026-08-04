@@ -19,7 +19,7 @@ import { useSectionMeta } from '@/content/sectionOrder'
  * Under reduced motion the pin and the horizontal scrub are never created, and
  * the panels lay out as an ordinary vertical stack with the connector drawn.
  */
-export function Journey() {
+export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
   const rootRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const connectorRef = useRef<SVGPathElement>(null)
@@ -89,6 +89,8 @@ export function Journey() {
     return () => ctx.revert()
   }, [reduced])
 
+  const Heading = asPage ? 'h1' : 'h2'
+
   return (
     <section
       id="journey"
@@ -100,9 +102,9 @@ export function Journey() {
           so a panel can never ride up over the heading. */}
       <div className="relative z-20 shrink-0 px-6 pb-2 pt-20 md:px-10 md:pt-24">
         <SectionNumber number={meta.number} label={meta.label} tone="cobalt" />
-        <h2 id="journey-heading" className="mt-3 max-w-measure font-display text-h1 text-cobalt">
+        <Heading id="journey-heading" className="mt-3 max-w-measure font-display text-h1 text-cobalt">
           How a visit actually goes
-        </h2>
+        </Heading>
       </div>
 
       <div

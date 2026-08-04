@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
-import { Doodle } from '@/components/Doodle'
+import { Circled } from '@/components/Circled'
+import { Doodle, type DoodleName } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
 import { SectionNumber } from '@/components/SectionNumber'
 import { Turnstile } from '@/components/Turnstile'
@@ -27,6 +28,78 @@ const STEP_FIELDS: readonly (readonly (keyof BookingValues)[])[] = [
   ['parentName', 'phone', 'email'],
 ]
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim() ?? ''
+
+/**
+ * Per-step dressing: a doodle, and the legend split so exactly ONE word takes
+ * the guide's lasso (p32). Never lasso the whole legend -- `Circled` sets
+ * `nowrap`, and a wrapped multi-word title clips (audit #8).
+ */
+const STEP_ART: readonly { glyph: DoodleName; lead: string; circled: string; rest: string }[] = [
+  { glyph: 'doodleFace', lead: 'Tell us about your', circled: 'child', rest: '' },
+  { glyph: 'journeyCare', lead: 'What can we', circled: 'help', rest: 'with?' },
+  { glyph: 'journeySmile', lead: 'A', circled: 'time', rest: 'that might suit' },
+  { glyph: 'doodleHeart', lead: 'How should we', circled: 'reach', rest: 'you?' },
+]
+
+/** One field treatment, five fields. Canary focus ring, powder at rest. */
+const FIELD =
+  'mt-2 min-h-14 w-full rounded-2xl border-2 border-powder bg-paper px-5 font-sans text-cobalt ' +
+  'placeholder:text-cobalt/40 transition-colors focus:border-cobalt focus:outline-none ' +
+  'focus:ring-4 focus:ring-canary'
+
+/** The label above a field: small, uppercase, the guide's eyebrow treatment. */
+const FIELD_LABEL = 'mt-6 block font-sans text-[0.8rem] font-semibold uppercase tracking-[0.12em] text-cobalt/70'
+
+/**
+ * A choice row (steps 2 and 3).
+ *
+ * The native radio is `sr-only` rather than removed -- it keeps the arrow-key
+ * behaviour, the label association and the focus stop, and `peer-*` drives the
+ * visible card off its real checked state. Nothing here is styling-only state.
+ */
+/**
+ * A choice row (steps 2 and 3).
+ *
+ * Selection is drawn from React's own value, not from `peer-checked:`. The
+ * component already holds the answer, and a CSS rule keyed on `:checked` is a
+ * second source of truth for the same state -- one that also has to survive
+ * however the radio got checked.
+ */
+const choiceClass = (selected: boolean) =>
+  [
+    'flex min-h-14 items-center gap-3 rounded-2xl border-2 px-5 font-sans text-cobalt',
+    'transition-colors peer-focus-visible:ring-4 peer-focus-visible:ring-canary',
+    selected ? 'border-cobalt bg-canary' : 'border-powder bg-paper hover:border-cobalt-40',
+  ].join(' ')
+
+/** Empty circle at rest, cobalt disc with a canary tick when chosen. Selection
+ *  must carry a shape cue, not colour alone. */
+function Tick({ selected }: { selected: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={[
+        'grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 text-[0.75rem]',
+        'leading-none transition-colors',
+        selected ? 'border-cobalt bg-cobalt text-canary' : 'border-powder bg-white text-transparent',
+      ].join(' ')}
+    >
+      ✓
+    </span>
+  )
+}
+
+/** The step's question, with the guide's lasso around its one key word. */
+function StepLegend({ step }: { step: number }) {
+  const art = STEP_ART[step]
+  if (!art) return null
+  return (
+    <legend className="max-w-[20ch] font-display text-h2 leading-[1.25] text-cobalt">
+      {art.lead} <Circled>{art.circled}</Circled>
+      {art.rest ? ` ${art.rest}` : null}
+    </legend>
+  )
+}
 
 function validate(values: BookingValues, step: number): Errors {
   const errors: Errors = {}
@@ -308,17 +381,35 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                 data-draw
               />
             </svg>
-            <p className="mt-3 font-sans text-sm font-semibold text-cobalt">
-              Step {step + 1} of 4 · {BOOKING_STEPS[step]}
+            <p className="mt-3 flex flex-wrap items-center gap-3 font-sans text-sm font-semibold text-cobalt">
+              <span className="rounded-full bg-canary px-3 py-1 text-cobalt">
+                Step {step + 1} of 4
+              </span>
+              {BOOKING_STEPS[step]}
             </p>
           </div>
 
           <form
             ref={formRef}
-            className="mt-6 rounded-[2rem] border-2 border-powder bg-white p-6 shadow-[0_18px_50px_rgba(24,82,142,0.08)] md:p-10"
+            className={[
+              'relative mt-6 overflow-hidden rounded-[2.5rem] border-2 border-powder bg-white',
+              'p-6 shadow-[0_18px_50px_rgba(24,82,142,0.08)] md:p-10',
+            ].join(' ')}
             onSubmit={onSubmit}
             noValidate
           >
+          {/* The step's own doodle, sat in the card's corner. Rests complete --
+              the card carries no second animation system, and the coral dashes
+              are graphic only: nothing is ever set on coral (CLAUDE.md §6.1). */}
+          <div className="pointer-events-none absolute right-6 top-6 flex items-start gap-3" aria-hidden="true">
+            <span className="w-10">
+              <Doodle name="markDashes" tone="coral" />
+            </span>
+            <span className="w-16">
+              <Doodle name={STEP_ART[step]?.glyph ?? 'doodleFace'} tone="powder" />
+            </span>
+          </div>
+
           <div aria-live="assertive" className="sr-only">
             {[
               ...Object.values(errors).filter(Boolean),
@@ -331,8 +422,8 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
 
           {step === 0 && (
             <fieldset>
-              <legend className="font-display text-h2 text-cobalt">Tell us about your child</legend>
-              <label className="mt-6 block font-sans font-semibold text-cobalt">
+              <StepLegend step={0} />
+              <label className={FIELD_LABEL}>
                 Child's name
                 <input
                   name="childName"
@@ -340,12 +431,13 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   onChange={(e) => update('childName', e.target.value)}
                   aria-invalid={Boolean(errors.childName)}
                   aria-describedby={errors.childName ? 'childName-error' : undefined}
-                  className="mt-2 min-h-12 w-full rounded-xl border-2 border-powder px-4 font-sans text-cobalt"
+                  className={FIELD}
+                  placeholder="The name they answer to"
                   autoComplete="off"
                 />
               </label>
               {errorFor('childName')}
-              <label className="mt-5 block font-sans font-semibold text-cobalt">
+              <label className={FIELD_LABEL}>
                 Age
                 <input
                   name="childAge"
@@ -354,7 +446,8 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   onChange={(e) => update('childAge', e.target.value)}
                   aria-invalid={Boolean(errors.childAge)}
                   aria-describedby={errors.childAge ? 'childAge-error' : undefined}
-                  className="mt-2 min-h-12 w-full rounded-xl border-2 border-powder px-4 font-sans text-cobalt"
+                  className={FIELD}
+                  placeholder="In years — 0 to 18"
                 />
               </label>
               {errorFor('childAge')}
@@ -363,21 +456,28 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
 
           {step === 1 && (
             <fieldset>
-              <legend className="font-display text-h2 text-cobalt">What can we help with?</legend>
+              <StepLegend step={1} />
               <div className="mt-6 grid gap-3">
-                {CONCERNS.map((concern) => (
-                  <label key={concern} className="flex min-h-12 items-center gap-3 rounded-xl border-2 border-powder px-4 font-sans text-cobalt cursor-pointer hover:bg-powder/20">
-                    <input
-                      type="radio"
-                      name="concern"
-                      checked={values.concern === concern}
-                      onChange={() => update('concern', concern)}
-                      aria-invalid={Boolean(errors.concern)}
-                      aria-describedby={errors.concern ? 'concern-error' : undefined}
-                    />
-                    {concern}
-                  </label>
-                ))}
+                {CONCERNS.map((concern) => {
+                  const selected = values.concern === concern
+                  return (
+                    <label key={concern} className="block cursor-pointer">
+                      <input
+                        type="radio"
+                        name="concern"
+                        className="peer sr-only"
+                        checked={selected}
+                        onChange={() => update('concern', concern)}
+                        aria-invalid={Boolean(errors.concern)}
+                        aria-describedby={errors.concern ? 'concern-error' : undefined}
+                      />
+                      <span className={choiceClass(selected)}>
+                        <Tick selected={selected} />
+                        {concern}
+                      </span>
+                    </label>
+                  )
+                })}
               </div>
               {errorFor('concern')}
             </fieldset>
@@ -385,23 +485,30 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
 
           {step === 2 && (
             <fieldset>
-              <legend className="font-display text-h2 text-cobalt">A time that might suit</legend>
+              <StepLegend step={2} />
               <div className="mt-6 grid gap-3">
-                {TIMES.map((time) => (
-                  <label key={time} className="flex min-h-12 items-center gap-3 rounded-xl border-2 border-powder px-4 font-sans text-cobalt cursor-pointer hover:bg-powder/20">
-                    <input
-                      type="radio"
-                      name="time"
-                      checked={values.preferredTime === time}
-                      onChange={() => update('preferredTime', time)}
-                      aria-invalid={Boolean(errors.preferredTime)}
-                      aria-describedby={
-                        errors.preferredTime ? 'preferredTime-error' : undefined
-                      }
-                    />
-                    {time}
-                  </label>
-                ))}
+                {TIMES.map((time) => {
+                  const selected = values.preferredTime === time
+                  return (
+                    <label key={time} className="block cursor-pointer">
+                      <input
+                        type="radio"
+                        name="time"
+                        className="peer sr-only"
+                        checked={selected}
+                        onChange={() => update('preferredTime', time)}
+                        aria-invalid={Boolean(errors.preferredTime)}
+                        aria-describedby={
+                          errors.preferredTime ? 'preferredTime-error' : undefined
+                        }
+                      />
+                      <span className={choiceClass(selected)}>
+                        <Tick selected={selected} />
+                        {time}
+                      </span>
+                    </label>
+                  )
+                })}
               </div>
               {errorFor('preferredTime')}
             </fieldset>
@@ -409,8 +516,8 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
 
           {step === 3 && (
             <fieldset>
-              <legend className="font-display text-h2 text-cobalt">How should we reach you?</legend>
-              <label className="mt-6 block font-sans font-semibold text-cobalt">
+              <StepLegend step={3} />
+              <label className={FIELD_LABEL}>
                 Your name
                 <input
                   name="parentName"
@@ -418,12 +525,12 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   onChange={(e) => update('parentName', e.target.value)}
                   aria-invalid={Boolean(errors.parentName)}
                   aria-describedby={errors.parentName ? 'parentName-error' : undefined}
-                  className="mt-2 min-h-12 w-full rounded-xl border-2 border-powder px-4 font-sans text-cobalt"
+                  className={FIELD}
                   autoComplete="name"
                 />
               </label>
               {errorFor('parentName')}
-              <label className="mt-5 block font-sans font-semibold text-cobalt">
+              <label className={FIELD_LABEL}>
                 Phone
                 <input
                   name="phone"
@@ -432,12 +539,12 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   onChange={(e) => update('phone', e.target.value)}
                   aria-invalid={Boolean(errors.phone)}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
-                  className="mt-2 min-h-12 w-full rounded-xl border-2 border-powder px-4 font-sans text-cobalt"
+                  className={FIELD}
                   autoComplete="tel"
                 />
               </label>
               {errorFor('phone')}
-              <label className="mt-5 block font-sans font-semibold text-cobalt">
+              <label className={FIELD_LABEL}>
                 Email
                 <input
                   name="email"
@@ -446,7 +553,7 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   onChange={(e) => update('email', e.target.value)}
                   aria-invalid={Boolean(errors.email)}
                   aria-describedby={errors.email ? 'email-error' : undefined}
-                  className="mt-2 min-h-12 w-full rounded-xl border-2 border-powder px-4 font-sans text-cobalt"
+                  className={FIELD}
                   autoComplete="email"
                 />
               </label>
@@ -531,28 +638,38 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
             </p>
           ) : null}
 
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-9 flex items-center justify-between gap-4">
             {step > 0 ? (
               <button
                 type="button"
                 onClick={() => setStep((current) => current - 1)}
-                className="min-h-11 rounded-full px-5 font-sans font-semibold text-cobalt underline"
+                className="min-h-12 rounded-full bg-powder px-6 font-sans font-semibold text-cobalt transition-colors hover:bg-canary"
               >
                 Back
               </button>
             ) : (
               <span />
             )}
+            {/* Not `<StylisedCTA>`: that renders `type="button"` and has no
+                disabled state, so the signature ellipse here would submit twice
+                on a slow network. A real submit button keeps the guard. */}
             <button
               type="submit"
               disabled={submitState === 'submitting'}
-              className="min-h-12 rounded-full bg-cobalt px-6 font-sans font-semibold text-white transition-colors hover:bg-cobalt/90 disabled:cursor-wait disabled:opacity-60"
+              className={[
+                'group inline-flex min-h-14 items-center gap-3 rounded-full bg-cobalt px-7',
+                'font-sans font-semibold text-white transition-colors hover:bg-cobalt-80',
+                'disabled:cursor-wait disabled:opacity-60',
+              ].join(' ')}
             >
               {submitState === 'submitting'
                 ? 'Sending securely…'
                 : step === 3
                   ? 'Send my request'
                   : 'Continue'}
+              <span className="w-5 -rotate-90 transition-transform group-hover:translate-x-1" aria-hidden="true">
+                <Doodle name="markArrow" tone="canary" />
+              </span>
             </button>
           </div>
           </form>

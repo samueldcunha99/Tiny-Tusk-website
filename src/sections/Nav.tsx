@@ -3,7 +3,7 @@ import { Logo } from '@/components/Logo'
 import { Doodle } from '@/components/Doodle'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { useIsMobile } from '@/lib/viewport'
+import { useMediaQuery } from '@/lib/viewport'
 import { CLINIC } from '@/content/site'
 
 /**
@@ -11,6 +11,7 @@ import { CLINIC } from '@/content/site'
  * list small makes the navigation useful rather than a contents page.
  */
 const LINKS = [
+  { href: '/journey', label: 'How a visit goes' },
   { href: '/services', label: 'Services' },
   { href: '/inside-clinic', label: 'Inside clinic' },
   { href: '/dr-nupur', label: 'Meet Dr. Nupur' },
@@ -27,7 +28,9 @@ export function Nav() {
   const panelRef = useRef<HTMLDivElement>(null)
   const lastScrollRef = useRef(0)
   const reduced = usePrefersReducedMotion()
-  const isMobile = useIsMobile()
+  // Not the site-wide mobile split: the bar takes a surface only once the link
+  // row is on screen, which is `xl`. Below that it is a mark and a menu button.
+  const isCompact = useMediaQuery('(max-width: 1279px)')
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
   const needsTopNavSurface =
     currentPath === '/games' || currentPath === '/brush-timer'
@@ -117,14 +120,14 @@ export function Nav() {
         aria-label="Primary"
         className={[
           'mx-auto flex items-center justify-between transition-all duration-300',
-          // On a phone the bar never takes a surface -- the mark and the menu
-          // button float directly on the page. Branching in JS rather than with
-          // a `max-md:` override so the desktop string stays byte-identical
-          // and cannot depend on Tailwind's class-ordering.
-          isMobile
+          // While the menu is a button the bar never takes a surface -- the mark
+          // and the button float directly on the page. Branching in JS rather
+          // than with a `max-xl:` override so the desktop string stays
+          // byte-identical and cannot depend on Tailwind's class-ordering.
+          isCompact
             ? 'max-w-[1600px] bg-transparent'
             : condensed
-            ? 'max-w-5xl rounded-full bg-white/85 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] backdrop-blur-md md:px-6'
+            ? 'max-w-7xl rounded-full bg-white/85 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] backdrop-blur-md md:px-6'
             : needsTopNavSurface
               ? 'max-w-[1600px] rounded-full bg-paper/95 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.12)] backdrop-blur-md md:px-6'
             : 'max-w-[1600px] bg-transparent',
@@ -141,11 +144,17 @@ export function Nav() {
         {/* `pr` pulls the whole cluster in off the right edge -- the bar read
             as pinned to the window before, and the booking pill now has the
             WhatsApp disc outboard of it. Scales with the bar's own condensing
-            so the inset does not jump when the header tightens. */}
+            so the inset does not jump when the header tightens.
+
+            The list appears at `xl`, not `md`: seven labels plus the booking
+            pill and the WhatsApp disc measure ~1030px at `gap-6`, so below
+            1280 there is no honest way to fit them and the menu button stays.
+            Widths were measured in a browser -- do not lower this breakpoint
+            without re-measuring, and note that a longer label eats the slack. */}
         <ul
           className={[
-            'hidden items-center gap-8 md:flex',
-            condensed ? 'md:pr-2' : 'md:pr-8 lg:pr-12',
+            'hidden items-center gap-6 xl:flex 2xl:gap-8',
+            condensed ? 'xl:pr-2' : 'xl:pr-8 2xl:pr-12',
           ].join(' ')}
         >
           {LINKS.map((l) => {
@@ -155,7 +164,7 @@ export function Nav() {
                 <a
                   href={l.href}
                   aria-current={active ? 'page' : undefined}
-                  className="relative pb-1 font-sans text-[0.95rem] text-cobalt transition-opacity hover:opacity-70"
+                  className="relative whitespace-nowrap pb-1 font-sans text-[0.95rem] text-cobalt transition-opacity hover:opacity-70"
                 >
                   {l.label}
                   {active ? (
@@ -173,7 +182,7 @@ export function Nav() {
               href="/book"
               aria-current={currentPath === '/book' ? 'page' : undefined}
               className={[
-                'rounded-full bg-cobalt px-5 py-2.5 font-sans text-[0.95rem] text-white transition-opacity hover:opacity-90',
+                'whitespace-nowrap rounded-full bg-cobalt px-5 py-2.5 font-sans text-[0.95rem] text-white transition-opacity hover:opacity-90',
                 currentPath === '/book' ? 'ring-2 ring-coral ring-offset-2 ring-offset-paper' : '',
               ].join(' ')}
             >
@@ -191,7 +200,7 @@ export function Nav() {
 
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => {
@@ -223,7 +232,7 @@ export function Nav() {
           tabIndex={-1}
           aria-hidden="true"
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-30 cursor-default md:hidden"
+          className="fixed inset-0 z-30 cursor-default xl:hidden"
         >
           <span className="sr-only">Close menu</span>
         </button>
@@ -263,7 +272,7 @@ export function Nav() {
           // separates it on any surface -- the same white-on-powder rule the
           // divider below the links already uses.
           'ring-1 ring-white/70',
-          'shadow-[0_18px_50px_rgba(24,82,142,0.22)] md:hidden',
+          'shadow-[0_18px_50px_rgba(24,82,142,0.22)] xl:hidden',
           open ? 'flex' : 'hidden',
         ].join(' ')}
       >

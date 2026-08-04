@@ -20,7 +20,7 @@ import { useSectionMeta } from '@/content/sectionOrder'
  * Nothing is pinned here. The stroke scrubs against ordinary page scroll, and
  * the panels rise as they arrive. Two systems, as always.
  */
-export function JourneyMobile() {
+export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined }) {
   const rootRef = useRef<HTMLElement>(null)
   const spineRef = useRef<SVGPathElement>(null)
   const reduced = usePrefersReducedMotion()
@@ -69,6 +69,8 @@ export function JourneyMobile() {
     return () => ctx.revert()
   }, [reduced])
 
+  const Heading = asPage ? 'h1' : 'h2'
+
   return (
     <section
       id="journey"
@@ -78,13 +80,13 @@ export function JourneyMobile() {
     >
       <div className="relative z-10">
         <SectionNumber number={meta.number} label={meta.label} tone="cobalt" />
-        <h2
+        <Heading
           id="journey-heading"
           className="mt-3 font-display text-[clamp(2.25rem,10vw,3.25rem)] leading-[1.05] tracking-[-0.02em] text-cobalt"
           data-animate
         >
           How a visit actually goes
-        </h2>
+        </Heading>
 
         {/* The spine is scoped to the panel stack rather than to the section.
             Spanning the whole section, a 64-unit stroke stretched to the full

@@ -12,6 +12,21 @@ export const CLINIC = {
 } as const
 
 /**
+ * Pre-opening gate. While true, EVERY route renders `<OpeningSoon />` and the
+ * rest of the site -- nav, footer, preloader, all twelve sections -- does not
+ * mount at all. Set to false on launch day and the full site returns exactly
+ * as it was; nothing else needs editing.
+ */
+export const OPENING_SOON = true
+
+/**
+ * TODO: set to the clinic's confirmed opening date or month once it exists,
+ * e.g. 'March 2026'. While null the screen says "opening soon" and no date is
+ * shown. Never guess this -- a wrong date is a promise the clinic has to keep.
+ */
+export const OPENING_DATE: string | null = null
+
+/**
  * The clinic's real address. CLIENT-VERIFIED — supplied by the client on
  * 2026-08-01, so unlike `MOCK_CONTACT` below this renders in production and
  * goes into structured data. Do not strip it during a sweep for unverified
@@ -123,9 +138,10 @@ export const HERO = {
     'We believe every child deserves a dental experience that feels safe, gentle, and even ' +
     "a little magical. From a baby's very first tooth to growing confident smiles, we are " +
     'here to walk beside your child through every tiny milestone.',
-  // The opening sentence of `body`, verbatim. The mobile hero is a lede into a
-  // hub rather than the whole welcome, so it carries this alone -- not a
-  // reworded summary, so the guide's p34 copy is never paraphrased.
+  // The opening sentence of `body`, verbatim -- never a reworded summary, so
+  // the guide's p34 copy is never paraphrased. The mobile hero carried this
+  // alone until the phone page read as too thin; it now carries `body` like
+  // the desktop one. Kept for any surface that needs a single-line welcome.
   bodyLede:
     'Where little smiles are cared for with kindness, patience, and a whole lot of heart.',
   cta: { lead: 'Schedule', rest: 'Appointment', href: '#book' },

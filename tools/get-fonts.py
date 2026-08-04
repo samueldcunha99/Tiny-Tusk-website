@@ -8,8 +8,8 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 SPECS = {
     # variable weight axis, latin subset
-    "hanken-grotesk": "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&display=swap",
-    "barlow": "https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600&display=swap",
+    "montserrat": "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap",
+    "encode-sans-condensed": "https://fonts.googleapis.com/css2?family=Encode+Sans+Condensed:wght@400;600&display=swap",
 }
 
 def fetch(url):

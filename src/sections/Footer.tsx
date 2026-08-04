@@ -11,6 +11,7 @@ import {
 export function Footer() {
   const showDevelopmentMock = import.meta.env.DEV
   const quickLinks = [
+    { label: 'How a visit goes', href: '/journey' },
     { label: 'Services', href: '/services' },
     { label: 'Inside clinic', href: '/inside-clinic' },
     { label: 'Games for Kids', href: '/games' },
@@ -35,10 +36,13 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-6 py-14 md:px-10 md:py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr_1fr] lg:gap-12">
+      {/* Mobile carries a tighter version of the same footer: the phone home
+          page is ~3 screens now, and an 0.85-screen footer under it undoes a
+          chunk of that. Desktop values are unchanged behind `md:`. */}
+      <div className="mx-auto max-w-[1400px] px-6 py-10 md:px-10 md:py-16">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr_1fr] lg:gap-12">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-            <div className="relative mb-5 flex h-36 w-36 items-center justify-center">
+            <div className="relative mb-4 flex h-28 w-28 items-center justify-center md:mb-5 md:h-36 md:w-36">
               <TextOnPath
                 mode="roundel"
                 text={CLINIC.tagline}
@@ -53,7 +57,11 @@ export function Footer() {
               />
             </div>
             <h2 className="font-display text-h2 text-canary">{CLINIC.fullName}</h2>
-            <p className="mt-3 max-w-sm font-sans text-sm leading-relaxed text-white/80">
+            {/* Desktop only. The roundel directly above already reads "Gentle
+                Care for Growing Smiles", so on a phone this paragraph is the
+                same promise twice and ~90px of a footer that is the tallest
+                block on the page. */}
+            <p className="mt-3 hidden max-w-sm font-sans text-sm leading-relaxed text-white/80 md:block">
               Kind, gentle, and patient pediatric dental care designed to make
               every visit comfortable for growing smiles.
             </p>
@@ -113,7 +121,7 @@ export function Footer() {
             <h3 className="font-display text-xl font-semibold text-canary">
               Finding Tiny Tusk
             </h3>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-powder/30">
+            <div className="relative h-[160px] overflow-hidden rounded-2xl border-2 border-powder/30 md:aspect-[4/3] md:h-auto">
               <iframe
                 src={MAP_EMBED_SRC}
                 title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}

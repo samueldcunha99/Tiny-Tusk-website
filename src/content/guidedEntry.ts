@@ -30,7 +30,9 @@ export const GUIDED_ANSWERS: readonly GuidedAnswer[] = [
     id: 'first-visit',
     answer: 'It will be their first visit',
     hint: 'Walk through how a visit actually goes',
-    href: '#journey',
+    // A real route, not '#journey'. The mobile home no longer renders the
+    // Journey section -- it was 2.6 screens of the 7.5 the page used to be.
+    href: '/journey',
     glyph: 'journeyDetection',
   },
   {
@@ -38,7 +40,9 @@ export const GUIDED_ANSWERS: readonly GuidedAnswer[] = [
     answer: 'Something is hurting',
     hint: 'Start an appointment request',
     href: '/book',
-    glyph: 'journeyTreatment',
+    // Not `journeyTreatment`: side by side with `journeyDetection` above, the
+    // two read as the same tooth outline and the list lost its scannability.
+    glyph: 'markZigzag',
   },
   {
     id: 'brushing',

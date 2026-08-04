@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { RouteMeta } from '@/components/RouteMeta'
 import { SectionOrder } from '@/content/sectionOrder'
-import type { SectionId } from '@/content/site'
+import { OPENING_SOON, type SectionId } from '@/content/site'
 import { useIsMobile } from '@/lib/viewport'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
@@ -21,6 +21,7 @@ import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
+import { OpeningSoon } from '@/sections/OpeningSoon'
 
 /**
  * What the desktop home renders, in order. The section numbers are counted off
@@ -116,6 +117,15 @@ function CurrentRoute() {
           <Services asPage />
         </PageRoute>
       )
+    case '/journey':
+      return (
+        <PageRoute
+          title="How a Visit Goes | Tiny Tusk"
+          description="A step-by-step walk through a first pediatric dental visit at Tiny Tusk, so families know what to expect before they arrive."
+        >
+          <Journey asPage />
+        </PageRoute>
+      )
     case '/inside-clinic':
       return (
         <PageRoute
@@ -185,6 +195,10 @@ function CurrentRoute() {
 }
 
 export default function App() {
+  // Pre-opening gate: every URL renders the holding screen and nothing else
+  // mounts. One constant in `content/site.ts` turns the whole site back on.
+  if (OPENING_SOON) return <OpeningSoon />
+
   return (
     <>
       <Preloader />

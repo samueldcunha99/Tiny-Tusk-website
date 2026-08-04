@@ -9,13 +9,14 @@
    Neither is licensed for web use here, so we ship metric-sympathetic
    stand-ins, self-hosted -- no Google Fonts CDN call is made at runtime.
 
-   Hanken Grotesk stands in for Avenir Next; Barlow Semi Condensed stands in
-   for Avenir Next Condensed. Both are OFL and fetched by tools/get-fonts.py.
+   Montserrat stands in for Avenir Next; Encode Sans Condensed stands in for
+   Avenir Next Condensed. Both are OFL and fetched by tools/get-fonts.py.
 
-   NOTE: docs/brief-01-main.md names Figtree as the Avenir Next stand-in. That
-   file is the client brief kept verbatim and is not edited; the client has
-   since asked for Hanken Grotesk instead. This is the current instruction --
-   do not "restore" Figtree from the brief.
+   NOTE: docs/brief-01-main.md names Figtree as the Avenir Next stand-in, and
+   earlier builds used Hanken Grotesk / Barlow Semi Condensed. The brief is the
+   client's verbatim file and is not edited; the client has since chosen
+   Montserrat and Encode Sans Condensed. That is the current instruction --
+   do not "restore" an older pair.
 
    TO SWAP IN LICENSED AVENIR NEXT: drop the woff2 files into public/fonts/,
    uncomment the two @font-face blocks below, and change the two custom
@@ -23,24 +24,24 @@
    ========================================================================== */
 
 @font-face {
-  font-family: 'Hanken Grotesk';
-  src: url('/fonts/hanken-grotesk-100-900.woff2') format('woff2-variations');
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-100-900.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Barlow Semi Condensed';
-  src: url('/fonts/barlow-400.woff2') format('woff2');
+  font-family: 'Encode Sans Condensed';
+  src: url('/fonts/encode-sans-condensed-400.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Barlow Semi Condensed';
-  src: url('/fonts/barlow-600.woff2') format('woff2');
+  font-family: 'Encode Sans Condensed';
+  src: url('/fonts/encode-sans-condensed-600.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -63,8 +64,8 @@ then in :root below:
 ------------------------------------------------------------------------- */
 
 :root {
-  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Barlow Semi Condensed', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Encode Sans Condensed', 'Montserrat', system-ui, sans-serif;
 
   /* Authoritative palette, guide p23. Mirrored in tailwind.config.ts. */
   --tt-cobalt: #18528e;
@@ -163,6 +164,62 @@ then in :root below:
   @keyframes tt-marquee {
     to { transform: translateX(-50%); }
   }
+
+  /* --------------------------------------------------------------------
+     THE HOLDING SCREEN'S ARRIVAL (see sections/OpeningSoon.tsx)
+
+     CSS rather than GSAP on purpose. A one-shot entrance needs no timeline,
+     the reduced-motion block below already neutralises every CSS animation
+     in one rule, and `backwards` fill means the start state exists only
+     while the delay runs -- nothing can be left stranded invisible.
+
+     The bounce lives in the keyframe positions, not in a new easing:
+     `EASE.celebrate` stays reserved for the brush timer (CLAUDE.md §4).
+     -------------------------------------------------------------------- */
+
+  /* The mark: dropped in, squashed flat on landing, then five hops that lose
+     height each time. Every landing squashes and every rise stretches -- that
+     pairing is the whole cartoon read; without it this is just a bouncing box. */
+  @keyframes tt-bounce-in {
+    0%   { transform: translateY(-100%) rotate(-5deg) scale(0.95, 1.07); }
+    22%  { transform: translateY(0) rotate(0deg) scale(1.10, 0.90); }
+    32%  { transform: translateY(-25%) scale(0.97, 1.04); }
+    43%  { transform: translateY(0) scale(1.08, 0.92); }
+    52%  { transform: translateY(-15%) scale(0.98, 1.02); }
+    62%  { transform: translateY(0) scale(1.05, 0.95); }
+    70%  { transform: translateY(-8%) scale(0.99, 1.01); }
+    78%  { transform: translateY(0) scale(1.03, 0.97); }
+    85%  { transform: translateY(-3%) scale(0.995, 1.005); }
+    91%  { transform: translateY(0) scale(1.01, 0.99); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+
+  .tt-bounce-in {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    animation: tt-bounce-in 1.75s ease-out backwards;
+  }
+
+  /* Everything that is not a letter or the mark: a small hop up into place. */
+  @keyframes tt-hop {
+    0%   { transform: translateY(1.4rem) scale(0.98); }
+    60%  { transform: translateY(-0.25rem) scale(1.01); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  .tt-hop {
+    animation: tt-hop 0.62s ease-out backwards;
+  }
+
+  /* The status pill's coral dot: the clinic is being worked on right now. */
+  @keyframes tt-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.35); opacity: 0.6; }
+  }
+
+  .tt-pulse {
+    animation: tt-pulse 2.4s ease-in-out infinite;
+  }
 }
 
 /* ==========================================================================
@@ -201,6 +258,14 @@ then in :root below:
   }
 
   .tt-marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* The holding screen arrives already arrived. */
+  .tt-bounce-in,
+  .tt-hop,
+  .tt-pulse {
     animation: none !important;
     transform: none !important;
   }

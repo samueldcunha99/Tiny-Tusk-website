@@ -97,8 +97,8 @@ kept in sync: `tailwind.config.ts` and `:root` in `src/index.css`
 | `paper` | `#F7F7F7` | page background |
 | `white` | `#FFFFFF` | at 33% opacity for monochrome shapes (p27) |
 
-**Type** — `--font-sans` Hanken Grotesk (stands in for Avenir Next), `--font-display`
-Barlow Semi Condensed (for Avenir Next Condensed). Self-hosted woff2, no CDN.
+**Type** — `--font-sans` Montserrat (stands in for Avenir Next), `--font-display`
+Encode Sans Condensed (for Avenir Next Condensed). Self-hosted woff2, no CDN.
 The licensed-Avenir swap is two custom properties; procedure is commented in
 `index.css`. Scale (p20): `text-display` clamp(4rem,13vw,13rem)/1.05/−0.025em ·
 `text-h1` clamp(2.5rem,5vw,4rem)/1.125/−0.02em · `text-h2`

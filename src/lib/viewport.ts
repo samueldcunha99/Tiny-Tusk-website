@@ -17,14 +17,24 @@ export const MOBILE_QUERY = '(max-width: 767px)'
  * every other section.
  */
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window === 'undefined' ? false : window.matchMedia(MOBILE_QUERY).matches,
+  return useMediaQuery(MOBILE_QUERY)
+}
+
+/**
+ * Subscribe to any media query. Use `useIsMobile` for the layout-family split;
+ * this is for the rare component whose own breakpoint is not that split -- the
+ * nav, whose link row needs more room than `md` gives it.
+ */
+export function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(() =>
+    typeof window === 'undefined' ? false : window.matchMedia(query).matches,
   )
   useEffect(() => {
-    const mq = window.matchMedia(MOBILE_QUERY)
-    const onChange = () => setIsMobile(mq.matches)
+    const mq = window.matchMedia(query)
+    const onChange = () => setMatches(mq.matches)
+    setMatches(mq.matches)
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
-  }, [])
-  return isMobile
+  }, [query])
+  return matches
 }

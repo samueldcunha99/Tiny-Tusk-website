@@ -39,8 +39,8 @@ The right-hand column is re-verified against the real code at the end of the bui
 
 | # | Page defines | Where it lives | Status |
 |---|---|---|---|
-| 17 | Avenir Next Regular + Medium | `--font-sans` (Hanken Grotesk stand-in), body + H1/H2 | planned |
-| 18 | Avenir Next Condensed Regular + Medium | `--font-display` (Barlow Semi Condensed stand-in) | planned |
+| 17 | Avenir Next Regular + Medium | `--font-sans` (Montserrat stand-in), body + H1/H2 | planned |
+| 18 | Avenir Next Condensed Regular + Medium | `--font-display` (Encode Sans Condensed stand-in) | planned |
 | 19 | Condensed specimen (second weight page) | both display weights treated as first-class — **FLAG 5** | planned |
 | 20 | Display/H1/H2/Body scale + mixed-weight convention | `type.css` fluid `clamp()` ramp + `<MixedWeightLabel>` | planned |
 

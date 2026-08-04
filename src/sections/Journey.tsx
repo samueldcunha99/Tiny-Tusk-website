@@ -4,6 +4,6 @@ import { useIsMobile } from '@/lib/viewport'
 import { Journey as JourneyDesktop } from './Journey.desktop'
 import { JourneyMobile } from './Journey.mobile'
 
-export function Journey() {
-  return useIsMobile() ? <JourneyMobile /> : <JourneyDesktop />
+export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
+  return useIsMobile() ? <JourneyMobile asPage={asPage} /> : <JourneyDesktop asPage={asPage} />
 }
