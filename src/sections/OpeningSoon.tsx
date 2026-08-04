@@ -125,8 +125,8 @@ export function OpeningSoon() {
 
         <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-5 pt-8 md:px-10 lg:px-12">
           {/* ---- the lockup, and the state of things ---- */}
-          <div className="flex flex-wrap items-start justify-between gap-8">
-            <div className="flex items-end gap-7">
+          <div className="flex flex-wrap items-start justify-center md:justify-between gap-8">
+            <div className="flex w-full md:w-auto items-end justify-center md:justify-start gap-7">
               <span className="tt-bounce-in tt-springy inline-block cursor-pointer">
                 <Logo
                   variant="wordmark-mark-tag"
