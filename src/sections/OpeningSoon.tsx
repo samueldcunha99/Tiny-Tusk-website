@@ -136,7 +136,7 @@ export function OpeningSoon() {
                   title={`${CLINIC.fullName} logo`}
                 />
               </span>
-              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+70px)] md:left-auto bottom-0 md:bottom-auto mb-7 block w-[74px]" data-depth="26">
+              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+35px)] md:left-auto top-2 md:top-auto mb-7 block w-[58px] md:w-[74px]" data-depth="26">
                 <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-14deg]" />
               </span>
             </div>
