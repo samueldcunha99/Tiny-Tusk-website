@@ -10,6 +10,7 @@ import {
   CLINIC_ADDRESS,
   MAP_DIRECTIONS_HREF,
   MAP_EMBED_SRC,
+  OPENING_COPY,
   OPENING_DATE,
 } from '@/content/site'
 import { gsap, usePrefersReducedMotion } from '@/lib/motion'
@@ -105,7 +106,7 @@ export function OpeningSoon() {
     <>
       <RouteMeta
         title={`${CLINIC.fullName} — Opening Soon in Kharghar, Navi Mumbai`}
-        description={`${CLINIC.fullName} is under construction in ${CLINIC.tagline.toLowerCase()}. Find our address in Kharghar, Navi Mumbai and get directions ahead of opening.`}
+        description={`${CLINIC.fullName} is under construction in ${CLINIC_ADDRESS.locality}. Find our address in Kharghar, Navi Mumbai and get directions ahead of opening.`}
       />
       <main
         ref={mainRef}
@@ -136,9 +137,6 @@ export function OpeningSoon() {
                   title={`${CLINIC.fullName} logo`}
                 />
               </span>
-              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+75px)] md:left-auto top-2 md:top-auto mb-7 block w-[58px] md:w-[74px]" data-depth="26">
-                <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-14deg]" />
-              </span>
             </div>
 
             <p className="mt-1.5 inline-flex items-center gap-2.5 rounded-full bg-cobalt px-5 py-3 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-canary">
@@ -150,10 +148,14 @@ export function OpeningSoon() {
           {/* ---- the message, and where to find us ---- */}
           <div className="mt-5 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
             <div className="tt-hop flex flex-col items-center text-center lg:items-start lg:text-left" style={{ animationDelay: '0.5s' }}>
-              {/* Deliberately still. Splitting this into per-letter spans
-                  collapsed the word spaces and pulled the lasso off "soon". */}
-              <h1 className="font-display text-[clamp(3rem,5.6vw,5.25rem)] leading-[1.02] tracking-[-0.025em] text-cobalt [text-wrap:pretty]">
-                Our doors are opening <Circled tone="coral">soon</Circled>
+              <h1 className="font-display text-[clamp(2.75rem,5vw,4.75rem)] leading-[1.05] tracking-[-0.025em] text-cobalt [text-wrap:pretty]">
+                {OPENING_COPY.headlineLead}{' '}
+                <span className="inline-flex items-center gap-2.5">
+                  <Circled tone="coral">{OPENING_COPY.headlineLasso}</Circled>
+                  <span className="tt-floating-doodle -mt-2 inline-block w-[44px] sm:w-[54px] md:w-[62px] shrink-0 align-middle" data-depth="26">
+                    <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-12deg]" />
+                  </span>
+                </span>
               </h1>
 
               {/* Rendered only when the clinic has actually confirmed a date. */}
@@ -166,16 +168,11 @@ export function OpeningSoon() {
               <div className="mt-6 flex max-w-[60ch] gap-5 rounded-3xl bg-paper p-6 shadow-[0_14px_30px_-22px_rgba(24,82,142,0.45)] text-left">
                 <span aria-hidden="true" className="block w-1 shrink-0 rounded-full bg-coral" />
                 <div className="flex flex-col gap-3.5">
-                  <p className="font-sans text-[1.0625rem] leading-relaxed text-cobalt">
-                    We are building a calm, gentle place for children&apos;s teeth in
-                    Kharghar — one where a first visit feels safe, unhurried, and
-                    even a little magical. The clinic is being finished right now,
-                    and the full website is on its way with it.
-                  </p>
-                  <p className="font-sans text-[1.0625rem] leading-relaxed text-cobalt">
-                    Come and find us here when we open. We cannot wait to meet your
-                    family.
-                  </p>
+                  {OPENING_COPY.paragraphs.map((p, i) => (
+                    <p key={i} className="font-sans text-[1.0625rem] leading-relaxed text-cobalt">
+                      {p}
+                    </p>
+                  ))}
                 </div>
               </div>
 

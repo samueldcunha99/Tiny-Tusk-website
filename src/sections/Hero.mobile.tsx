@@ -116,7 +116,7 @@ export function HeroMobile() {
         </h1>
 
         <p
-          className="mt-3 font-sans text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-cobalt/65"
+          className="mt-4 font-sans text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-cobalt/65"
           data-hero-fade
         >
           {HERO.headlineTail}

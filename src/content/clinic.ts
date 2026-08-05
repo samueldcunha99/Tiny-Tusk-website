@@ -50,7 +50,7 @@ export const CLINIC_CONCEPTS = [
       doodle: 'doodleToothpaste',
       doodleTone: 'canary',
     },
-    className: 'lg:col-span-5 aspect-[4/3]',
+    className: 'lg:col-span-5 aspect-[4/3] lg:aspect-auto lg:h-full',
   },
   {
     id: 'family-corner',

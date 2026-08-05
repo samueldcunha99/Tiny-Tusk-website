@@ -49,14 +49,14 @@ export function HeroDesktop() {
 
           <h1
             id="hero-heading"
-            className="mt-7 font-display text-[clamp(3.6rem,11vw,10rem)] font-semibold leading-[0.96] tracking-[-0.03em] text-cobalt"
+            className="mt-7 font-display text-[clamp(3.6rem,11vw,10rem)] font-semibold leading-[1.0] tracking-[-0.03em] text-cobalt"
           >
             {HERO.headline.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
-            <span className="mt-3 block font-sans text-[clamp(1.35rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.02em]">
+            <span className="mt-[0.5em] block font-sans text-[clamp(1.35rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.02em]">
               {HERO.headlineTail}
             </span>
           </h1>

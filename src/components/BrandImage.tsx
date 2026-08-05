@@ -11,7 +11,8 @@ export interface BrandImageProps {
   alt: string
   width: number
   height: number
-  title: { lead: string; rest: string; fill: 'canary' | 'powder' | 'coral'; href: string }
+  title?: { lead: string; rest: string; fill: 'canary' | 'powder' | 'coral'; href: string } | undefined
+  showCTA?: boolean | undefined
   logoTone: Extract<BrandColour, 'white' | 'cobalt'>
   doodle: DoodleName
   doodleTone: Extract<BrandColour, 'canary' | 'coral'>
@@ -31,6 +32,7 @@ export function BrandImage({
   width,
   height,
   title,
+  showCTA = true,
   logoTone,
   doodle,
   doodleTone,
@@ -40,7 +42,7 @@ export function BrandImage({
   return (
     <figure className={['relative overflow-hidden rounded-[1.5rem] bg-powder', className].filter(Boolean).join(' ')}>
       {webp && png ? (
-        <picture>
+        <picture className="block h-full w-full">
           <source srcSet={webp} type="image/webp" />
           <img
             src={png}
@@ -65,7 +67,9 @@ export function BrandImage({
           </div>
           <div className="relative z-10 flex flex-col items-center gap-3">
             <Doodle name="doodleHeart" tone="cobalt" className="w-16" />
-            <span className="font-display text-h2 text-cobalt">{title.lead} {title.rest}</span>
+            <span className="font-display text-h2 text-cobalt">
+              {title ? `${title.lead} ${title.rest}` : 'Dr. Nupur'}
+            </span>
             <span className="font-sans text-xs uppercase tracking-[0.15em] text-cobalt-80">Tiny Tusk Photography</span>
           </div>
         </div>
@@ -75,9 +79,11 @@ export function BrandImage({
       </div>
       <Doodle name={doodle} tone={doodleTone} drawOnScroll className="pointer-events-none absolute right-4 top-[10%] z-10 w-[20%] max-w-24 opacity-90" />
       <Doodle name="markDashes" tone="coral" drawOnScroll className="pointer-events-none absolute right-4 top-4 z-10 w-10" />
-      <div className="absolute bottom-2 left-2 right-2 z-20 sm:bottom-3 sm:left-3 sm:right-3">
-        <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full text-center shadow-lg" />
-      </div>
+      {showCTA && title ? (
+        <div className="absolute bottom-2 left-2 right-2 z-20 sm:bottom-3 sm:left-3 sm:right-3">
+          <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full text-center shadow-lg" />
+        </div>
+      ) : null}
     </figure>
   )
 }
