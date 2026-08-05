@@ -136,7 +136,7 @@ export function OpeningSoon() {
                   title={`${CLINIC.fullName} logo`}
                 />
               </span>
-              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+35px)] md:left-auto top-2 md:top-auto mb-7 block w-[58px] md:w-[74px]" data-depth="26">
+              <span className="tt-floating-doodle absolute md:relative left-[calc(50%+75px)] md:left-auto top-2 md:top-auto mb-7 block w-[58px] md:w-[74px]" data-depth="26">
                 <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-14deg]" />
               </span>
             </div>
@@ -275,7 +275,7 @@ export function OpeningSoon() {
           </div>
         </div>
 
-        <p className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-9 pt-5 font-sans text-xs text-cobalt/70 md:px-10 lg:px-12">
+        <p className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-9 pt-5 text-center font-sans text-xs text-cobalt/70 md:px-10 lg:px-12">
           © {new Date().getFullYear()} {CLINIC.fullName}. All rights reserved.
         </p>
       </main>

@@ -3,6 +3,7 @@ import { Circled } from '@/components/Circled'
 import { Doodle, type DoodleName } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
 import { SectionNumber } from '@/components/SectionNumber'
+import { ServiceIcon } from '@/components/ServiceIcon'
 import { Turnstile } from '@/components/Turnstile'
 import {
   BOOKING_STEPS,
@@ -71,6 +72,19 @@ const choiceClass = (selected: boolean) =>
     'transition-colors peer-focus-visible:ring-4 peer-focus-visible:ring-canary',
     selected ? 'border-cobalt bg-canary' : 'border-powder bg-paper hover:border-cobalt-40',
   ].join(' ')
+
+/**
+ * The clinic's own icon for each reason-for-visit, so the form reads as the
+ * same clinic as the services section rather than four bare radio rows. Keyed
+ * by the exact string in `CONCERNS`; a concern with no obvious icon simply
+ * renders without one rather than borrowing a misleading drawing.
+ */
+const CONCERN_ICON: Record<string, string | undefined> = {
+  'First visit': 'infant-oral-care',
+  'A toothache or break': 'emergency-trauma',
+  'A check-up': 'cleaning',
+  'Brushing or toothpaste advice': 'fluoride-sealants',
+}
 
 /** Empty circle at rest, cobalt disc with a canary tick when chosen. Selection
  *  must carry a shape cue, not colour alone. */
@@ -473,6 +487,9 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                       />
                       <span className={choiceClass(selected)}>
                         <Tick selected={selected} />
+                        {CONCERN_ICON[concern] ? (
+                          <ServiceIcon slug={CONCERN_ICON[concern]} className="h-9 w-9 shrink-0" />
+                        ) : null}
                         {concern}
                       </span>
                     </label>

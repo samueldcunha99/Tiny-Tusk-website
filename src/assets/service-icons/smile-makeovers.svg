@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="41.1 18.2 42 40.1">
+  <defs>
+    <style>
+
+      .smile-makeovers-2 {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  
+  <g>
+    <g>
+      <path class="smile-makeovers-2" d="M44.12,37.31c0,9.93,8.05,17.97,17.97,17.97s17.97-8.05,17.97-17.97h-35.95Z"/>
+      <line class="smile-makeovers-2" x1="46.11" y1="45.53" x2="78.07" y2="45.53"/>
+      <g>
+        <line class="smile-makeovers-2" x1="53.1" y1="45.53" x2="53.1" y2="37.31"/>
+        <line class="smile-makeovers-2" x1="62.09" y1="45.53" x2="62.09" y2="37.31"/>
+        <line class="smile-makeovers-2" x1="71.08" y1="45.53" x2="71.08" y2="37.31"/>
+      </g>
+    </g>
+    <g>
+      <path class="smile-makeovers-2" d="M58.79,25.71c0-2.51-2.03-4.54-4.54-4.54s-4.54,2.03-4.54,4.54"/>
+      <path class="smile-makeovers-2" d="M74.47,25.71c0-2.51-2.03-4.54-4.54-4.54s-4.54,2.03-4.54,4.54"/>
+    </g>
+  </g>
+</svg>

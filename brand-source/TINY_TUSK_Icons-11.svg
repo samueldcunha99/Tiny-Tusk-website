@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124.18 113.7">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #231f20;
+        font-family: AvenirNext-Regular, 'Avenir Next';
+        font-size: 10px;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #1c5695;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-4 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-5 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <text class="cls-1" transform="translate(24.14 83.99)"><tspan class="cls-5" x="0" y="0">Smile Ma</tspan><tspan class="cls-4" x="41.11" y="0">k</tspan><tspan class="cls-5" x="45.93" y="0">eovers</tspan><tspan class="cls-5" x="11.23" y="12">for Child</tspan><tspan class="cls-3" x="49.91" y="12">r</tspan><tspan class="cls-5" x="53.23" y="12">en</tspan></text>
+  <g>
+    <g>
+      <path class="cls-2" d="M44.12,37.31c0,9.93,8.05,17.97,17.97,17.97s17.97-8.05,17.97-17.97h-35.95Z"/>
+      <line class="cls-2" x1="46.11" y1="45.53" x2="78.07" y2="45.53"/>
+      <g>
+        <line class="cls-2" x1="53.1" y1="45.53" x2="53.1" y2="37.31"/>
+        <line class="cls-2" x1="62.09" y1="45.53" x2="62.09" y2="37.31"/>
+        <line class="cls-2" x1="71.08" y1="45.53" x2="71.08" y2="37.31"/>
+      </g>
+    </g>
+    <g>
+      <path class="cls-2" d="M58.79,25.71c0-2.51-2.03-4.54-4.54-4.54s-4.54,2.03-4.54,4.54"/>
+      <path class="cls-2" d="M74.47,25.71c0-2.51-2.03-4.54-4.54-4.54s-4.54,2.03-4.54,4.54"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124.18 113.7">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #231f20;
+        font-family: AvenirNext-Regular, 'Avenir Next';
+        font-size: 10px;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #1c5695;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3 {
+        fill: #f16c59;
+      }
+
+      .cls-4 {
+        letter-spacing: -.1em;
+      }
+
+      .cls-5 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-6 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-7 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-8 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-9 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <g>
+    <path class="cls-2" d="M67.24,25.49s-5.64-1.26-9.3-3.1c-3.95-2-12.59.16-11.24,8.84,1.36,8.68,3.53,11.12,3.53,15.38s1.36,10.85,3.8,11.76,3.8-.81,4.07-3.89c.27-3.08.27-6.15.99-8.14.72-1.99,2.71-1.99,2.71-1.99h.57s1.99,0,2.71,1.99c.72,1.99.72,5.06.99,8.14.27,3.08,1.63,4.79,4.07,3.89s3.8-7.51,3.8-11.76,2.17-6.69,3.53-15.38c1.36-8.68-6.99-11.03-11.19-8.83,0,0-1.72.84-4.19,1.65"/>
+    <g>
+      <path class="cls-3" d="M67.01,30.62s-1.55-2.42-4-2.08-4.05,3.92-2.16,6.35,5.44,4.56,5.44,4.56"/>
+      <path class="cls-3" d="M66.3,39.45s3.56-2.14,5.44-4.56.28-6-2.16-6.35c-1.46-.21-2.6.57-3.28,1.23"/>
+    </g>
+    <g>
+      <path class="cls-2" d="M67.01,30.62s-1.55-2.42-4-2.08-4.05,3.92-2.16,6.35,5.44,4.56,5.44,4.56"/>
+      <path class="cls-2" d="M66.3,39.45s3.56-2.14,5.44-4.56.28-6-2.16-6.35c-1.46-.21-2.6.57-3.28,1.23"/>
+    </g>
+  </g>
+  <text class="cls-1" transform="translate(11.72 83.97)"><tspan class="cls-4" x="0" y="0">T</tspan><tspan class="cls-8" x="4.7" y="0">r</tspan><tspan class="cls-6" x="8.02" y="0">e</tspan><tspan class="cls-5" x="13.58" y="0">a</tspan><tspan class="cls-9" x="18.72" y="0">tment for Child</tspan><tspan class="cls-7" x="86" y="0">r</tspan><tspan class="cls-9" x="89.32" y="0">en</tspan><tspan class="cls-9"><tspan x="7.76" y="12">with Special Needs</tspan></tspan></text>
+</svg>

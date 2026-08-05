@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="36.6 11.2 51 51.8">
+  <defs>
+    <style>
+
+      .laughing-gas-2 {
+        font-size: 7.78px;
+        letter-spacing: -.05em;
+      }
+
+      .laughing-gas-2, .laughing-gas-3 {
+        fill: currentColor;
+        font-family: AvenirNextCondensed-DemiBold, 'Encode Sans Condensed', sans-serif;
+        font-weight: 300;
+      }
+
+      .laughing-gas-4 {
+        fill: var(--tt-powder);
+      }
+
+      .laughing-gas-4, .laughing-gas-5, .laughing-gas-6, .laughing-gas-7 {
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 1.5px;
+      }
+
+      .laughing-gas-4, .laughing-gas-5, .laughing-gas-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .laughing-gas-5, .laughing-gas-6 {
+        fill: none;
+      }
+
+      .laughing-gas-3 {
+        font-size: 14.41px;
+        letter-spacing: -.05em;
+      }
+
+      .laughing-gas-6 {
+        stroke-linejoin: round;
+      }
+
+      .laughing-gas-7 {
+        fill: var(--tt-white);
+      }
+    </style>
+  </defs>
+  
+  <g>
+    <path class="laughing-gas-5" d="M39.59,49.38s3.49-3.49,7.23-4.7c3.73-1.2,10.24,0,11.93-2.29,1.69-2.29,5.42-6.14,6.63-3.13,1.2,3.01,2.39,3.15,3.61,2.48s2.82-.74,3.25.06c.43.8,1.23,2.39.98,4.23s-1.9,3.35-1.9,3.35"/>
+    <path class="laughing-gas-5" d="M73.24,44.86s.16-3.96,1.32-3.06,2.28,2.17,3.68,2.17,5.56-.98,5.27,5.41c-.29,6.4,1.08,7.34,1.08,7.34"/>
+    <path class="laughing-gas-6" d="M54.82,50.53c1.77,0,3.2,1.43,3.2,3.2s-1.43,3.2-3.2,3.2"/>
+  </g>
+  <path class="laughing-gas-4" d="M54.64,43.98s4.38,1.13,7.78.52c4.07-.73,7.13-2.99,7.13-2.99l-3.58-3.68c-2.15-2.2-6.28-1.71-7.99.95l-3.34,5.19Z"/>
+  <polyline class="laughing-gas-7" points="63.28 60.04 63.28 37.12 60.9 37.12 60.9 60.04"/>
+  <path class="laughing-gas-7" d="M64.87,35.33c-.05-.1-.16-.16-.27-.16h-2.5s-2.5,0-2.5,0c-.11,0-.22.06-.27.16l-1.1,1.93c-.12.2.03.46.27.46h3.6s3.6,0,3.6,0c.24,0,.39-.25.27-.46l-1.1-1.93Z"/>
+  <g>
+    <text class="laughing-gas-3" transform="translate(51.88 27.01)"><tspan x="0" y="0" xml:space="preserve">N  O</tspan></text>
+    <text class="laughing-gas-2" transform="translate(60.15 30.01)"><tspan x="0" y="0">2</tspan></text>
+  </g>
+</svg>

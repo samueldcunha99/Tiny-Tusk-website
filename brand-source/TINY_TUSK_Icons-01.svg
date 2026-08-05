@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124.18 113.7">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #231f20;
+        font-family: AvenirNext-Regular, 'Avenir Next';
+        font-size: 10px;
+      }
+
+      .cls-2 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke: #1c5695;
+        stroke-linecap: round;
+        stroke-width: 1.5px;
+      }
+
+      .cls-4 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-3 {
+        stroke-linejoin: round;
+      }
+
+      .cls-5 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-6 {
+        letter-spacing: -.01em;
+      }
+
+      .cls-7 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <text class="cls-1" transform="translate(38.58 83.96)"><tspan class="cls-7" x="0" y="0">Infant O</tspan><tspan class="cls-4" x="35.88" y="0">r</tspan><tspan class="cls-7" x="39.26" y="0">al</tspan><tspan class="cls-5" x="12.91" y="12">C</tspan><tspan class="cls-6" x="19.83" y="12">a</tspan><tspan class="cls-5" x="25.07" y="12">r</tspan><tspan class="cls-6" x="28.39" y="12">e</tspan></text>
+  <g>
+    <path class="cls-2" d="M79.56,37.1c-.73-9.02-8.27-16.11-17.47-16.11s-16.74,7.09-17.47,16.11c-1.4.51-2.43,2.03-2.43,3.84,0,2.23,1.54,4.04,3.44,4.04.05,0,.1-.02.15-.02,2.57,6.51,8.89,11.12,16.31,11.12s13.75-4.61,16.31-11.12c.05,0,.1.02.15.02,1.9,0,3.44-1.81,3.44-4.04,0-1.81-1.03-3.33-2.43-3.84Z"/>
+    <path class="cls-2" d="M60.8,26.61c-4.28-1.57-5.7-5.84-4.47-8.02,1.01-1.78,4.11-2.71,7.23-1.58"/>
+    <g>
+      <path class="cls-3" d="M59.49,37.15c0-1.97-1.6-3.57-3.57-3.57s-3.57,1.6-3.57,3.57"/>
+      <path class="cls-3" d="M71.84,37.15c0-1.97-1.6-3.57-3.57-3.57s-3.57,1.6-3.57,3.57"/>
+    </g>
+    <path class="cls-3" d="M54.39,43.5c0,4.25,3.45,7.7,7.7,7.7s7.7-3.45,7.7-7.7h-15.4Z"/>
+  </g>
+</svg>

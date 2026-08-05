@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="39.2 13.5 45.8 45.6">
+  <defs>
+    <style>
+
+      .infant-oral-care-2 {
+        stroke-miterlimit: 10;
+      }
+
+      .infant-oral-care-2, .infant-oral-care-3 {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 1.5px;
+      }
+
+      .infant-oral-care-3 {
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  
+  <g>
+    <path class="infant-oral-care-2" d="M79.56,37.1c-.73-9.02-8.27-16.11-17.47-16.11s-16.74,7.09-17.47,16.11c-1.4.51-2.43,2.03-2.43,3.84,0,2.23,1.54,4.04,3.44,4.04.05,0,.1-.02.15-.02,2.57,6.51,8.89,11.12,16.31,11.12s13.75-4.61,16.31-11.12c.05,0,.1.02.15.02,1.9,0,3.44-1.81,3.44-4.04,0-1.81-1.03-3.33-2.43-3.84Z"/>
+    <path class="infant-oral-care-2" d="M60.8,26.61c-4.28-1.57-5.7-5.84-4.47-8.02,1.01-1.78,4.11-2.71,7.23-1.58"/>
+    <g>
+      <path class="infant-oral-care-3" d="M59.49,37.15c0-1.97-1.6-3.57-3.57-3.57s-3.57,1.6-3.57,3.57"/>
+      <path class="infant-oral-care-3" d="M71.84,37.15c0-1.97-1.6-3.57-3.57-3.57s-3.57,1.6-3.57,3.57"/>
+    </g>
+    <path class="infant-oral-care-3" d="M54.39,43.5c0,4.25,3.45,7.7,7.7,7.7s7.7-3.45,7.7-7.7h-15.4Z"/>
+  </g>
+</svg>
