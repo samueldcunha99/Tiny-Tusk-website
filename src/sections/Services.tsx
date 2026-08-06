@@ -8,9 +8,8 @@ import { TextPanel } from '@/components/TextPanel'
 import { carriesText, type BrandColour } from '@/design/pairings'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { SERVICES, type Service } from '@/content/services'
-import { TREATMENTS } from '@/content/treatments'
-import { ServiceIcon } from '@/components/ServiceIcon'
 import { useSectionMeta } from '@/content/sectionOrder'
+import { TreatmentGrid } from '@/sections/TreatmentGrid'
 
 /**
  * 03 Services -- paper.
@@ -116,100 +115,6 @@ function ServiceCard({
         </figure>
       ) : null}
     </article>
-  )
-}
-
-/**
- * The clinic's full treatment list, drawn with the client's own icon set.
- *
- * The six cards above are the explained services; this is everything the
- * clinic actually treats, in its own words. No body copy by design -- see the
- * note in `content/treatments.ts`.
- *
- * A cobalt band inside a paper section, paper tiles inside the band: both are
- * pairings the guide permits (p26), and the hover state lands on canary +
- * cobalt (p24). The icons paint with `currentColor`, so the tile changing its
- * text colour is the whole tint.
- */
-/**
- * Three of the same icons again, oversized and overlapped beside the band's
- * heading, in the guide's monochrome register (p27: white at 33% on a solid
- * brand colour). It is what makes the band read as a poster rather than a
- * table -- the artwork on the tiles and the artwork above them are the same
- * drawings at two scales and two registers.
- *
- * Desktop only. The heading takes the full width on a phone, and a collage
- * behind wrapped display type is just noise.
- */
-const COLLAGE = [
-  { slug: 'smile-makeovers', className: 'left-0 top-6 h-24 w-32 -rotate-6' },
-  { slug: 'braces', className: 'left-[6.5rem] top-0 h-28 w-40 rotate-[7deg]' },
-  { slug: 'infant-oral-care', className: 'right-0 top-8 h-24 w-28 -rotate-12' },
-] as const
-
-function TreatmentGrid({ headingLevel = 'h3' }: { headingLevel?: 'h2' | 'h3' | undefined }) {
-  const GridHeading = headingLevel
-
-  return (
-    <div
-      data-surface="cobalt"
-      className="relative mt-16 overflow-hidden rounded-[2rem] bg-cobalt px-6 py-10 md:mt-20 md:px-12 md:py-14"
-    >
-      <div className="relative z-10 flex items-center justify-between gap-10">
-        <div>
-          <GridHeading className="font-display text-h2 text-canary">
-            <MixedWeightLabel lead="Everything" rest="we treat" display />
-          </GridHeading>
-          <p className="mt-3 max-w-measure font-sans text-[clamp(0.95rem,1.1vw,1.0625rem)] leading-relaxed text-white/85">
-            The full list, in the clinic&apos;s own words. Ask us about any of them — we would
-            rather explain it twice than have you guess.
-          </p>
-        </div>
-
-        <div aria-hidden="true" className="relative hidden h-32 w-[19rem] shrink-0 lg:block">
-          {COLLAGE.map((art) => (
-            <ServiceIcon key={art.slug} slug={art.slug} mono className={`absolute ${art.className}`} />
-          ))}
-        </div>
-      </div>
-
-      <ul
-        data-tile-grid
-        className="relative z-10 mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
-      >
-        {TREATMENTS.map((treatment) => {
-          // The guide's mixed weight reads as DemiBold first word + Regular
-          // rest; a one-word label ("Cleaning", "Braces") has no rest and
-          // would otherwise pick up the component's separating space.
-          const space = treatment.label.indexOf(' ')
-          const lead = space === -1 ? treatment.label : treatment.label.slice(0, space)
-          const rest = space === -1 ? '' : treatment.label.slice(space + 1)
-          return (
-            <li
-              key={treatment.slug}
-              data-tile
-              className={[
-                'tt-treatment-tile flex flex-col items-center gap-4 rounded-[1.375rem] bg-paper p-5 text-center text-cobalt',
-                'transition-[transform,background-color] duration-500 ease-entrance',
-                'hover:-translate-y-1.5 hover:bg-canary',
-              ].join(' ')}
-            >
-              {/* Full width, fixed height: the set mixes square icons with wide
-                  ones (two crowns, a brace strip), and a square box would scale
-                  those to half the height of the rest. */}
-              <ServiceIcon slug={treatment.slug} className="h-16 w-full" />
-              <span className="font-sans text-[0.85rem] leading-snug">
-                {rest ? (
-                  <MixedWeightLabel lead={lead} rest={rest} />
-                ) : (
-                  <span style={{ fontWeight: 600 }}>{lead}</span>
-                )}
-              </span>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
   )
 }
 
