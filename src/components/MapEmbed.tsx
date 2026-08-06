@@ -1,43 +1,49 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { CLINIC, CLINIC_ADDRESS, MAP_EMBED_SRC } from '@/content/site'
 
 /**
- * Facade around the Google Maps embed.
+ * The Google Maps embed, held back until the page itself has finished loading.
  *
- * The embed pulls well over a megabyte across dozens of requests, and on the
- * opening screen the frame sits in the viewport from first paint, so the
- * iframe's own `loading="lazy"` never defers anything -- it competes with the
- * fonts and the brand artwork for the first second of the page. Nothing
- * third-party loads here until the visitor asks for the map.
+ * The embed pulls well over a megabyte across dozens of requests. Both call
+ * sites set `loading="lazy"`, but the opening screen's frame sits in the
+ * viewport from first paint, so the browser never deferred anything -- the map
+ * competed with the fonts and the brand artwork for the first second.
  *
- * The address sits above both call sites and "Get directions" is beside them,
- * so the map is an extra, not the only way to find the clinic.
+ * Waiting for `load` keeps the map always visible (no click, no interaction)
+ * while letting everything above it paint first. A tinted tile holds the exact
+ * same box in the meantime, so nothing shifts when the frame swaps in.
  */
 export function MapEmbed({ className }: { className: string }) {
   const [shown, setShown] = useState(false)
 
-  if (shown) {
+  useEffect(() => {
+    if (document.readyState === 'complete') {
+      setShown(true)
+      return
+    }
+    const mount = () => setShown(true)
+    window.addEventListener('load', mount, { once: true })
+    return () => window.removeEventListener('load', mount)
+  }, [])
+
+  if (!shown) {
     return (
-      <iframe
-        src={MAP_EMBED_SRC}
-        title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}
-        referrerPolicy="no-referrer-when-downgrade"
-        className={className}
-      />
+      <div
+        aria-hidden="true"
+        className={`${className} flex items-center justify-center bg-cobalt-80 font-sans text-[0.8125rem] text-canary/80`}
+      >
+        {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
+      </div>
     )
   }
 
   return (
-    <button
-      type="button"
-      onClick={() => setShown(true)}
-      className={`${className} flex flex-col items-center justify-center gap-1 bg-cobalt-80 font-sans text-canary`}
-    >
-      <span className="text-[0.9375rem] font-semibold">Show map</span>
-      <span className="text-[0.8125rem] text-canary/80">
-        {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
-      </span>
-    </button>
+    <iframe
+      src={MAP_EMBED_SRC}
+      title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}
+      referrerPolicy="no-referrer-when-downgrade"
+      className={className}
+    />
   )
 }
