@@ -3,13 +3,13 @@ import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
 import { LoopField } from '@/components/LoopField'
+import { MapEmbed } from '@/components/MapEmbed'
 import { RouteMeta } from '@/components/RouteMeta'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import {
   CLINIC,
   CLINIC_ADDRESS,
   MAP_DIRECTIONS_HREF,
-  MAP_EMBED_SRC,
   OPENING_COPY,
   OPENING_DATE,
 } from '@/content/site'
@@ -217,13 +217,7 @@ export function OpeningSoon() {
                 </address>
 
                 <div className="mt-4 overflow-hidden rounded-[1.25rem] border-[3px] border-canary">
-                  <iframe
-                    src={MAP_EMBED_SRC}
-                    title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="block h-[210px] w-full border-0"
-                  />
+                  <MapEmbed className="block h-[210px] w-full border-0" />
                 </div>
               </div>
               <span className="tt-floating-doodle pointer-events-none absolute -bottom-[52px] -left-[46px] z-[1] block w-[126px]" data-depth="20">

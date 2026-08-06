@@ -1,12 +1,7 @@
 import { Logo } from '@/components/Logo'
+import { MapEmbed } from '@/components/MapEmbed'
 import { TextOnPath } from '@/components/TextOnPath'
-import {
-  CLINIC,
-  CLINIC_ADDRESS,
-  MAP_DIRECTIONS_HREF,
-  MAP_EMBED_SRC,
-  SECTIONS,
-} from '@/content/site'
+import { CLINIC, CLINIC_ADDRESS, MAP_DIRECTIONS_HREF, SECTIONS } from '@/content/site'
 
 /**
  * Footer -- cobalt.
@@ -81,13 +76,7 @@ export function Footer() {
         <div className="flex flex-col gap-4">
           <h3 className="font-display text-xl text-canary">Finding Tiny Tusk</h3>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[1.625rem] border-2 border-powder/30">
-            <iframe
-              src={MAP_EMBED_SRC}
-              title={`Map showing ${CLINIC.fullName} in ${CLINIC_ADDRESS.locality}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full border-0"
-            />
+            <MapEmbed className="absolute inset-0 h-full w-full border-0" />
           </div>
           <a
             href={MAP_DIRECTIONS_HREF}
