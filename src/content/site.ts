@@ -30,11 +30,10 @@ export const OPENING_DATE: string | null = null
  * Opening screen copy supplied by the clinic team.
  */
 export const OPENING_COPY = {
-  headlineLead: 'Something magical is being built in',
-  headlineLasso: 'Kharghar.',
+  headlineLead: 'Our doors are opening',
+  headlineLasso: 'soon',
   paragraphs: [
     "We're putting the finishing touches on a dental space made just for kids, with comfy chairs, calm corners, and a first visit that feels more like an adventure than an appointment. No rush, no fuss, just tiny tooth care done right.",
-    'Bonus: while your little one gets pampered in one chair, you (or a sibling) can hop into the operatory next door for your own treatment.',
     'The clinic is being finished right now, and the full website is on its way with it. Come and find us here when we open. We cannot wait to meet your family.',
   ],
 } as const
