@@ -1,0 +1,24 @@
+/* =============================================================================
+   Tiny Tusk redesign patch — append to src/index.css
+   -----------------------------------------------------------------------------
+   One rule set only. Everything else the redesign needs (tt-section,
+   tt-marquee-track, max-w-measure, the focus ring, ::selection, and the
+   reduced-motion neutraliser) already exists in this file.
+   ============================================================================= */
+
+@layer components {
+  /* 10 Questions: the FAQ rows are native <details>, so the marker has to be
+     removed on both engines, and the coral plus becomes a cross when open. */
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details[open] [data-plus] {
+    transform: rotate(45deg);
+  }
+}

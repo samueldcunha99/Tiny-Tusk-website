@@ -1,0 +1,43 @@
+/* ==========================================================================
+   APPEND TO src/index.css, inside the existing `@layer components { ... }`
+   block (after `.tt-hop`).
+
+   Two additions only. Everything else the holding screen needs -- the marquee
+   track, the bounce-in, the hop, and the reduced-motion neutraliser -- is
+   already in the file.
+   ========================================================================== */
+
+  /* The status pill's coral dot: the clinic is being worked on right now. */
+  @keyframes tt-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.35); opacity: 0.6; }
+  }
+
+  .tt-pulse {
+    animation: tt-pulse 2.4s ease-in-out infinite;
+  }
+
+
+/* ==========================================================================
+   AND in the `@media (prefers-reduced-motion: reduce)` block at the bottom,
+   extend the holding-screen rule so the new animation is neutralised with the
+   other two:
+
+     .tt-bounce-in,
+     .tt-hop,
+     .tt-pulse {
+       animation: none !important;
+       transform: none !important;
+     }
+   ========================================================================== */
+
+
+/* ==========================================================================
+   ONE FIX TO AN EXISTING RULE
+
+   `.tt-marquee-track` translates by -50%, which assumes the track is exactly
+   twice the width of its content. The new strapline sets `w-max` on the track
+   and `flex-none` on each of the two copies, so -50% lands exactly on the
+   start of the duplicate -- no change needed to the keyframe itself. If you
+   ever give the track a percentage width instead, the two copies overlap.
+   ========================================================================== */
