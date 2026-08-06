@@ -1,35 +1,51 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { CLINIC, CLINIC_ADDRESS, MAP_EMBED_SRC } from '@/content/site'
 
 /**
- * The Google Maps embed, held back until the page itself has finished loading.
+ * The Google Maps embed, mounted only once it is actually about to be seen.
  *
- * The embed pulls well over a megabyte across dozens of requests. Both call
- * sites set `loading="lazy"`, but the opening screen's frame sits in the
- * viewport from first paint, so the browser never deferred anything -- the map
- * competed with the fonts and the brand artwork for the first second.
+ * Measured on the live site: the embed is 402 KiB of transfer across dozens of
+ * requests, and Lighthouse attributes every byte of its "227 KiB of unused
+ * JavaScript" to it -- more than the whole rest of the page combined. The
+ * iframe's own `loading="lazy"` does not help, because Chrome's lazy-loading
+ * margin is generous enough on a throttled connection to fetch it anyway.
  *
- * Waiting for `load` keeps the map always visible (no click, no interaction)
- * while letting everything above it paint first. A tinted tile holds the exact
- * same box in the meantime, so nothing shifts when the frame swaps in.
+ * An observer with a tight margin is the honest version: no click, no
+ * interaction, the map is simply not built until the visitor scrolls near it.
+ * On a phone it sits below the fold, so it stays out of the initial load
+ * entirely. A tinted tile holds the identical box until then, so nothing
+ * shifts.
  */
 export function MapEmbed({ className }: { className: string }) {
   const [shown, setShown] = useState(false)
+  const holder = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (document.readyState === 'complete') {
+    const node = holder.current
+    if (!node) return
+
+    // No IntersectionObserver (very old browsers): show the map rather than
+    // leave a permanent placeholder.
+    if (!('IntersectionObserver' in window)) {
       setShown(true)
       return
     }
-    const mount = () => setShown(true)
-    window.addEventListener('load', mount, { once: true })
-    return () => window.removeEventListener('load', mount)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) setShown(true)
+      },
+      { rootMargin: '200px' },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
   }, [])
 
   if (!shown) {
     return (
       <div
+        ref={holder}
         aria-hidden="true"
         className={`${className} flex items-center justify-center bg-cobalt-80 font-sans text-[0.8125rem] text-canary/80`}
       >

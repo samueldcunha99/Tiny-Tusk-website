@@ -180,7 +180,10 @@ export function OpeningSoon() {
                 <StylisedCTA lead="Get" rest="directions" href={MAP_DIRECTIONS_HREF} fill="canary" />
               </div>
 
-              <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt/65">
+              {/* Full-strength cobalt, not a tint: cobalt on powder is 4.92:1,
+                  and every opacity step falls under AA (/90 is only 4.13:1).
+                  See docs/contrast-audit.md. */}
+              <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt">
                 <Doodle name="markArrow" tone="coral" className="w-[34px] shrink-0 rotate-[-8deg]" />
                 Nudge the doodles — they wobble
               </p>
@@ -266,7 +269,7 @@ export function OpeningSoon() {
           </div>
         </div>
 
-        <p className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-9 pt-5 text-center font-sans text-xs text-cobalt/70 md:px-10 lg:px-12">
+        <p className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-9 pt-5 text-center font-sans text-xs text-cobalt md:px-10 lg:px-12">
           © {new Date().getFullYear()} {CLINIC.fullName}. All rights reserved.
         </p>
       </main>
