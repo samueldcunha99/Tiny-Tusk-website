@@ -166,59 +166,75 @@ export function TreatmentGrid({ headingLevel = 'h3' }: { headingLevel?: 'h2' | '
               const space = treatment.label.indexOf(' ')
               const lead = space === -1 ? treatment.label : treatment.label.slice(0, space)
               const rest = space === -1 ? '' : treatment.label.slice(space + 1)
+              const isSpecialty = treatment.slug === 'laughing-gas'
+              const href = isSpecialty ? '/laughing-gas' : undefined
+              const TileElement = href ? 'a' : 'div'
 
               return (
                 <li
                   key={treatment.slug}
                   data-tile
                   style={{ opacity: shown ? 1 : 0.25 }}
-                  className={[
-                    'tt-treatment-tile min-w-0 rounded-[1.25rem] bg-paper',
-                    'flex items-center gap-4 p-4 text-cobalt',
-                    'transition-[transform,background-color,opacity,filter] duration-500 ease-entrance',
-                    shown ? 'hover:-translate-y-1 hover:bg-canary' : 'saturate-[0.2]',
-                  ].join(' ')}
+                  className="min-w-0"
                 >
-                  <ServiceIcon slug={treatment.slug} className="h-11 w-13 shrink-0" />
-                  <span className="flex min-w-0 flex-col gap-1">
-                    <span className="font-sans text-[0.85rem] leading-snug">
-                      {rest ? (
-                        <MixedWeightLabel lead={lead} rest={rest} />
-                      ) : (
-                        <span style={{ fontWeight: 600 }}>{lead}</span>
-                      )}
-                    </span>
-                    {category ? (
-                      <span className="font-sans text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-cobalt/50">
-                        {CATEGORY_LABEL[category]}
+                  <TileElement
+                    {...(href ? { href } : {})}
+                    className={[
+                      'tt-treatment-tile block min-w-0 rounded-[1.25rem] bg-paper',
+                      'flex items-center justify-between gap-3 p-4 text-cobalt',
+                      'transition-[transform,background-color,opacity,filter] duration-500 ease-entrance',
+                      shown ? 'hover:-translate-y-1 hover:bg-canary' : 'saturate-[0.2]',
+                      isSpecialty ? 'ring-2 ring-coral/60' : '',
+                    ].join(' ')}
+                  >
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <ServiceIcon slug={treatment.slug} className="h-11 w-13 shrink-0" />
+                      <span className="flex min-w-0 flex-col gap-1">
+                        <span className="font-sans text-[0.85rem] leading-snug">
+                          {rest ? (
+                            <MixedWeightLabel lead={lead} rest={rest} />
+                          ) : (
+                            <span style={{ fontWeight: 600 }}>{lead}</span>
+                          )}
+                        </span>
+                        {category ? (
+                          <span className="font-sans text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-cobalt/50">
+                            {CATEGORY_LABEL[category]}
+                          </span>
+                        ) : null}
+                      </span>
+                    </div>
+
+                    {isSpecialty ? (
+                      <span className="shrink-0 rounded-full bg-coral/15 px-2 py-1 font-sans text-[0.65rem] font-bold uppercase tracking-wider text-coral">
+                        Specialty →
                       </span>
                     ) : null}
-                  </span>
+                  </TileElement>
                 </li>
               )
             })}
 
-            <li className="col-span-full min-w-0">
-              <div
-                data-surface="coral"
-                className="mt-1 flex flex-wrap items-center justify-between gap-5 rounded-[1.25rem] bg-coral px-6 py-5"
-              >
-                <TextPanel surface="coral" className="min-w-0 flex-1 basis-80">
-                  <p className="max-w-measure font-sans text-[0.95rem] leading-relaxed text-white">
-                    <span className="font-semibold">Not sure which one you need?</span> Tell us what
-                    you have noticed and we will point you to the right one — no appointment needed
-                    to ask.
-                  </p>
-                </TextPanel>
-                <a
-                  href="#book"
-                  className="shrink-0 rounded-full bg-cobalt px-6 py-3 font-sans text-[0.85rem] font-semibold text-canary transition-transform duration-500 ease-entrance hover:-translate-y-0.5"
-                >
-                  Ask the clinic
-                </a>
-              </div>
-            </li>
           </ul>
+
+          <div
+            data-surface="coral"
+            className="mt-4 flex flex-wrap items-center justify-between gap-5 rounded-[1.25rem] bg-coral px-6 py-5"
+          >
+            <TextPanel surface="coral" className="min-w-0 flex-1 basis-80">
+              <p className="max-w-measure font-sans text-[0.95rem] leading-relaxed text-white">
+                <span className="font-semibold">Not sure which one you need?</span> Tell us what
+                you have noticed and we will point you to the right one — no appointment needed
+                to ask.
+              </p>
+            </TextPanel>
+            <a
+              href="#book"
+              className="shrink-0 rounded-full bg-cobalt px-6 py-3 font-sans text-[0.85rem] font-semibold text-canary transition-transform duration-500 ease-entrance hover:-translate-y-0.5"
+            >
+              Ask the clinic
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ import { CLINIC } from '@/content/site'
 const LINKS = [
   { href: '/journey', label: 'How a visit goes' },
   { href: '/services', label: 'Services' },
+  { href: '/laughing-gas', label: 'Laughing Gas' },
   { href: '/inside-clinic', label: 'Inside clinic' },
   { href: '/dr-nupur', label: 'Meet Dr. Nupur' },
   { href: '/games', label: 'Games for Kids' },

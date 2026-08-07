@@ -100,6 +100,12 @@ export function Footer() {
               {section.label}
             </a>
           ))}
+          <a
+            href="/laughing-gas"
+            className="inline-flex min-h-11 items-center font-sans text-[0.9rem] font-semibold text-canary"
+          >
+            Laughing Gas
+          </a>
         </nav>
         <div className="flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 font-sans text-[0.78rem] text-white/60">
           <p>© {year} {CLINIC.fullName}. All rights reserved.</p>

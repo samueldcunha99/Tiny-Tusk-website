@@ -8,6 +8,7 @@ import { Hero } from '@/sections/Hero'
 import { HomeMobile } from '@/sections/Home.mobile'
 import { HomePaths } from '@/sections/HomePaths'
 import { Journey } from '@/sections/Journey'
+import { LaughingGas } from '@/sections/LaughingGas'
 import { Services } from '@/sections/Services'
 import { InsideClinic } from '@/sections/InsideClinic'
 import { Preloader } from '@/sections/Preloader'
@@ -123,6 +124,15 @@ function CurrentRoute() {
           description="A plain-spoken overview of the pediatric dental services Tiny Tusk is designed to provide for growing smiles."
         >
           <Services asPage />
+        </PageRoute>
+      )
+    case '/laughing-gas':
+      return (
+        <PageRoute
+          title="Laughing Gas (Nitrous Oxide) for Kids | Tiny Tusk"
+          description="Learn how gentle Nitrous Oxide (Laughing Gas) helps children feel calm, comfortable, and relaxed during dental visits at Tiny Tusk."
+        >
+          <LaughingGas />
         </PageRoute>
       )
     case '/journey':
