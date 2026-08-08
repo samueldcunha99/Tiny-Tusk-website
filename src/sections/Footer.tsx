@@ -32,7 +32,7 @@ export function Footer() {
 
       <div className="mx-auto grid max-w-[1440px] gap-12 px-6 pb-8 pt-12 md:grid-cols-3 md:px-10 md:pt-20">
         <div>
-          <div className="relative grid w-[clamp(8.75rem,14vw,11.25rem)] place-items-center">
+          <div className="relative grid aspect-square w-[clamp(8.75rem,14vw,11.25rem)] place-items-center">
             <TextOnPath
               text={CLINIC.tagline}
               mode="roundel"

@@ -38,7 +38,11 @@ export function TextOnPath({ text, mode = 'arc', tone = 'cobalt', className }: T
           fill={colourVar(tone)}
           className="font-sans text-[15px] font-semibold tracking-[0.14em] uppercase"
         >
-          <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
+          {/* 25%, not 50%: the path starts at 9 o'clock and sweeps clockwise, so
+              half way round is the 3 o'clock point -- the tagline read top-to-
+              bottom down the right edge. A quarter of the way round is the top,
+              which is where p14 sets it, with the smile arc closing the bottom. */}
+          <textPath href={`#${pathId}`} startOffset="25%" textAnchor="middle">
             {text}
           </textPath>
         </text>

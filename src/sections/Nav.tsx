@@ -30,8 +30,8 @@ export function Nav() {
   const lastScrollRef = useRef(0)
   const reduced = usePrefersReducedMotion()
   // Not the site-wide mobile split: the bar takes a surface only once the link
-  // row is on screen, which is `xl`. Below that it is a mark and a menu button.
-  const isCompact = useMediaQuery('(max-width: 1279px)')
+  // row is on screen, which is 1360px. Below that it is a mark and a menu button.
+  const isCompact = useMediaQuery('(max-width: 1359px)')
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
   const needsTopNavSurface =
     currentPath === '/games' || currentPath === '/brush-timer'
@@ -128,9 +128,16 @@ export function Nav() {
           isCompact
             ? 'max-w-[1600px] bg-transparent'
             : condensed
-            ? 'max-w-7xl rounded-full bg-white/85 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] backdrop-blur-md md:px-6'
+            // Opaque, not `white/85`: the bar passes over cobalt sections, and a
+            // translucent pill let their copy read through its left half while the
+            // rest stayed white -- a hard vertical seam across the bar.
+            // Same `1600px` cap as every other state. At `max-w-7xl` the pill was
+            // 1280px while its own content measured 1348px, so the row overflowed
+            // it and the WhatsApp disc hung outside the white shape. The bar
+            // condenses by tightening its padding, not by narrowing.
+            ? 'max-w-[1600px] rounded-full bg-white px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] md:px-6'
             : needsTopNavSurface
-              ? 'max-w-[1600px] rounded-full bg-paper/95 px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.12)] backdrop-blur-md md:px-6'
+              ? 'max-w-[1600px] rounded-full bg-paper px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.12)] md:px-6'
             : 'max-w-[1600px] bg-transparent',
         ].join(' ')}
       >
@@ -147,15 +154,19 @@ export function Nav() {
             WhatsApp disc outboard of it. Scales with the bar's own condensing
             so the inset does not jump when the header tightens.
 
-            The list appears at `xl`, not `md`: seven labels plus the booking
-            pill and the WhatsApp disc measure ~1030px at `gap-6`, so below
-            1280 there is no honest way to fit them and the menu button stays.
-            Widths were measured in a browser -- do not lower this breakpoint
-            without re-measuring, and note that a longer label eats the slack. */}
+            The list appears at 1360px, not `md`: eight labels plus the booking
+            pill and the WhatsApp disc measure 1188px at `gap-6`, and with the
+            64px mark and the header's own padding the row needs ~1340px, so
+            below that there is no honest way to fit them and the menu button
+            stays. `xl` (1280) was the old figure and stopped being true when
+            the Laughing Gas link was added -- the disc then hung 35px outside
+            the pill. Widths were measured in a browser -- do not lower this
+            breakpoint without re-measuring, and note that a longer label eats
+            the slack. */}
         <ul
           className={[
-            'hidden items-center gap-6 xl:flex 2xl:gap-8',
-            condensed ? 'xl:pr-2' : 'xl:pr-8 2xl:pr-12',
+            'hidden items-center gap-6 min-[1360px]:flex 2xl:gap-8',
+            condensed ? 'min-[1360px]:pr-2' : 'min-[1360px]:pr-8 2xl:pr-12',
           ].join(' ')}
         >
           {LINKS.map((l) => {
@@ -201,7 +212,7 @@ export function Nav() {
 
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full xl:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full min-[1360px]:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => {
@@ -233,7 +244,7 @@ export function Nav() {
           tabIndex={-1}
           aria-hidden="true"
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-30 cursor-default xl:hidden"
+          className="fixed inset-0 z-30 cursor-default min-[1360px]:hidden"
         >
           <span className="sr-only">Close menu</span>
         </button>
@@ -273,7 +284,7 @@ export function Nav() {
           // separates it on any surface -- the same white-on-powder rule the
           // divider below the links already uses.
           'ring-1 ring-white/70',
-          'shadow-[0_18px_50px_rgba(24,82,142,0.22)] xl:hidden',
+          'shadow-[0_18px_50px_rgba(24,82,142,0.22)] min-[1360px]:hidden',
           open ? 'flex' : 'hidden',
         ].join(' ')}
       >
