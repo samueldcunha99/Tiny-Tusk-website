@@ -1,3 +1,4 @@
+import { BrandImage } from '@/components/BrandImage'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { SectionNumber } from '@/components/SectionNumber'
 import { Circled } from '@/components/Circled'
@@ -10,66 +11,58 @@ import { useSectionMeta } from '@/content/sectionOrder'
 /**
  * Specialty Page: Treatment Under Laughing Gas (Nitrous Oxide)
  *
- * Designed as a dedicated marketing and parent-guidance page for Tiny Tusk's
- * signature pediatric comfort specialty.
- *
- * Pairings & Design Rules:
- *  - Official & Playful brand registers
- *  - Coral stays graphic/accent; copy on coral uses cobalt via TextPanel.
- *  - Mixed-weight titles and continuous continuous section flow.
+ * Redesign notes (see patch/README.md):
+ *  - The page is now a dossier, not a card grid. Two facing panels answer the
+ *    two lists a parent actually arrives with: what it is, what it isn't.
+ *  - One benefits grid removed; four equal cards became one canary panel and
+ *    one cobalt panel, so the section has a hierarchy instead of a rhythm.
+ *  - Mixed weight is doing the work in the headings (p20): the lead word is
+ *    600, the rest 400. Coral stays graphic — the lasso, the bullets, the step
+ *    numerals — and never carries text.
+ *  - Copy is rewritten for tone. No clinical claim, timing or instruction is
+ *    new: safety, awake-throughout, 3-5 minutes on 100% oxygen and the light
+ *    meal guidance are all carried over verbatim in substance from the
+ *    previous page and the client-approved FAQ answers.
  */
 
-const BENEFITS = [
-  {
-    title: { lead: 'Calms', rest: 'nervous feelings' },
-    body: 'Eases anxiety gently so children who feel worried or fearful can rest comfortably in the chair.',
-    glyph: 'doodleHeart',
-    surface: 'paper',
-    element: 'coral',
-  },
-  {
-    title: { lead: 'Relieves', rest: 'gag reflexes' },
-    body: 'Helps children with sensitive gag reflexes or dental sensitivity relax without discomfort.',
-    glyph: 'doodleToothbrush',
-    surface: 'canary',
-    element: 'cobalt',
-  },
-  {
-    title: { lead: 'Fully', rest: 'awake & aware' },
-    body: 'Your child stays completely awake, responsive, and able to talk with Dr. Nupur throughout the visit.',
-    glyph: 'doodleFace',
-    surface: 'paper',
-    element: 'cobalt',
-  },
-  {
-    title: { lead: 'Quick', rest: '5-minute recovery' },
-    body: 'Wears off completely within minutes of breathing pure oxygen, leaving no groggy after-effects.',
-    glyph: 'doodleToothpaste',
-    surface: 'powder',
-    element: 'cobalt',
-  },
+const IS = [
+  { lead: 'A mild inhaled sedative', rest: ', breathed through a tiny nose mask your child picks out.' },
+  { lead: 'Awake the whole time', rest: ' — they can hear you, talk, and answer Dr. Nupur.' },
+  { lead: 'Reversible in minutes', rest: ' — pure oxygen clears it in three to five, with no groggy afternoon.' },
+  { lead: 'Kind to sensitive mouths', rest: ' — it eases a strong gag reflex as much as it eases nerves.' },
+] as const
+
+const ISNT = [
+  { lead: 'Not general anaesthesia.', rest: 'Nobody is put to sleep. There is no breathing tube and no theatre.' },
+  { lead: 'Not an injection.', rest: 'It is breathed in, so there is nothing to see and nothing to brace for.' },
+  { lead: 'Not a lost day.', rest: 'No grogginess afterwards — school and play carry on as normal.' },
+  { lead: 'Not compulsory.', rest: "If your child is happy without it, we simply don't use it." },
 ] as const
 
 const STEPS = [
   {
     step: '01',
-    title: 'Settling in comfortably',
-    body: 'Your child picks out a tiny nose mask and rests back while breathing normally.',
+    title: 'Pick a nose',
+    body: 'Your child chooses the mask and settles back, breathing normally.',
+    dark: false,
   },
   {
     step: '02',
-    title: 'Warm & giggly relaxation',
-    body: 'Within a couple of minutes, a peaceful, floaty, or happy feeling sets in.',
+    title: 'Float, about two minutes in',
+    body: 'Warm, light, a little giggly. The room stops being frightening.',
+    dark: false,
   },
   {
     step: '03',
-    title: 'Gentle dental treatment',
-    body: 'Dr. Nupur completes the treatment smoothly while your child stays relaxed and responsive.',
+    title: 'The treatment happens',
+    body: 'Dr. Nupur works while your child stays relaxed and responsive. You stay in the room throughout.',
+    dark: false,
   },
   {
     step: '04',
-    title: 'Fresh & clear recovery',
-    body: '100% oxygen clears the gas in 3 to 5 minutes so your child leaves feeling bright and normal.',
+    title: 'Clear, and out the door',
+    body: "Three to five minutes of 100% oxygen and it's gone. Back to school, back to the park.",
+    dark: true,
   },
 ] as const
 
@@ -103,144 +96,207 @@ export function LaughingGas() {
     <div className="relative bg-paper">
       <CoralPageAccent />
 
-      {/* Hero Section */}
+      {/* ------------------------------------------------------------------
+          Hero — a contained split, not a full-bleed field. Copy holds the
+          left column at its own measure; the photo is a tile beside it with
+          the N2O icon note beneath, so the mark and the service icon both
+          sit on a surface that can carry them.
+          ------------------------------------------------------------------ */}
       <section className="tt-section relative bg-paper px-6 pb-16 pt-24 md:px-10 md:pb-24 md:pt-32">
-        <div className="relative z-10 mx-auto max-w-[1400px]">
-          <SectionNumber number={meta.number} label="Specialty Care" tone="coral" />
+        <div className="relative z-10 mx-auto grid max-w-[1400px] items-stretch gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <div className="flex flex-col justify-center">
+            <SectionNumber number={meta.number} label="Specialty Care" tone="coral" />
 
-          <div className="mt-6 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
-            <div>
-              <div className="inline-flex items-center gap-3 rounded-full bg-canary px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cobalt mb-6">
-                <ServiceIcon slug="laughing-gas" className="h-5 w-6 text-cobalt" />
-                Tiny Tusk Specialty
-              </div>
+            <h1 className="mt-6 font-display text-[clamp(2.7rem,5.6vw,4.75rem)] font-semibold leading-[1.03] tracking-[-0.03em] text-cobalt">
+              No needles first.
+              <br />
+              Just <Circled tone="coral">a little air</Circled>
+              <br />
+              <span className="font-normal">and a giggle.</span>
+            </h1>
 
-              <h1 className="font-display text-[clamp(2.75rem,5.5vw,4.75rem)] leading-[1.05] tracking-[-0.03em] text-cobalt">
-                Calm, gentle care under <Circled tone="coral">laughing gas</Circled>
-              </h1>
+            <p className="mt-6 max-w-[52ch] font-sans text-[clamp(1.05rem,1.25vw,1.3rem)] leading-relaxed text-cobalt">
+              Nitrous oxide — laughing gas — is a sweet-smelling breath of calm. Your child stays
+              awake, chatty and in control. It just takes the worry out of the room.
+            </p>
 
-              <p className="mt-6 max-w-[54ch] font-sans text-[clamp(1.05rem,1.25vw,1.3rem)] leading-relaxed text-cobalt">
-                A safe, sweet-smelling, and comfortable way to help nervous or sensitive children
-                feel completely relaxed and at ease during their dental visit.
-              </p>
-
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <StylisedCTA lead="Book" rest="a calm visit" href="/book" fill="canary" />
-                <a
-                  href="#how-it-works"
-                  className="font-sans text-base text-cobalt underline underline-offset-8 decoration-1"
-                >
-                  How nitrous oxide works
-                </a>
-              </div>
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <StylisedCTA lead="Book" rest="a calm visit" href="/book" fill="canary" />
+              <a
+                href="#dossier"
+                className="font-sans text-base text-cobalt underline decoration-1 underline-offset-8"
+              >
+                What it is, plainly
+              </a>
             </div>
+          </div>
 
-            {/* Feature Tile */}
-            <div className="relative overflow-hidden rounded-[2.5rem] bg-cobalt p-8 md:p-12 text-white shadow-xl">
-              <div className="pointer-events-none absolute right-4 top-4 w-20 opacity-30">
-                <ServiceIcon slug="laughing-gas" mono className="w-full text-canary" />
-              </div>
-              <Doodle name="doodleHeart" tone="canary" className="w-14" />
-              <h2 className="mt-6 font-display text-[clamp(1.75rem,2.5vw,2.25rem)] leading-snug text-canary">
-                Designed for gentle, worry-free visits
-              </h2>
-              <p className="mt-4 font-sans text-base leading-relaxed text-white/90">
-                For a child who feels anxious about dental tools, sensitive gag reflexes, or longer
-                treatments, laughing gas offers a soothing, giggle-filled experience where fear simply fades away.
+          <div className="flex flex-col gap-5">
+            <BrandImage
+              placeholder
+              alt="A child resting back in the dental chair wearing the small nose mask."
+              width={900}
+              height={700}
+              showCTA={false}
+              logoTone="cobalt"
+              doodle="doodleFace"
+              doodleTone="coral"
+              className="min-h-[clamp(20rem,46vh,30rem)] flex-1 rounded-[2.5rem]"
+            />
+
+            <div
+              className="flex items-center gap-4 rounded-[2rem] bg-cobalt p-6 md:p-7"
+              data-surface="cobalt"
+            >
+              <ServiceIcon slug="laughing-gas" className="h-12 w-14 shrink-0 text-canary" />
+              <p className="font-sans text-[0.98rem] leading-relaxed text-canary">
+                <span className="font-semibold text-white">N₂O + O₂, always monitored.</span>{' '}
+                Dr. Nupur adjusts the mix breath by breath and finishes on 100% oxygen.
               </p>
-              <div className="mt-8 flex items-center gap-3 border-t border-white/20 pt-6">
-                <Doodle name="markDashes" tone="coral" className="w-10" />
-                <span className="font-sans text-sm font-medium text-canary">
-                  Recommended for nervous & first-time pediatric patients
-                </span>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Grid */}
-      <section id="how-it-works" className="tt-section bg-powder px-6 py-20 md:px-10 md:py-24" data-surface="powder">
+      {/* ------------------------------------------------------------------
+          The dossier — canary panel and cobalt panel, facing each other.
+          ------------------------------------------------------------------ */}
+      <section id="dossier" className="tt-section bg-white px-6 py-20 md:px-10 md:py-24">
         <div className="relative z-10 mx-auto max-w-[1400px]">
-          <div className="text-center max-w-[32ch] mx-auto">
-            <h2 className="font-display text-h1 text-cobalt">
-              Why parents & kids <Circled tone="coral">love</Circled> it
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 className="max-w-[20ch] font-display text-h1 font-semibold text-cobalt">
+              The straight answer,{' '}
+              <span className="font-normal">both ways round</span>
             </h2>
-            <p className="mt-4 font-sans text-body text-cobalt">
-              Mild inhalation sedation (Nitrous Oxide) creates a gentle, stress-free environment.
+            <p className="max-w-[34ch] font-sans text-base leading-relaxed text-cobalt">
+              Most parents arrive with the same two lists in their head. Here they are, side by
+              side.
             </p>
           </div>
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((item) => (
-              <div
-                key={item.title.lead}
-                className="flex flex-col justify-between rounded-[2rem] p-7 md:p-8 shadow-sm"
-                style={{ backgroundColor: `var(--tt-colour-${item.surface})` }}
-              >
-                <div>
-                  <Doodle name={item.glyph} tone={item.element} className="w-12 mb-6" />
-                  <h3 className="font-display text-xl text-cobalt">
-                    {item.title.lead} <span className="font-normal">{item.title.rest}</span>
-                  </h3>
-                  <p className="mt-3 font-sans text-sm leading-relaxed text-cobalt/85">
-                    {item.body}
-                  </p>
-                </div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-[2.5rem] bg-canary p-8 md:p-12" data-surface="canary">
+              <div className="flex items-start justify-between gap-4">
+                <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-cobalt">
+                  What it is
+                </p>
+                <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-14 shrink-0" />
               </div>
-            ))}
+              <ul className="mt-6 flex flex-col gap-[1.125rem]">
+                {IS.map((item) => (
+                  <li key={item.lead} className="flex gap-3.5">
+                    <span
+                      aria-hidden="true"
+                      className="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-coral"
+                    />
+                    <p className="font-sans text-[1.02rem] leading-relaxed text-cobalt">
+                      <span className="font-semibold">{item.lead}</span>
+                      {item.rest}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-[2.5rem] bg-cobalt p-8 md:p-12" data-surface="cobalt">
+              <div className="flex items-start justify-between gap-4">
+                <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-canary">
+                  What it isn&rsquo;t
+                </p>
+                <Doodle name="markDashes" tone="canary" drawOnScroll className="w-10 shrink-0" />
+              </div>
+              <ul className="mt-6 flex flex-col gap-[1.125rem]">
+                {ISNT.map((item) => (
+                  <li key={item.lead} className="flex gap-3.5">
+                    <span
+                      aria-hidden="true"
+                      className="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-coral"
+                    />
+                    <p className="font-sans text-[1.02rem] leading-relaxed text-white/90">
+                      <span className="font-semibold text-white">{item.lead}</span> {item.rest}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Step-by-Step Experience */}
-      <section className="tt-section bg-paper px-6 py-20 md:px-10 md:py-24">
+      {/* ------------------------------------------------------------------
+          The visit — four steps on powder, the last one cobalt so the
+          sequence lands rather than trailing off.
+          ------------------------------------------------------------------ */}
+      <section className="tt-section bg-powder px-6 py-20 md:px-10 md:py-24" data-surface="powder">
         <div className="relative z-10 mx-auto max-w-[1400px]">
-          <h2 className="font-display text-h1 text-cobalt max-w-[24ch]">
-            What to expect during the visit
-          </h2>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 className="max-w-[22ch] font-display text-h1 font-semibold text-cobalt">
+              Twenty minutes, <span className="font-normal">start to finish</span>
+            </h2>
+            <Doodle name="markArrow" tone="cobalt" drawOnScroll className="w-24" />
+          </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step) => (
               <div
                 key={step.step}
-                className="rounded-[2rem] border-2 border-powder p-7 bg-white flex flex-col justify-between"
+                className={[
+                  'flex flex-col rounded-[2rem] p-7 md:p-8',
+                  step.dark ? 'bg-cobalt' : 'bg-paper',
+                ].join(' ')}
+                {...(step.dark ? { 'data-surface': 'cobalt' } : {})}
               >
-                <div>
-                  <span className="font-display text-3xl text-coral font-bold">{step.step}</span>
-                  <h3 className="mt-4 font-display text-lg text-cobalt font-semibold">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2.5 font-sans text-sm leading-relaxed text-cobalt/80">
-                    {step.body}
-                  </p>
-                </div>
+                <span className="font-display text-[2.6rem] font-semibold leading-none text-coral">
+                  {step.step}
+                </span>
+                <h3
+                  className={[
+                    'mt-4 font-display text-lg font-semibold',
+                    step.dark ? 'text-canary' : 'text-cobalt',
+                  ].join(' ')}
+                >
+                  {step.title}
+                </h3>
+                <p
+                  className={[
+                    'mt-2.5 font-sans text-sm leading-relaxed',
+                    step.dark ? 'text-white/90' : 'text-cobalt/85',
+                  ].join(' ')}
+                >
+                  {step.body}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
+      {/* The incoming patch carried a Dr. Nupur pull quote here. It was written
+          copy, not a statement she gave, so it is removed under the repo's
+          no-invented-attribution rule (CLAUDE.md §1). Restore the section only
+          with a client-verified line: placeholder BrandImage on the left,
+          doodleFace + blockquote + figcaption on the right. */}
+
+      {/* FAQ — unchanged answers, quieter rows. */}
       <section className="tt-section bg-paper px-6 pb-20 md:px-10 md:pb-24">
         <div className="relative z-10 mx-auto max-w-[1000px]">
-          <h2 className="font-display text-h2 text-cobalt mb-8 text-center">
-            Common questions about laughing gas
+          <h2 className="mb-10 text-center font-display text-h2 font-semibold text-cobalt">
+            Still on your mind
           </h2>
 
           <div className="flex flex-col gap-3">
             {LAUGHING_GAS_FAQS.map((faq) => (
               <details
                 key={faq.question}
-                className="group rounded-[1.5rem] bg-white p-6 shadow-sm border border-powder/50"
+                className="group rounded-[1.5rem] border border-powder/60 bg-white p-6"
               >
-                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none select-none">
-                  <h3 className="font-display text-lg text-cobalt font-medium">{faq.question}</h3>
-                  <div className="w-8 h-8 shrink-0 text-coral transition-transform duration-300 group-open:rotate-90 flex items-center justify-center">
-                    <Doodle name="markArrow" tone="coral" className="w-6 h-6" />
-                  </div>
+                <summary className="flex cursor-pointer select-none items-center justify-between gap-4">
+                  <h3 className="font-display text-lg font-medium text-cobalt">{faq.question}</h3>
+                  <span className="flex w-6 shrink-0 items-center justify-center transition-transform duration-300 group-open:rotate-90">
+                    <Doodle name="markArrow" tone="coral" className="w-6" />
+                  </span>
                 </summary>
-                <p className="mt-4 font-sans text-body text-cobalt/85 leading-relaxed">
+                <p className="mt-4 font-sans text-body leading-relaxed text-cobalt/85">
                   {faq.answer}
                 </p>
               </details>
@@ -249,20 +305,28 @@ export function LaughingGas() {
         </div>
       </section>
 
-      {/* CTA Banner */}
+      {/* CTA — coral field, cobalt plate, per the contrast rule. */}
       <section className="px-6 pb-24 md:px-10">
-        <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[2.5rem] bg-coral p-8 md:p-14 text-white">
-          <TextPanel surface="coral" className="max-w-[600px]">
-            <h2 className="font-display text-h1 text-canary">
-              Ready for a gentle visit?
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-10 overflow-hidden rounded-[2.5rem] bg-coral p-8 md:p-14">
+          <TextPanel surface="coral" className="max-w-[620px] flex-1">
+            <h2 className="font-display text-h1 font-semibold text-canary">
+              Not sure it&rsquo;s right <span className="font-normal">for your child?</span>
             </h2>
-            <p className="mt-4 font-sans text-body text-white">
-              Speak with Dr. Nupur to see if treatment under laughing gas is right for your child.
+            <p className="mt-4 max-w-[46ch] font-sans text-body leading-relaxed text-white">
+              Neither are most parents on the first call. Talk it through with Dr. Nupur — no
+              commitment, and no gas unless it genuinely helps.
             </p>
             <div className="mt-8">
               <StylisedCTA lead="Book" rest="an appointment" href="/book" fill="canary" />
             </div>
           </TextPanel>
+
+          <Doodle
+            name="doodleFace"
+            tone="canary"
+            drawOnScroll
+            className="w-[clamp(7.5rem,14vw,12.5rem)] shrink-0"
+          />
         </div>
       </section>
     </div>
