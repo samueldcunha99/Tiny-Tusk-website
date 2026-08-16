@@ -1,10 +1,9 @@
 import { Doodle } from '@/components/Doodle'
-import { Logo } from '@/components/Logo'
 import { LoopField } from '@/components/LoopField'
+import { Roundel } from '@/components/Roundel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { StylisedCTA } from '@/components/StylisedCTA'
-import { TextOnPath } from '@/components/TextOnPath'
-import { CLINIC, HERO } from '@/content/site'
+import { HERO } from '@/content/site'
 import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
@@ -78,27 +77,23 @@ export function HeroDesktop() {
         </div>
 
         <div className="flex flex-col items-center gap-8">
-          {/* Mark inside the roundel, as the footer sets it. `aspect-square` is
-              load-bearing: the roundel is a square SVG, so without it the box
-              takes its height from the mark and the ring shrinks below it. */}
+          {/* The board's roundel, mark included. `aspect-square` is load-bearing:
+              it is a square SVG, so without it the box takes its height from the
+              artwork and the ring shrinks. */}
           <div className="relative grid aspect-square w-[clamp(9.5rem,15vw,13rem)] place-items-center">
-            <TextOnPath
-              text={CLINIC.tagline}
-              mode="roundel"
-              tone="cobalt"
-              className="absolute inset-0 h-full w-full"
-            />
-            <Logo variant="mark" tone="cobalt" size={64} />
+            <Roundel tone="cobalt" className="absolute inset-0 h-full w-full" />
             {/* The dashes read as the mark's own spark rather than a loose doodle
                 below the unit. Percentage-placed so they track the roundel at any
                 clamp size, and tucked into the band between the mark's shoulder
                 and the ring -- the tagline arcs high across the top there, so
-                nothing collides. */}
+                nothing collides. They were briefly removed and restored: the
+                request was about the phone, and this rail is the only coral on
+                the desktop hero. */}
             <Doodle
               name="markDashes"
               tone="coral"
               drawOnScroll
-              className="pointer-events-none absolute left-[67%] top-[33%] w-[11%] rotate-6"
+              className="pointer-events-none absolute left-[70%] top-[30%] w-[11%] rotate-6"
             />
           </div>
         </div>

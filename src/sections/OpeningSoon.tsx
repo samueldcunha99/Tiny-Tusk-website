@@ -6,9 +6,11 @@ import { LoopField } from '@/components/LoopField'
 import { MapEmbed } from '@/components/MapEmbed'
 import { RouteMeta } from '@/components/RouteMeta'
 import { StylisedCTA } from '@/components/StylisedCTA'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 import {
   CLINIC,
   CLINIC_ADDRESS,
+  CLINIC_PHONE,
   MAP_DIRECTIONS_HREF,
   OPENING_COPY,
   OPENING_DATE,
@@ -105,7 +107,7 @@ export function OpeningSoon() {
   return (
     <>
       <RouteMeta
-        title={`${CLINIC.fullName} — Opening Soon in Kharghar, Navi Mumbai`}
+        title={`${CLINIC.fullName} | Opening Soon in Kharghar, Navi Mumbai`}
         description={`${CLINIC.fullName} is under construction in ${CLINIC_ADDRESS.locality}. Find our address in Kharghar, Navi Mumbai and get directions ahead of opening.`}
       />
       <main
@@ -185,7 +187,7 @@ export function OpeningSoon() {
                   See docs/contrast-audit.md. */}
               <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt">
                 <Doodle name="markArrow" tone="coral" className="w-[34px] shrink-0 rotate-[-8deg]" />
-                Nudge the doodles — they wobble
+                Nudge the doodles and they wobble
               </p>
             </div>
 
@@ -218,6 +220,18 @@ export function OpeningSoon() {
                     {CLINIC_ADDRESS.landmark}
                   </p>
                 </address>
+
+                {/* The gate hides every other route, so this panel is the only
+                    place a parent can reach the clinic before opening day. */}
+                <div className="mt-4 flex flex-col items-center gap-3 lg:items-start">
+                  <a
+                    href={CLINIC_PHONE.href}
+                    className="inline-flex min-h-11 items-center font-display text-[1.15rem] text-canary underline underline-offset-4"
+                  >
+                    {CLINIC_PHONE.display}
+                  </a>
+                  <WhatsAppButton variant="row" />
+                </div>
 
                 <div className="mt-4 overflow-hidden rounded-[1.25rem] border-[3px] border-canary">
                   <MapEmbed className="block h-[210px] w-full border-0" />

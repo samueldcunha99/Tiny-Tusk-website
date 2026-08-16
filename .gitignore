@@ -16,3 +16,6 @@ supabase/functions/.env
 # so they are never committed back into the repo.
 tiny-tusk-website.zip
 *.zip
+
+# Python bytecode from the tools/ extraction scripts.
+__pycache__/

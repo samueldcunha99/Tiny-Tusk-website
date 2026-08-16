@@ -143,7 +143,7 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
           >
             <div
               data-panel-inner
-              className="flex max-h-full w-full max-w-xl flex-col items-start gap-5 overflow-hidden rounded-[2.5rem] p-6 md:p-10"
+              className="flex max-h-full w-full max-w-xl flex-col items-center text-center gap-5 overflow-hidden rounded-[2.5rem] p-6 md:p-10"
               style={{ background: colourVar(panel.surface) }}
             >
               {panel.kind === 'beat' ? (
@@ -153,11 +153,12 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
                   </div>
                   {/* Coral cannot carry text at any size, so its copy floats on
                       a cobalt panel while the coral field is kept. */}
-                  <TextPanel surface={panel.surface} className="flex flex-col gap-5">
+                  <TextPanel surface={panel.surface} className="flex flex-col items-center text-center gap-5">
                     <SectionNumber
                       number={panel.number}
                       label="Step"
                       tone={carriesText(panel.surface) ? panel.element : 'canary'}
+                      className="justify-center"
                     />
                     <h3
                       className="font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-none"

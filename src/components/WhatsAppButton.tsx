@@ -25,9 +25,17 @@ export interface WhatsAppButtonProps {
    * `icon` is the round disc for the desktop bar, where the label would
    * crowd the booking pill. `row` is the full-width labelled version for the
    * mobile panel, where an unlabelled disc in a list of words reads as a
-   * decoration rather than an action.
+   * decoration rather than an action. `floating` is the persistent fixed
+   * action button at the bottom-right corner of the screen.
    */
-  variant?: 'icon' | 'row'
+  variant?: 'icon' | 'row' | 'floating'
+  /**
+   * `row` label. Defaults to the full "Chat on WhatsApp"; shorten it only where
+   * the row shares its line with another button and the full phrase would push
+   * the pair wider than the screen. The accessible name is unaffected -- it
+   * comes from the visually hidden text, which always says the whole thing.
+   */
+  label?: string
   className?: string
   onNavigate?: () => void
 }
@@ -42,6 +50,7 @@ export interface WhatsAppButtonProps {
  */
 export function WhatsAppButton({
   variant = 'icon',
+  label: rowLabel = 'Chat on WhatsApp',
   className,
   onNavigate,
 }: WhatsAppButtonProps) {
@@ -56,14 +65,15 @@ export function WhatsAppButton({
   // is a coral dot plus the browser tooltip.
   const devNotice = verified
     ? undefined
-    : 'Development sample number — not clinic information'
+    : 'Development sample number, not clinic information'
 
   const shared = [
     // Green is the logotype, so it is exempt from the contrast floor, but the
     // ring is not decoration: at 1.22:1 the disc would otherwise have no edge
     // against the powder bar behind it.
-    'relative inline-flex items-center justify-center ring-1 ring-white/70',
-    'transition-opacity duration-200 hover:opacity-90',
+    variant === 'floating'
+      ? 'fixed bottom-6 right-6 z-50 inline-flex items-center justify-center rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.22)] ring-2 ring-white/90 transition-transform duration-200 hover:scale-110 active:scale-95'
+      : 'relative inline-flex items-center justify-center ring-1 ring-white/70 transition-opacity duration-200 hover:opacity-90',
   ]
 
   return (
@@ -72,11 +82,13 @@ export function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      aria-label={variant === 'icon' ? label : undefined}
-      {...(devNotice ? { title: devNotice } : {})}
+      aria-label={variant === 'icon' || variant === 'floating' ? label : undefined}
+      title={devNotice ?? (variant === 'floating' ? 'Chat on WhatsApp' : undefined)}
       className={[
         ...shared,
-        variant === 'icon'
+        variant === 'floating'
+          ? 'h-14 w-14'
+          : variant === 'icon'
           ? 'h-11 w-11 rounded-full'
           // `nowrap` and a step down from the booking pill's 1.25rem: at that
           // size the label wrapped to two lines inside the 16rem panel, which
@@ -89,9 +101,15 @@ export function WhatsAppButton({
       style={{ background: 'var(--wa-green)' }}
     >
       <WhatsAppGlyph
-        className={variant === 'icon' ? 'h-[1.35rem] w-[1.35rem] text-white' : 'h-5 w-5 text-white'}
+        className={
+          variant === 'floating'
+            ? 'h-7 w-7 text-white'
+            : variant === 'icon'
+            ? 'h-[1.35rem] w-[1.35rem] text-white'
+            : 'h-5 w-5 text-white'
+        }
       />
-      {variant === 'row' ? <span>Chat on WhatsApp</span> : null}
+      {variant === 'row' ? <span aria-hidden="true">{rowLabel}</span> : null}
 
       {/* Opens in a new tab; announced rather than left as a surprise. */}
       <span className="sr-only">{variant === 'row' ? label : ''} (opens WhatsApp in a new tab)</span>
@@ -99,7 +117,7 @@ export function WhatsAppButton({
       {devNotice ? (
         <span
           aria-hidden="true"
-          // Outside the shape in both variants: the row's label is centred and
+          // Outside the shape in all variants: the row's label is centred and
           // runs the full width, so an inset dot lands on top of it.
           className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-coral ring-2 ring-white"
         />

@@ -62,7 +62,7 @@ export function GamesArcade() {
   const chooseSequenceStep = (order: number) => {
     if (order <= sequenceStep) return
     if (order !== sequenceStep + 1) {
-      setSequenceMessage('Almost—try a different step.')
+      setSequenceMessage('Almost, try a different step.')
       return
     }
 

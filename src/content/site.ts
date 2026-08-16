@@ -83,16 +83,25 @@ export const MAP_EMBED_SRC = `https://maps.google.com/maps?q=${MAP_QUERY}&output
 /** Opens the same place in the visitor's own Maps app for directions. */
 export const MAP_DIRECTIONS_HREF = `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`
 
-// TODO: Add phone, email, opening hours, and official social URLs only after
-// the clinic supplies and verifies them. Do not render guessed fallbacks.
-// (The address above IS verified and is deliberately not in this block.)
+/**
+ * The clinic's real phone number. CLIENT-VERIFIED — supplied by the client on
+ * 2026-08-14. Like the address, this renders in production and goes into
+ * structured data; it is deliberately not in `MOCK_CONTACT` below. Indian
+ * mobile, so `+91`. `WHATSAPP_NUMBER` is the same line.
+ */
+export const CLINIC_PHONE = {
+  display: '+91 96190 00971',
+  href: 'tel:+919619000971',
+} as const
+
+// TODO: Add email, opening hours, and official social URLs only after the
+// clinic supplies and verifies them. Do not render guessed fallbacks.
+// (The address and phone above ARE verified and are deliberately not in here.)
 export const MOCK_CONTACT = {
-  phone: '+44 20 7946 0321',
-  phoneHref: 'tel:+442079460321',
   email: 'hello@tinytusk.example',
   hours: [
-    { days: 'Monday – Friday', time: '8:30am – 5:30pm' },
-    { days: 'Saturday', time: '9:00am – 1:00pm' },
+    { days: 'Monday to Friday', time: '8:30am to 5:30pm' },
+    { days: 'Saturday', time: '9:00am to 1:00pm' },
     { days: 'Sunday', time: 'Closed' },
   ],
 } as const
@@ -100,16 +109,12 @@ export const MOCK_CONTACT = {
 /**
  * WhatsApp contact.
  *
- * `WHATSAPP_NUMBER` is the single switch for the whole feature. It stays
- * `null` until the clinic supplies its real WhatsApp Business number: the nav
- * must never point at `MOCK_CONTACT`, and a parent tapping through to an
- * invented number is worse than no button at all.
- *
- * TODO: replace `null` with the clinic-verified number in `wa.me` format --
- * country code first, digits only, no `+` and no spaces, e.g. '447700900123'.
- * That one edit takes the button live in production; nothing else changes.
+ * `WHATSAPP_NUMBER` is the single switch for the whole feature. CLIENT-VERIFIED
+ * — the same line as `CLINIC_PHONE`, in `wa.me` format: country code first,
+ * digits only, no `+` and no spaces. The dev sample below is now unreachable
+ * and stays only as the pattern for the next unverified number.
  */
-export const WHATSAPP_NUMBER: string | null = null
+export const WHATSAPP_NUMBER: string | null = '919619000971'
 
 /**
  * Layout stand-in so the button can be built and reviewed before the real
@@ -181,17 +186,15 @@ export const HERO = {
  */
 export const SECTIONS = [
   { id: 'hero', number: '00', label: 'Welcome' },
-  { id: 'paths', number: '01', label: 'Start Here' },
-  { id: 'journey', number: '02', label: 'The Journey' },
+  { id: 'journey', number: '01', label: 'The Journey' },
+  { id: 'team', number: '02', label: 'Dr. Nupur' },
   { id: 'services', number: '03', label: 'Services' },
   { id: 'clinic', number: '04', label: 'Inside the Clinic' },
-  { id: 'ria', number: '05', label: "Ria's Journey" },
-  { id: 'team', number: '06', label: 'Dr. Nupur' },
-  { id: 'brush-timer', number: '07', label: '2-Min Brush' },
-  { id: 'parents', number: '08', label: "Parents' Corner" },
-  { id: 'voices', number: '09', label: 'Parent Voices' },
-  { id: 'faq', number: '10', label: 'Questions' },
-  { id: 'book', number: '11', label: 'Book a Visit' },
+  { id: 'brush-timer', number: '05', label: '2-Min Brush' },
+  { id: 'parents', number: '06', label: "Parents' Corner" },
+  { id: 'voices', number: '07', label: 'Parent Voices' },
+  { id: 'faq', number: '08', label: 'Questions' },
+  { id: 'book', number: '09', label: 'Book a Visit' },
 ] as const
 
 export type SectionId = (typeof SECTIONS)[number]['id']

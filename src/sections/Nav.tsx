@@ -142,7 +142,7 @@ export function Nav() {
         ].join(' ')}
       >
         {/* p8: the mark's default placement is top-left. */}
-        <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} — home`}>
+        <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
           {/* Never below 64px -- the guide's minimum digital size (p7). The nav
               condenses by tightening the pill, not by shrinking the mark. */}
           <Logo size={64} tone="cobalt" title={`${CLINIC.name} logo`} />

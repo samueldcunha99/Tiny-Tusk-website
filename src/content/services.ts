@@ -21,7 +21,7 @@ export const SERVICES: readonly Service[] = [
     title: { lead: 'First', rest: 'visit' },
     body:
       'Best booked around the first birthday, or whenever the first tooth appears. It is mostly ' +
-      'a conversation — we count, we look, and your child gets used to the chair with nothing ' +
+      'a conversation. We count, we look, and your child gets used to the chair with nothing ' +
       'happening in it.',
     glyph: 'journeyDetection',
     surface: 'powder',
@@ -43,8 +43,8 @@ export const SERVICES: readonly Service[] = [
     id: 'cavity-care',
     title: { lead: 'Cavity', rest: 'care' },
     body:
-      'If there is decay we treat it in the smallest way that works — often no drill at all in ' +
-      'the early stages. We show you the photograph so you can see what we saw.',
+      'If there is decay we treat it in the smallest way that works, and in the early stages ' +
+      'that often means no drill at all. We show you the photograph so you can see what we saw.',
     glyph: 'journeyTreatment',
     surface: 'coral',
     element: 'canary',
@@ -76,8 +76,8 @@ export const SERVICES: readonly Service[] = [
     id: 'emergency',
     title: { lead: 'Emergency', rest: 'care' },
     body:
-      'Knocked-out tooth, a break, a night of real pain — ring us and we will find you a slot ' +
-      'the same day. Keep a knocked-out adult tooth in milk and bring it with you.',
+      'For a knocked out tooth, a break, or a night of real pain, ring us and we will find you ' +
+      'a slot the same day. Keep a knocked out adult tooth in milk and bring it with you.',
     glyph: 'doodleHeart',
     surface: 'cobalt',
     element: 'canary',

@@ -1,7 +1,7 @@
 /**
  * The guide's mixed-weight convention (p20, and shown throughout p33-34):
  * a DemiBold first word followed by a Regular second word --
- * "**Schedule** Appointment", "**Ria's** Journey", "**Cavities** stages".
+ * "**Schedule** Appointment", "**Start** Here", "**Cavities** stages".
  *
  * It is one label, so it is one element with two spans; screen readers read it
  * as a single phrase rather than two fragments.

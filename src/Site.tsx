@@ -6,13 +6,11 @@ import { useIsMobile } from '@/lib/viewport'
 import { Nav } from '@/sections/Nav'
 import { Hero } from '@/sections/Hero'
 import { HomeMobile } from '@/sections/Home.mobile'
-import { HomePaths } from '@/sections/HomePaths'
 import { Journey } from '@/sections/Journey'
 import { LaughingGas } from '@/sections/LaughingGas'
 import { Services } from '@/sections/Services'
 import { InsideClinic } from '@/sections/InsideClinic'
 import { Preloader } from '@/sections/Preloader'
-import { RiaJourney } from '@/sections/RiaJourney'
 import { Team } from '@/sections/Team'
 import { BrushTimer } from '@/sections/BrushTimer'
 import { Games } from '@/sections/Games'
@@ -22,6 +20,7 @@ import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 
 /**
  * The full site, behind the pre-opening gate in `App.tsx`.
@@ -40,14 +39,11 @@ import { NotFound } from '@/sections/NotFound'
  */
 const HOME_ORDER: readonly SectionId[] = [
   'hero',
-  'paths',
   'journey',
+  'team',
   'services',
   'clinic',
-  'ria',
-  'team',
   'brush-timer',
-  'parents',
   'voices',
   'faq',
   'book',
@@ -61,14 +57,11 @@ function Home() {
   return (
     <SectionOrder ids={HOME_ORDER}>
       <Hero />
-      <HomePaths />
       <Journey />
+      <Team />
       <Services />
       <InsideClinic />
-      <RiaJourney />
-      <Team />
       <BrushTimer />
-      <ParentsCorner />
       <Testimonials />
       <Faq />
       <Booking />
@@ -102,7 +95,7 @@ function CurrentRoute() {
     case '/':
       return (
         <PageRoute
-          title="Tiny Tusk — Pediatric Dental Clinic"
+          title="Tiny Tusk Pediatric Dental Clinic"
           description="Gentle pediatric dental care explained with kindness, patience, and plain-spoken guidance for families."
         >
           <Home />
@@ -224,6 +217,7 @@ export default function Site() {
         <CurrentRoute />
       </main>
       <Footer />
+      <WhatsAppButton variant="floating" />
     </>
   )
 }

@@ -1,8 +1,10 @@
 import { BrandImage } from '@/components/BrandImage'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { Circled } from '@/components/Circled'
+import { Doodle } from '@/components/Doodle'
+import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
-import { CLINIC_CONCEPTS } from '@/content/clinic'
+import { CLINIC_AMENITIES, CLINIC_CONCEPTS, CLINIC_VISION } from '@/content/clinic'
 import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
@@ -46,6 +48,48 @@ export function InsideClinic({ asPage = false }: { asPage?: boolean | undefined 
             These are concept visuals of the space being built, not photographs of the finished
             clinic.
           </p>
+        </div>
+
+        {/* The clinic's own goal, then the six things it has told us are
+            actually in the space. This sits above the concept tiles on purpose:
+            the stated facts should reach a parent before the visuals that are
+            explicitly not photographs. */}
+        <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:items-start">
+          <div>
+            <h3 className="max-w-[20ch] font-display text-h2 text-cobalt">
+              <MixedWeightLabel
+                display
+                lead={CLINIC_VISION.heading.lead}
+                rest={CLINIC_VISION.heading.rest}
+              />
+            </h3>
+
+            {/* An index of the paragraph opposite, not a second telling of it. */}
+            <ul className="mt-6 flex flex-col gap-3">
+              {CLINIC_AMENITIES.map((amenity) => (
+                <li
+                  key={amenity.label}
+                  className="flex items-center gap-3.5 rounded-[1.25rem] bg-cobalt-20 px-4 py-3.5"
+                >
+                  <Doodle name={amenity.glyph} tone="cobalt" drawOnScroll className="w-8 shrink-0" />
+                  <span className="font-display text-[1.05rem] leading-snug text-cobalt">
+                    {amenity.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-5 lg:mt-3">
+            {CLINIC_VISION.paragraphs.map((para) => (
+              <p
+                key={para.slice(0, 24)}
+                className="font-sans text-body leading-relaxed text-cobalt"
+              >
+                {para}
+              </p>
+            ))}
+          </div>
         </div>
 
         <div className="mt-12 grid gap-5 lg:grid-cols-12">

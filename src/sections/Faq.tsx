@@ -24,8 +24,12 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
   return (
     <section
       id="faq"
+      data-surface="canary"
       className={[
-        'tt-section relative bg-paper px-6 md:px-10',
+        // Canary: the questions block is the warm stop near the foot of the
+        // page. Cobalt copy is 6.37:1 on it and the answer cards are white,
+        // so the pairing (p24) and every measurement inside are unchanged.
+        'tt-section relative bg-canary px-6 md:px-10',
         asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
       ].join(' ')}
       aria-labelledby="faq-heading"

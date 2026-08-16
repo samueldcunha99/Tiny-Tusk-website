@@ -21,7 +21,7 @@ export const DR_NUPUR = {
    */
   credentials: 'BDS · MDS, Pediatric Dentistry',
   portrait: {
-    alt: 'Portrait of Dr. Nupur — photography to be supplied.',
+    alt: 'Portrait of Dr. Nupur, photography to be supplied.',
     /**
      * Internal production note. NEVER render this in the UI — it is guidance
      * for whoever commissions the shoot, not copy for visitors.
@@ -31,8 +31,29 @@ export const DR_NUPUR = {
   },
   philosophy: {
     quote: 'A first visit should leave a child feeling understood.',
-    body: 'Children notice when a room is moving too fast. Dr. Nupur’s approach begins with a pause: explain what is happening, let your child ask a question, and take the next step only when they are ready.',
   },
+  /**
+   * CLIENT-SUPPLIED, IN DR. NUPUR'S OWN WORDS — supplied 2026-08-14. Verbatim
+   * from the client's notes, first person, down to "realization". Do not
+   * rewrite it into the site's third-person voice: the value here is that it
+   * is hers. It replaced a paragraph we had written for her.
+   */
+  bio: [
+    'Loving kids came naturally to me, and it’s what drew me to pediatric dentistry right from the start of my MDS journey. Years of consultations taught me something important: children need more than just a treatment and a checklist. They need a space that welcomes them before anything else happens. That realization is what led me to create Tiny Tusk.',
+    'Beyond the clinic, I’m a fitness enthusiast and an avid traveller who loves exploring new places and cultures. I’m also someone who believes in constantly growing, staying updated, and evolving in my field.',
+  ] as readonly string[],
+  /**
+   * CLIENT-SUPPLIED — the clinic's five stated key specialities, verbatim.
+   * These are clinical claims, so they render in the official register and
+   * nothing may be added to this list that the clinic has not written itself.
+   */
+  specialities: [
+    'Airway-focused pediatric dentistry',
+    'Myofunctional therapy',
+    'Aligners for children and teens',
+    'Treatment for children with special healthcare needs',
+    'Treatment under nitrous oxide sedation and general anaesthesia',
+  ] as readonly string[],
   expectations: [
     { title: 'We begin with a chat', body: 'You can tell us what has been tricky at home. Your child can listen, join in, or simply take it all in.', glyph: 'doodleHeart', surface: 'powder', element: 'cobalt' },
     { title: 'Nothing is a surprise', body: 'Tools are named before they are used, and each step is explained in words a child can follow.', glyph: 'doodleToothbrush', surface: 'canary', element: 'cobalt' },

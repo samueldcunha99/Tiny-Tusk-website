@@ -127,7 +127,7 @@ function validate(values: BookingValues, step: number): Errors {
     }
   })
   if (values.email && !/^\S+@\S+\.\S+$/.test(values.email)) {
-    errors.email = 'That email does not look quite complete — please check it once more.'
+    errors.email = 'That email does not look quite complete, so please check it once more.'
   }
   if (values.phone && !/^[+()\d][+()\d\s-]{4,31}$/.test(values.phone)) {
     errors.phone = 'Please enter a phone number we can use to reach you.'
@@ -318,7 +318,10 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
     <section
       id="book"
       className={[
-        'tt-section bg-paper px-6 md:px-10',
+        // Powder rather than paper so the last section before the cobalt
+        // footer is not a third white block in a row. The powder note card
+        // inside it goes white for the same reason Team's did.
+        'tt-section bg-powder px-6 md:px-10',
         asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
       ].join(' ')}
       aria-labelledby="book-heading"
@@ -333,7 +336,7 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
             A few details now; a kind person will call to make the rest simple.
           </p>
 
-          <div className="mt-8 rounded-[2rem] bg-powder p-6 text-cobalt md:p-8">
+          <div className="mt-8 rounded-[2rem] bg-white p-6 text-cobalt md:p-8">
             <Doodle name="journeyCare" tone="cobalt" className="w-20" />
             <p className="mt-5 font-display text-h2">Four small steps</p>
             <ol className="mt-5 grid gap-3">
@@ -461,7 +464,7 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   aria-invalid={Boolean(errors.childAge)}
                   aria-describedby={errors.childAge ? 'childAge-error' : undefined}
                   className={FIELD}
-                  placeholder="In years — 0 to 18"
+                  placeholder="In years, 0 to 18"
                 />
               </label>
               {errorFor('childAge')}

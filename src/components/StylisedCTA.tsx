@@ -30,12 +30,32 @@ const LABEL_ON: Record<Fill, BrandColour> = {
 /** Fills that cannot carry a label directly and need a cobalt plate behind it. */
 const NEEDS_PLATE: Record<Fill, boolean> = { canary: false, powder: false, coral: true }
 
+/**
+ * `lg` is for a CTA that closes a column or a section rather than sitting in a
+ * row of controls -- at the default size the ellipse reads as a chip lost in
+ * the whitespace. Pair it with `className="w-full"` to stretch the ellipse to
+ * the column; the artwork is drawn with `preserveAspectRatio="none"` precisely
+ * so it can take that.
+ */
+type Size = 'md' | 'lg'
+
+const BOX: Record<Size, string> = {
+  md: 'min-h-[56px] px-[clamp(2rem,4vw,3.25rem)] py-[clamp(0.9rem,1.6vw,1.15rem)]',
+  lg: 'min-h-[78px] px-[clamp(2.5rem,5vw,4rem)] py-[clamp(1.3rem,2.2vw,1.7rem)]',
+}
+
+const LABEL_SIZE: Record<Size, string> = {
+  md: 'text-[clamp(1rem,1.4vw,1.125rem)]',
+  lg: 'text-[clamp(1.2rem,1.9vw,1.5rem)]',
+}
+
 export interface StylisedCTAProps {
   lead: string
   rest: string
   href?: string
   onClick?: () => void
   fill?: Fill
+  size?: Size | undefined
   className?: string
   children?: ReactNode
 }
@@ -57,6 +77,7 @@ export function StylisedCTA({
   href,
   onClick,
   fill = 'canary',
+  size = 'md',
   className,
 }: StylisedCTAProps) {
   const rootRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null)
@@ -138,7 +159,8 @@ export function StylisedCTA({
         lead={lead}
         rest={rest}
         className={[
-          'relative z-10 text-[clamp(1rem,1.4vw,1.125rem)]',
+          'relative z-10',
+          LABEL_SIZE[size],
           NEEDS_PLATE[fill] ? 'rounded-full px-5 py-2' : '',
         ]
           .filter(Boolean)
@@ -149,8 +171,8 @@ export function StylisedCTA({
   )
 
   const classes = [
-    'relative inline-flex min-h-[56px] items-center justify-center',
-    'px-[clamp(2rem,4vw,3.25rem)] py-[clamp(0.9rem,1.6vw,1.15rem)]',
+    'relative inline-flex items-center justify-center',
+    BOX[size],
     'transition-colors duration-200',
     className,
   ]

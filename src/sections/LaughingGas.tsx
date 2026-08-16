@@ -27,15 +27,15 @@ import { useSectionMeta } from '@/content/sectionOrder'
 
 const IS = [
   { lead: 'A mild inhaled sedative', rest: ', breathed through a tiny nose mask your child picks out.' },
-  { lead: 'Awake the whole time', rest: ' — they can hear you, talk, and answer Dr. Nupur.' },
-  { lead: 'Reversible in minutes', rest: ' — pure oxygen clears it in three to five, with no groggy afternoon.' },
-  { lead: 'Kind to sensitive mouths', rest: ' — it eases a strong gag reflex as much as it eases nerves.' },
+  { lead: 'Awake the whole time', rest: ', so they can hear you, talk, and answer Dr. Nupur.' },
+  { lead: 'Reversible in minutes', rest: ', because pure oxygen clears it in three to five, with no groggy afternoon.' },
+  { lead: 'Kind to sensitive mouths', rest: ', easing a strong gag reflex as much as it eases nerves.' },
 ] as const
 
 const ISNT = [
   { lead: 'Not general anaesthesia.', rest: 'Nobody is put to sleep. There is no breathing tube and no theatre.' },
   { lead: 'Not an injection.', rest: 'It is breathed in, so there is nothing to see and nothing to brace for.' },
-  { lead: 'Not a lost day.', rest: 'No grogginess afterwards — school and play carry on as normal.' },
+  { lead: 'Not a lost day.', rest: 'There is no grogginess afterwards, so school and play carry on as normal.' },
   { lead: 'Not compulsory.', rest: "If your child is happy without it, we simply don't use it." },
 ] as const
 
@@ -116,8 +116,16 @@ export function LaughingGas() {
             </h1>
 
             <p className="mt-6 max-w-[52ch] font-sans text-[clamp(1.05rem,1.25vw,1.3rem)] leading-relaxed text-cobalt">
-              Nitrous oxide — laughing gas — is a sweet-smelling breath of calm. Your child stays
+              Nitrous oxide, or laughing gas, is a sweet smelling breath of calm. Your child stays
               awake, chatty and in control. It just takes the worry out of the room.
+            </p>
+
+            {/* Client-stated fact (2026-08-14): centralized delivery, both
+                operatories. It is the reason this is not a "special case"
+                appointment, so it belongs beside the opening claim. */}
+            <p className="mt-4 max-w-[52ch] font-sans text-base leading-relaxed text-cobalt">
+              It is piped in centrally to both of our fully equipped operatories, so it is ready in
+              whichever room your child is seen in, and it is never wheeled in as an exception.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -313,8 +321,8 @@ export function LaughingGas() {
               Not sure it&rsquo;s right <span className="font-normal">for your child?</span>
             </h2>
             <p className="mt-4 max-w-[46ch] font-sans text-body leading-relaxed text-white">
-              Neither are most parents on the first call. Talk it through with Dr. Nupur — no
-              commitment, and no gas unless it genuinely helps.
+              Neither are most parents on the first call. Talk it through with Dr. Nupur. There is
+              no commitment, and no gas unless it genuinely helps.
             </p>
             <div className="mt-8">
               <StylisedCTA lead="Book" rest="an appointment" href="/book" fill="canary" />

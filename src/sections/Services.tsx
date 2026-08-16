@@ -1,128 +1,43 @@
-import { useEffect, useRef, useState } from 'react'
-import { Doodle } from '@/components/Doodle'
+import { useEffect, useRef } from 'react'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { SectionNumber } from '@/components/SectionNumber'
-import { MixedWeightLabel } from '@/components/MixedWeightLabel'
-import { colourVar } from '@/components/BrandArtView'
+import { ServiceIcon } from '@/components/ServiceIcon'
 import { TextPanel } from '@/components/TextPanel'
-import { carriesText, type BrandColour } from '@/design/pairings'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { SERVICES, type Service } from '@/content/services'
+import { useIsMobile } from '@/lib/viewport'
+import { TREATMENTS } from '@/content/treatments'
+import { TREATMENT_HREF } from '@/content/treatmentCategories'
 import { useSectionMeta } from '@/content/sectionOrder'
-import { TreatmentGrid } from '@/sections/TreatmentGrid'
+import { ServicesMobile } from './Services.mobile'
 
 /**
  * 03 Services -- paper.
  *
- * Redesign notes:
- *  - The grid weights in `content/services.ts` were already editorial (4+2 /
- *    2+2(tall) / 2+4) but every card was the same 300px block, so the rhythm
- *    never showed. The hero and wide cards now get their own type scale and
- *    the tall coral card carries the `cavities-stages` image under its copy
- *    panel, which is what makes the row resolve visually as well as on paper.
- *  - Emergency care lays its doodle beside the copy rather than above it, so
- *    the wide card does not read as a stretched regular card.
- *  - Coral still keeps its field and floats copy on cobalt via `TextPanel`.
+ * REBUILT to the reference the client gave (tinytooth.in): six clinical
+ * categories, icon and label, no descriptive copy. It replaces two things that
+ * were here before -- six cards of copy we had written, and a flat sixteen-tile
+ * filterable index below them -- because the client rejected that arrangement.
+ *
+ * A category opens to reveal the treatments inside it, and those are the
+ * clinic's own labels from `content/treatments.ts`, unedited. The disclosure is
+ * a native `<details>`: no state, no JavaScript, correct for a keyboard and a
+ * screen reader on its own, and open/closed survives with motion turned off.
+ *
+ * The phone renders `Services.mobile.tsx` instead -- the same six categories,
+ * as a 2-up icon grid on the home page and as a grouped list on `/services`.
+ * This desktop composition never mounts under `md`.
  */
-const SPAN_CLASS: Record<Service['span'], string> = {
-  hero: 'md:col-span-4',
-  wide: 'md:col-span-4',
-  tall: 'md:col-span-2 md:row-span-2',
-  regular: 'md:col-span-2',
-}
-
-const TITLE_CLASS: Record<Service['span'], string> = {
-  hero: 'text-[clamp(1.9rem,3.4vw,2.9rem)]',
-  wide: 'text-[clamp(1.5rem,2.4vw,2.1rem)]',
-  tall: 'text-[clamp(1.4rem,2.2vw,1.9rem)]',
-  regular: 'text-[clamp(1.4rem,2.2vw,1.9rem)]',
-}
-
-function ServiceCard({
-  service,
-  headingLevel = 'h3',
-}: {
-  service: Service
-  headingLevel?: 'h2' | 'h3' | undefined
-}) {
-  const [hovered, setHovered] = useState(false)
-  const reduced = usePrefersReducedMotion()
-  const CardHeading = headingLevel
-
-  const onPanel = !carriesText(service.surface)
-  const textTone: BrandColour = onPanel ? 'canary' : service.element
-  const wide = service.span === 'wide'
-
-  return (
-    <article
-      data-card
-      data-surface={service.surface}
-      className={[
-        'group relative flex min-h-[300px] overflow-hidden rounded-[2rem] p-8',
-        'transition-transform duration-500 ease-entrance hover:-translate-y-2 focus-within:-translate-y-2',
-        wide ? 'flex-wrap items-center gap-8' : 'flex-col justify-between',
-        SPAN_CLASS[service.span],
-      ].join(' ')}
-      style={{
-        background: colourVar(service.surface),
-        ...(service.surface === 'paper'
-          ? { boxShadow: `inset 0 0 0 2px ${colourVar('powder')}` }
-          : null),
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      tabIndex={0}
-    >
-      <div className={wide ? 'w-20 shrink-0' : 'mb-8 w-24'}>
-        <Doodle
-          name={service.glyph}
-          tone={service.element}
-          play={reduced ? true : hovered}
-          duration={0.7}
-        />
-      </div>
-
-      <TextPanel surface={service.surface} {...(wide ? { className: 'min-w-0 flex-1 basis-80' } : {})}>
-        <CardHeading
-          className={['font-display leading-tight', TITLE_CLASS[service.span]].join(' ')}
-          style={{ color: colourVar(textTone) }}
-        >
-          <MixedWeightLabel lead={service.title.lead} rest={service.title.rest} display />
-        </CardHeading>
-        <p
-          className="mt-4 max-w-measure font-sans text-[clamp(0.95rem,1.1vw,1.0625rem)] leading-relaxed"
-          style={{ color: colourVar(onPanel ? 'white' : textTone) }}
-        >
-          {service.body}
-        </p>
-      </TextPanel>
-
-      {service.span === 'tall' ? (
-        <figure className="mt-6 overflow-hidden rounded-[1.375rem]">
-          <picture>
-            <source srcSet="/images/cavities-stages.webp" type="image/webp" />
-            <img
-              src="/images/cavities-stages.png"
-              alt="A child in a dental chair under a blue curing light."
-              width={1199}
-              height={1798}
-              loading="lazy"
-              className="block aspect-[4/3] w-full object-cover"
-            />
-          </picture>
-        </figure>
-      ) : null}
-    </article>
-  )
-}
-
 export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
+  if (useIsMobile()) return <ServicesMobile asPage={asPage} />
+  return <ServicesDesktop asPage={asPage} />
+}
+
+function ServicesDesktop({ asPage }: { asPage: boolean }) {
   const ref = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
   const meta = useSectionMeta('services')
   const Heading = asPage ? 'h1' : 'h2'
+  const CardHeading = asPage ? 'h2' : 'h3'
 
   useEffect(() => {
     const root = ref.current
@@ -136,20 +51,6 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
         stagger: STAGGER,
         scrollTrigger: { trigger: root, start: 'top 72%', once: true },
       })
-
-      // Sixteen tiles at the card stagger would take two seconds to land, so
-      // they come in as rows off their own trigger, halved and gridded.
-      const grid = root.querySelector('[data-tile-grid]')
-      if (grid) {
-        gsap.from('[data-tile]', {
-          y: 24,
-          opacity: 0,
-          duration: 0.6,
-          ease: EASE.entrance,
-          stagger: { each: STAGGER / 2, grid: 'auto', from: 'start' },
-          scrollTrigger: { trigger: grid, start: 'top 85%', once: true },
-        })
-      }
     }, root)
     return () => ctx.revert()
   }, [reduced])
@@ -165,7 +66,7 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
       ].join(' ')}
     >
       {asPage ? <CoralPageAccent /> : null}
-      <div className="relative z-10 mx-auto max-w-[1600px]">
+      <div className="relative z-10 mx-auto max-w-[1400px]">
         <SectionNumber number={meta.number} label={meta.label} tone="coral" />
         <Heading
           id="services-heading"
@@ -175,17 +76,82 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
           Everything a growing mouth needs, and nothing it does not
         </Heading>
         <p className="mt-5 max-w-measure font-sans text-body text-cobalt" data-animate>
-          Six of them explained the way we would explain them to you in the room, and then
-          everything else we treat.
+          Every treatment we offer, in the clinic&apos;s own words. Ask us about any of them,
+          because we would rather explain it twice than have you guess.
         </p>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-6">
-          {SERVICES.map((s) => (
-            <ServiceCard key={s.id} service={s} headingLevel={asPage ? 'h2' : 'h3'} />
-          ))}
-        </div>
+        {/* All sixteen at once, as squares. The categories survive as the tag
+            under each label rather than as six gates you have to click through
+            -- a parent looking for "root canal" should not have to guess which
+            of six words hides it. */}
+        {/* Eight across at desktop, so sixteen treatments are two rows and the
+            whole list is on screen at once -- four across made each tile ~330px
+            and the band four screens tall. The category tag went with the size:
+            it does not fit a tile this small, and the tiles are alphabetically
+            unsorted clinic order anyway, so it was decoration here. */}
+        <ul className="mt-12 grid list-none grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+          {TREATMENTS.map((treatment) => {
+            const href = TREATMENT_HREF[treatment.slug]
+            const Tile = href ? 'a' : 'div'
+            // "Stainless Steel & Tooth-Coloured Crowns" is 39 characters; the
+            // shortest ("Cleaning") is eight. One step down past 26 stops the
+            // long ones overflowing a tile this size.
+            const long = treatment.label.length > 26
+            return (
+              <li key={treatment.slug} data-card className="min-w-0">
+                <Tile
+                  {...(href ? { href } : {})}
+                  title={href ? `${treatment.label} specialty page` : treatment.label}
+                  className={[
+                    'tt-treatment-tile flex aspect-square min-w-0 flex-col items-center justify-center gap-1.5 p-2.5 text-center',
+                    'rounded-[1rem] bg-paper shadow-[inset_0_0_0_2px_var(--tt-powder)]',
+                    'transition-[transform,background-color] duration-500 ease-entrance',
+                    'hover:-translate-y-1 hover:bg-canary focus-visible:-translate-y-1',
+                    href ? 'shadow-[inset_0_0_0_2px_var(--tt-coral)]' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <ServiceIcon
+                    slug={treatment.slug}
+                    className={['shrink-0 text-cobalt', long ? 'h-8 w-9' : 'h-10 w-11'].join(' ')}
+                  />
+                  {/* `text-wrap: balance` evens the lines out rather than
+                      leaving one orphan word under a full line. */}
+                  <CardHeading
+                    className={[
+                      'min-w-0 font-sans leading-tight text-cobalt [text-wrap:balance]',
+                      long ? 'text-[0.63rem]' : 'text-[0.7rem]',
+                    ].join(' ')}
+                  >
+                    {treatment.label}
+                  </CardHeading>
+                </Tile>
+              </li>
+            )
+          })}
+        </ul>
 
-        <TreatmentGrid headingLevel={asPage ? 'h2' : 'h3'} />
+        {/* Closes the band. Coral field, copy on a cobalt bed -- coral cannot
+            carry text at any size or colour (CLAUDE.md §6.1). */}
+        <div
+          data-surface="coral"
+          className="mt-8 flex flex-wrap items-center justify-between gap-5 rounded-[2rem] bg-coral px-7 py-6"
+        >
+          <TextPanel surface="coral" className="min-w-0 flex-1 basis-80">
+            <p className="max-w-measure font-sans text-[0.95rem] leading-relaxed text-white">
+              <span className="font-semibold">Not sure which one you need?</span> Tell us what you
+              have noticed and we will point you to the right one, and no appointment is needed to
+              ask.
+            </p>
+          </TextPanel>
+          <a
+            href="/book"
+            className="shrink-0 rounded-full bg-cobalt px-6 py-3 font-sans text-[0.85rem] font-semibold text-canary transition-transform duration-500 ease-entrance hover:-translate-y-0.5"
+          >
+            Ask the clinic
+          </a>
+        </div>
       </div>
     </section>
   )
