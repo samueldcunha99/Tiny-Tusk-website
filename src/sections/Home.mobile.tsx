@@ -28,10 +28,20 @@ const HOME_MOBILE_ORDER: readonly SectionId[] = ['hero', 'services', 'team', 'bo
  *
  * The rules this page now holds to, and which must survive the next edit:
  *
- *   1. ONE GROUND, TWO MOMENTS. Paper is the page. Canary is Dr. Nupur, coral
- *      is the booking band, cobalt is the footer. Nothing else changes ground;
- *      sections separate with space and a hairline rule. LoopField appears
- *      twice on the page, not six times.
+ *   1. ONE CONTINUOUS COLOUR RUN. The page steps through the palette once, in
+ *      one direction, each ground a step warmer and darker than the last:
+ *
+ *        powder -> paper -> canary -> coral -> cobalt (the footer)
+ *
+ *      Cool, neutral, warm, warmer, close. Paper is the neutral hinge in the
+ *      middle, not the page's default -- the hero holds colour from the first
+ *      screen, which is what the client asked for after seeing a white one.
+ *
+ *      It never goes back. The client's note was that the colour "jumps
+ *      around" -- six sections previously ran powder, cobalt, paper, canary,
+ *      powder, coral, which visits cobalt twice and reverses direction three
+ *      times. A ground change is now the only separator a section needs, and
+ *      LoopField appears twice on the page rather than six times.
  *   2. ONE BOX LANGUAGE. One radius (1.5rem, matching `<TextPanel>`), one
  *      padding, no box inside a box. A list is a list with rules between rows,
  *      not a grid of tiles. Anything that is a single idea has no box at all.
@@ -41,10 +51,16 @@ const HOME_MOBILE_ORDER: readonly SectionId[] = ['hero', 'services', 'team', 'bo
  *      page. Every other exit is a quiet underlined link, and the section
  *      numerals are gone (see `<SectionMarker>`).
  *
- *   00 Welcome     -- who we are, one action              (paper)
- *   01 What we do  -- six groups as rows, out to /services (paper)
- *   02 Dr. Nupur   -- the quote and the register           (canary)
- *   03 Book        -- the action, the address, WhatsApp    (coral)
+ *   00 Welcome     -- who we are, one action                 (powder)
+ *   01 What we do  -- the logo story, then six groups as rows (paper)
+ *   02 Dr. Nupur   -- the quote and the register             (canary)
+ *   03 Book        -- the action, the address, WhatsApp      (coral)
+ *
+ * THE LOGO STORY opens section 01 rather than being a section of its own: one
+ * small row, set as the identity guide sets it on p3. See `<LogoStory>`. It is
+ * what the swipeable Journey strip became when the client asked for the book's
+ * version instead. It is on paper because the guide prints it on white and its
+ * coral line art measures 1.84:1 on powder.
  *
  * WHAT IS NOT HERE. The Journey strip was cut: `/journey` renders the whole
  * thing properly and the hero links straight to it. Find Us was folded into

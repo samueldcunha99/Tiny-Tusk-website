@@ -69,11 +69,11 @@ export function HeroMobile() {
     <section
       id="hero"
       ref={ref}
-      data-surface="paper"
-      className="relative isolate overflow-hidden bg-paper"
+      data-surface="powder"
+      className="relative isolate overflow-hidden bg-powder"
     >
       {/* One of the page's two artwork fields; the other is on Dr. Nupur. */}
-      <LoopField surface="paper" contrast="high" depth={0.28} count={2} className="opacity-60" />
+      <LoopField surface="powder" contrast="high" depth={0.28} count={2} />
 
       <div className="relative z-10 px-6 pb-14 pt-[6.25rem]">
         <div data-hero-fade>
@@ -155,6 +155,7 @@ export function HeroMobile() {
             </span>
           </a>
         </div>
+
       </div>
 
     </section>
