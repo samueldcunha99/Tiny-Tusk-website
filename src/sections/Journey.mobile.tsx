@@ -1,219 +1,260 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Doodle } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
-import { LoopField } from '@/components/LoopField'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { SectionMarker } from '@/components/SectionMarker'
-import { TextPanel } from '@/components/TextPanel'
 import { colourVar } from '@/components/BrandArtView'
-import { carriesText } from '@/design/pairings'
-import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { usePrefersReducedMotion } from '@/lib/motion'
 import { JOURNEY } from '@/content/journey'
 import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
- * The journey, turned upright -- `/journey` on a phone.
+ * The Journey on mobile -- redesigned with ZERO BOXES.
  *
- * The desktop version pins the viewport and scrubs the four beats sideways.
- * That is the wrong instrument here: it fights the thumb, it measures against
- * `window.innerWidth`, and a pinned section on a small screen hides how much
- * is left. So the idea survives -- one continuous canary stroke threading every
- * beat -- and runs down the page instead of across it. Nothing is pinned; the
- * stroke scrubs against ordinary page scroll and the panels rise as they
- * arrive. Two systems, as always.
- *
- * WHAT THE REDESIGN CHANGES. The section takes cobalt as its own surface rather
- * than sitting on paper, so the canary spine has something to be canary
- * against; the wayfinding is `<SectionMarker>` with coral numerals inside each
- * panel; the panels take the site's 32px radius; and the logo hinge is an
- * outlined cobalt panel rather than a filled one, because on a dark ground a
- * filled panel read as a fifth step.
- *
- * The spine is scoped to the panel stack, not the section: spanning the whole
- * section, a 64-unit stroke stretched to full width ran a canary band straight
- * through the heading. Both children are positioned, so the panels paint over
- * the stroke on source order alone -- no z-index needed.
+ * 1. An open, prominent horizontal single-stroke rail displaying the 5 stages.
+ * 2. Auto-scrolls smoothly through each beat (pauses on touch/hover).
+ * 3. Larger vector glyphs, typography, and comfortable reading measure.
+ * 4. Zero boxes, zero card backgrounds, zero borders, zero drop shadows.
  */
 export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined }) {
-  const rootRef = useRef<HTMLElement>(null)
-  const spineRef = useRef<SVGPathElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
   const reduced = usePrefersReducedMotion()
   const meta = useSectionMeta('journey')
   const Heading = asPage ? 'h1' : 'h2'
 
+  const nextStep = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % JOURNEY.length)
+  }, [])
+
+  const prevStep = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + JOURNEY.length) % JOURNEY.length)
+  }, [])
+
+  // Faster auto-scroll through steps every 2.6s (pauses on user interaction / reduced motion)
   useEffect(() => {
-    const root = rootRef.current
-    const spine = spineRef.current
-    if (!root) return
+    if (isPaused || reduced) return
 
-    if (reduced) {
-      if (spine) primeDraw(spine, true)
-      return
-    }
+    const timer = setInterval(() => {
+      nextStep()
+    }, 2600)
 
-    const ctx = gsap.context(() => {
-      if (spine) {
-        const length = primeDraw(spine, false)
-        gsap.fromTo(
-          spine,
-          { strokeDashoffset: length },
-          {
-            strokeDashoffset: 0,
-            ease: 'none',
-            scrollTrigger: { trigger: root, start: 'top 75%', end: 'bottom bottom', scrub: 0.6 },
-          },
-        )
-      }
+    return () => clearInterval(timer)
+  }, [isPaused, reduced, nextStep])
 
-      gsap.utils.toArray<HTMLElement>('[data-beat]').forEach((beat) => {
-        gsap.from(beat, {
-          y: 44,
-          opacity: 0,
-          duration: 0.75,
-          ease: EASE.entrance,
-          scrollTrigger: { trigger: beat, start: 'top 85%' },
-        })
-      })
-    }, root)
+  const activePanel = JOURNEY[activeIndex] ?? JOURNEY[0]!
 
-    return () => ctx.revert()
-  }, [reduced])
+  // Dynamic soft brand background color matching the active step
+  const stepBgClass =
+    activePanel.id === 'treatment'
+      ? 'bg-[#FFF6DB]' // Soft Canary
+      : activePanel.id === 'care'
+      ? 'bg-[#FFEFEA]' // Soft Coral tint
+      : 'bg-[#EBF0F9]' // Soft Powder
 
   return (
     <section
       id="journey"
-      ref={rootRef}
-      data-surface="cobalt"
+      data-surface="powder"
       aria-labelledby="journey-heading"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
       className={[
-        'tt-section relative overflow-hidden bg-cobalt px-6 pb-16',
+        'tt-section relative overflow-hidden px-6 pb-16 transition-colors duration-700 ease-out',
+        stepBgClass,
         asPage ? 'pt-[6.5rem]' : 'pt-14',
       ].join(' ')}
     >
-      <LoopField surface="cobalt" contrast="low" depth={0.26} count={2} />
-
-      <div className="relative z-10">
-        <SectionMarker number={meta.number} label={meta.label} on="dark" />
+      <div className="relative z-10 mx-auto max-w-xl">
+        {/* Section Header */}
+        <SectionMarker number={meta.number} label={meta.label} />
         <Heading
           id="journey-heading"
-          className="mt-4 font-display text-[clamp(2.5rem,11vw,3.25rem)] font-semibold leading-[0.98] tracking-[-0.03em] text-canary"
-          data-animate
+          className="mt-3.5 font-display text-[clamp(2.4rem,9.5vw,3.25rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-cobalt"
         >
           How a visit actually goes
         </Heading>
-        <p className="mt-3.5 max-w-[32ch] font-sans text-[0.97rem] leading-[1.55] text-white/90" data-animate>
-          Four beats, and the mark they draw between them.
+        <p className="mt-2.5 font-sans text-[1rem] leading-[1.55] text-cobalt/80">
+          Four gentle beats, and the mark they draw between them.
         </p>
 
-        <div className="relative mt-9">
+        {/* 5-Step Single-Stroke Rail (Enlarged, Zero Boxes) */}
+        <div className="relative mt-10">
+          {/* Continuous connector stroke */}
           <svg
             aria-hidden="true"
             focusable="false"
-            viewBox="0 0 320 2400"
+            className="pointer-events-none absolute left-5 right-5 top-6 z-0 h-4 w-[calc(100%-2.5rem)]"
+            viewBox="0 0 400 20"
             preserveAspectRatio="none"
-            className="pointer-events-none absolute inset-0 h-full w-full"
           >
             <path
-              ref={spineRef}
-              d="M 160 0 C 40 300, 280 520, 160 820 S 40 1180, 160 1480 S 280 1840, 160 2140 S 90 2320, 160 2400"
+              d="M 10 10 Q 100 2, 200 10 T 390 10"
               fill="none"
               stroke={colourVar('canary')}
-              strokeWidth={64}
+              strokeWidth={5}
               strokeLinecap="round"
-              strokeLinejoin="round"
-              data-draw
             />
           </svg>
 
-          <div className="relative flex flex-col gap-[1.125rem]">
-            {JOURNEY.map((panel) => {
-              if (panel.kind === 'hinge') {
-                return (
-                  <article
-                    key={panel.id}
-                    data-beat
-                    data-animate
-                    data-surface="cobalt"
-                    // Opaque cobalt, not transparent: the spine runs behind
-                    // this panel, and through an unfilled one it crossed the
-                    // caption.
-                    className="flex flex-col items-center gap-[1.125rem] rounded-[2rem] border-2 border-canary/45 bg-cobalt px-[1.375rem] py-7 text-center"
-                  >
-                    <Logo size={130} tone={panel.element} drawable title="The Tiny Tusk mark" />
-                    <p className="font-display text-[1.1875rem] leading-[1.3] text-canary">
-                      {panel.caption}
-                    </p>
-                  </article>
-                )
-              }
+          {/* Stepper buttons in one open row */}
+          <div
+            role="tablist"
+            aria-label="Visit stages"
+            className="relative z-10 flex items-center justify-between"
+          >
+            {JOURNEY.map((panel, idx) => {
+              const isSelected = idx === activeIndex
+              const isHinge = panel.kind === 'hinge'
 
-              const light = carriesText(panel.surface)
               return (
-                <article
+                <button
                   key={panel.id}
-                  data-beat
-                  data-animate
-                  data-surface={panel.surface}
-                  className={[
-                    'relative flex flex-col items-center overflow-hidden text-center shadow-[0_18px_50px_rgba(0,0,0,0.16)]',
-                    // Coral holds the field but cannot hold the words, so that
-                    // panel is a frame around a cobalt one and takes tighter
-                    // padding to compensate (CLAUDE.md 6.1).
-                    light ? 'rounded-[2rem] px-[1.375rem] py-6' : 'rounded-[2rem] p-5',
-                  ].join(' ')}
-                  style={{ background: colourVar(panel.surface) }}
+                  type="button"
+                  role="tab"
+                  id={`stage-tab-${panel.id}`}
+                  aria-selected={isSelected}
+                  aria-controls={`stage-panel-${panel.id}`}
+                  onClick={() => {
+                    setActiveIndex(idx)
+                    setIsPaused(true)
+                  }}
+                  className="group relative flex flex-col items-center gap-2 focus:outline-none"
                 >
-                  <div className="w-[4.75rem]">
-                    <Doodle name={panel.glyph} tone={panel.element} />
+                  {/* Glyph Circle / Indicator (Enlarged) */}
+                  <div
+                    className={[
+                      'relative flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300',
+                      isSelected
+                        ? 'scale-[1.12] bg-white ring-2 ring-cobalt ring-offset-2 shadow-sm'
+                        : 'bg-white/75 opacity-75 hover:opacity-100',
+                    ].join(' ')}
+                  >
+                    <Doodle
+                      name={panel.glyph}
+                      tone={isSelected ? (isHinge ? 'cobalt' : 'coral') : 'cobalt'}
+                      className="h-8 w-8"
+                    />
                   </div>
 
-                  <TextPanel
-                    surface={panel.surface}
-                    className="mt-4 flex flex-col items-center gap-3.5 text-center"
+                  {/* Stage Label */}
+                  <span
+                    className={[
+                      'font-sans text-[0.78rem] tracking-tight transition-colors duration-200',
+                      isSelected ? 'font-semibold text-cobalt' : 'text-cobalt/60',
+                    ].join(' ')}
                   >
-                    <p className="flex items-center justify-center gap-3" aria-hidden="true">
-                      <span
-                        className="font-display text-[1.25rem] font-semibold leading-none"
-                        style={{ color: colourVar(light ? 'coral' : 'canary') }}
-                      >
-                        {panel.number}
-                      </span>
-                      <span
-                        className="h-0.5 w-[1.875rem]"
-                        style={{ background: colourVar(light ? 'coral' : 'canary') }}
-                      />
-                      <span
-                        className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
-                        style={{ color: colourVar(light ? panel.element : 'white'), opacity: 0.75 }}
-                      >
-                        Step
-                      </span>
-                    </p>
-                    <h3
-                      className="font-display text-[clamp(2.25rem,10vw,2.5rem)] font-semibold leading-none"
-                      style={{ color: colourVar(light ? panel.element : 'canary') }}
-                    >
-                      {panel.title}
-                    </h3>
-                    <p
-                      className="font-sans text-[0.95rem] leading-[1.55]"
-                      style={{ color: colourVar(light ? panel.element : 'white') }}
-                    >
-                      {panel.body}
-                    </p>
-                  </TextPanel>
-                </article>
+                    {isHinge ? 'Mark' : panel.number}
+                  </span>
+                </button>
               )
             })}
           </div>
+        </div>
 
-          <div className="relative mt-[1.625rem] flex justify-center">
+        {/* Active Stage Open Presentation (Enlarged, Zero Boxes) */}
+        <div
+          id={`stage-panel-${activePanel.id}`}
+          role="tabpanel"
+          aria-labelledby={`stage-tab-${activePanel.id}`}
+          className="mt-10 flex flex-col items-center text-center"
+        >
+          {/* Animated Large Vector Glyph */}
+          <div className="relative mb-5 flex h-36 w-36 items-center justify-center">
+            {activePanel.kind === 'hinge' ? (
+              <Logo size={120} tone="cobalt" drawable title="The Tiny Tusk mark" />
+            ) : (
+              <Doodle
+                key={activePanel.id}
+                name={activePanel.glyph}
+                tone="cobalt"
+                drawOnScroll={false}
+                className="h-32 w-32"
+              />
+            )}
+          </div>
+
+          {/* Step Metadata & Typography (Enlarged) */}
+          <div className="flex flex-col items-center gap-2.5">
+            <span className="font-sans text-[0.8rem] font-semibold uppercase tracking-[0.22em] text-coral">
+              {activePanel.kind === 'beat' ? `Step ${activePanel.number} of 04` : 'The Logo Story'}
+            </span>
+
+            <h3 className="font-display text-[2.25rem] font-semibold leading-tight text-cobalt">
+              {activePanel.kind === 'beat' ? activePanel.title : 'One Continuous Stroke'}
+            </h3>
+
+            <p className="mt-1 max-w-[36ch] font-sans text-[1.05rem] leading-[1.65] text-cobalt/85">
+              {activePanel.kind === 'beat' ? activePanel.body : activePanel.caption}
+            </p>
+          </div>
+
+          {/* Subtle Navigation Controls & Timer Dots */}
+          <div className="mt-8 flex items-center justify-center gap-6">
+            <button
+              type="button"
+              disabled={activeIndex === 0}
+              onClick={() => {
+                prevStep()
+                setIsPaused(true)
+              }}
+              className={[
+                'font-sans text-sm font-semibold text-cobalt transition-opacity',
+                activeIndex === 0 ? 'pointer-events-none opacity-30' : 'opacity-75 hover:opacity-100',
+              ].join(' ')}
+              aria-label="Previous visit step"
+            >
+              ← Previous
+            </button>
+
+            {/* Stepper Progress Indicators */}
+            <div className="flex items-center gap-2" aria-hidden="true">
+              {JOURNEY.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    setActiveIndex(i)
+                    setIsPaused(true)
+                  }}
+                  className={[
+                    'h-2 rounded-full transition-all duration-300',
+                    i === activeIndex ? 'w-6 bg-coral' : 'w-2 bg-cobalt/25 hover:bg-cobalt/40',
+                  ].join(' ')}
+                  aria-label={`Go to step ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              disabled={activeIndex === JOURNEY.length - 1}
+              onClick={() => {
+                nextStep()
+                setIsPaused(true)
+              }}
+              className={[
+                'font-sans text-sm font-semibold text-cobalt transition-opacity',
+                activeIndex === JOURNEY.length - 1
+                  ? 'pointer-events-none opacity-30'
+                  : 'opacity-75 hover:opacity-100',
+              ].join(' ')}
+              aria-label="Next visit step"
+            >
+              Next →
+            </button>
+          </div>
+
+          {/* Booking CTA */}
+          <div className="mt-10 flex justify-center">
             <StylisedCTA
               lead="Book"
               rest="the first visit"
               href="/book"
               fill="canary"
-              className="min-h-[3.625rem] w-full max-w-[18.75rem]"
+              className="min-h-[3.5rem] w-full max-w-[18rem]"
             />
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
-import { LogoStory } from '@/components/LogoStory'
 import { ServiceIcon } from '@/components/ServiceIcon'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { SectionMarker } from '@/components/SectionMarker'
@@ -185,14 +184,6 @@ export function ServicesMobile({ asPage = false }: { asPage?: boolean | undefine
       className="tt-section relative bg-paper px-6 pb-14 pt-12"
       aria-labelledby="services-mobile-heading"
     >
-      {/* The logo story opens this section rather than closing the hero: the
-          guide prints that row on white and the hero is powder, where coral
-          line art falls to 1.84:1 against its ground. Paper keeps it legible
-          and keeps it on the same page, which is what the client asked for. */}
-      <LogoStory className="pb-10" />
-
-      <div className="mb-10 border-t border-[rgba(24,82,142,0.12)]" />
-
       <SectionMarker label={meta.label} />
 
       <Heading

@@ -1,4 +1,3 @@
-import { Doodle } from '@/components/Doodle'
 import { LoopField } from '@/components/LoopField'
 import { Roundel } from '@/components/Roundel'
 import { SectionNumber } from '@/components/SectionNumber'
@@ -82,19 +81,6 @@ export function HeroDesktop() {
               artwork and the ring shrinks. */}
           <div className="relative grid aspect-square w-[clamp(9.5rem,15vw,13rem)] place-items-center">
             <Roundel tone="cobalt" className="absolute inset-0 h-full w-full" />
-            {/* The dashes read as the mark's own spark rather than a loose doodle
-                below the unit. Percentage-placed so they track the roundel at any
-                clamp size, and tucked into the band between the mark's shoulder
-                and the ring -- the tagline arcs high across the top there, so
-                nothing collides. They were briefly removed and restored: the
-                request was about the phone, and this rail is the only coral on
-                the desktop hero. */}
-            <Doodle
-              name="markDashes"
-              tone="coral"
-              drawOnScroll
-              className="pointer-events-none absolute left-[70%] top-[30%] w-[11%] rotate-6"
-            />
           </div>
         </div>
       </div>
