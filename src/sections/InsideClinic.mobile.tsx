@@ -59,7 +59,7 @@ export function InsideClinicMobile({ asPage = false }: { asPage?: boolean | unde
                 aria-selected={isActive}
                 onClick={() => setActiveRoomIndex(index)}
                 className={[
-                  'flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200',
+                  'flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200',
                   isActive
                     ? 'bg-cobalt text-white shadow-sm ring-1 ring-cobalt'
                     : 'bg-white text-cobalt hover:bg-powder/40',

@@ -42,9 +42,16 @@ const STEP_ART: readonly { glyph: DoodleName; lead: string; circled: string; res
   { glyph: 'doodleHeart', lead: 'How should we', circled: 'reach', rest: 'you?' },
 ]
 
-/** One field treatment, five fields. Canary focus ring, powder at rest. */
+/**
+ * One field treatment, five fields. Canary focus ring, powder at rest.
+ *
+ * `text-base` is load-bearing, not decoration: the input sits inside its
+ * `FIELD_LABEL`, Tailwind's preflight gives form controls `font-size: 100%`,
+ * so without it the field inherited the label's 0.8rem. Any control under
+ * 16px makes iOS Safari zoom the page on focus, and it does not zoom back.
+ */
 const FIELD =
-  'mt-2 min-h-14 w-full rounded-2xl border-2 border-powder bg-paper px-5 font-sans text-cobalt ' +
+  'mt-2 min-h-14 w-full rounded-2xl border-2 border-powder bg-paper px-5 font-sans text-base text-cobalt ' +
   'placeholder:text-cobalt/40 transition-colors focus:border-cobalt focus:outline-none ' +
   'focus:ring-4 focus:ring-canary'
 

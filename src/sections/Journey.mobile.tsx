@@ -192,7 +192,7 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
           </div>
 
           {/* Subtle Navigation Controls & Timer Dots */}
-          <div className="mt-8 flex items-center justify-center gap-6">
+          <div className="mt-8 flex items-center justify-center gap-2">
             <button
               type="button"
               disabled={activeIndex === 0}
@@ -201,7 +201,7 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
                 setIsPaused(true)
               }}
               className={[
-                'font-sans text-sm font-semibold text-cobalt transition-opacity',
+                '-my-3 flex min-h-11 shrink-0 items-center whitespace-nowrap px-3 font-sans text-sm font-semibold text-cobalt transition-opacity',
                 activeIndex === 0 ? 'pointer-events-none opacity-30' : 'opacity-75 hover:opacity-100',
               ].join(' ')}
               aria-label="Previous visit step"
@@ -210,7 +210,12 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
             </button>
 
             {/* Stepper Progress Indicators */}
-            <div className="flex items-center gap-2" aria-hidden="true">
+            {/* Not `aria-hidden`: these are real buttons, and hiding a
+                focusable control from the accessibility tree leaves a
+                keyboard stop with no name. The dot is the visual; the button
+                around it is the 24x44 touch area, fixed-width so the row does
+                not reflow when the active pill widens. */}
+            <div className="flex items-center">
               {JOURNEY.map((_, i) => (
                 <button
                   key={i}
@@ -219,12 +224,17 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
                     setActiveIndex(i)
                     setIsPaused(true)
                   }}
-                  className={[
-                    'h-2 rounded-full transition-all duration-300',
-                    i === activeIndex ? 'w-6 bg-coral' : 'w-2 bg-cobalt/25 hover:bg-cobalt/40',
-                  ].join(' ')}
+                  className="group grid h-11 w-6 place-items-center"
                   aria-label={`Go to step ${i + 1}`}
-                />
+                  aria-current={i === activeIndex ? 'step' : undefined}
+                >
+                  <span
+                    className={[
+                      'h-2 rounded-full transition-all duration-300',
+                      i === activeIndex ? 'w-6 bg-coral' : 'w-2 bg-cobalt/25 group-hover:bg-cobalt/40',
+                    ].join(' ')}
+                  />
+                </button>
               ))}
             </div>
 
@@ -236,7 +246,7 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
                 setIsPaused(true)
               }}
               className={[
-                'font-sans text-sm font-semibold text-cobalt transition-opacity',
+                '-my-3 flex min-h-11 shrink-0 items-center whitespace-nowrap px-3 font-sans text-sm font-semibold text-cobalt transition-opacity',
                 activeIndex === JOURNEY.length - 1
                   ? 'pointer-events-none opacity-30'
                   : 'opacity-75 hover:opacity-100',

@@ -95,7 +95,10 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-6 pb-8 md:px-10">
+      {/* `pb-24` is clearance, not rhythm: the floating WhatsApp button is
+          `fixed bottom-6` at 56px, so it comes to rest over the last 80px
+          of the page. Without the padding it parks on the copyright row. */}
+      <div className="mx-auto max-w-[1440px] px-6 pb-24 md:px-10">
         {/* Two 44px-row columns on a phone -- the flat wrapping row put four
             links on one line and three on the next, which read as a paragraph
             of links rather than an index. It is also what the deleted
