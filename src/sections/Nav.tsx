@@ -3,7 +3,6 @@ import { Logo } from '@/components/Logo'
 import { Doodle } from '@/components/Doodle'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { useMediaQuery } from '@/lib/viewport'
 import { CLINIC } from '@/content/site'
 
 /**
@@ -22,50 +21,36 @@ const LINKS = [
 ] as const
 
 export function Nav() {
-  const [condensed, setCondensed] = useState(false)
   const [open, setOpen] = useState(false)
-  const [navVisible, setNavVisible] = useState(true)
   const [pageProgress, setPageProgress] = useState(0)
   const panelRef = useRef<HTMLDivElement>(null)
-  const lastScrollRef = useRef(0)
   const reduced = usePrefersReducedMotion()
-  // Not the site-wide mobile split: the bar takes a surface only once the link
-  // row is on screen, which is 1360px. Below that it is a mark and a menu button.
-  const isCompact = useMediaQuery('(max-width: 1359px)')
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
-  const needsTopNavSurface =
-    currentPath === '/games' || currentPath === '/brush-timer'
+  // `condensed`, `navVisible` and `needsTopNavSurface` all lived here to decide
+  // which surface the bar took and whether it was on screen at all. A permanent
+  // canary rectangle answers every one of those questions the same way, so the
+  // state, the media query and the /games and /brush-timer special case are gone.
   const isCurrent = (href: string) =>
     currentPath === href || (currentPath === '/brush-timer' && href === '/games')
 
+  // Scroll only drives the progress line now. The bar itself is fixed in every
+  // sense: it does not hide on the way down, does not condense, and does not
+  // swap surface -- one canary rectangle from the top of the page to the end.
   useEffect(() => {
     const onScroll = () => {
-      const nextScroll = Math.max(0, window.scrollY)
-      const previousScroll = lastScrollRef.current
       const scrollable =
         document.documentElement.scrollHeight - window.innerHeight
+      const nextScroll = Math.max(0, window.scrollY)
 
-      setCondensed(nextScroll > 40)
       setPageProgress(
         scrollable > 0 ? Math.min(1, Math.max(0, nextScroll / scrollable)) : 0,
       )
-
-      if (open || nextScroll < 80) {
-        setNavVisible(true)
-      } else if (nextScroll > previousScroll + 8) {
-        setNavVisible(false)
-      } else if (nextScroll < previousScroll - 4) {
-        setNavVisible(true)
-      }
-
-      lastScrollRef.current = nextScroll
     }
 
-    lastScrollRef.current = window.scrollY
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [open])
+  }, [])
 
   // Lock the page and trap focus while the mobile panel is open.
   useEffect(() => {
@@ -100,59 +85,33 @@ export function Nav() {
 
   return (
     <>
-      <div
-        className="fixed inset-x-0 top-0 z-[60] h-1 bg-cobalt/10"
-        aria-hidden="true"
-      >
-        <div
-          className="h-full origin-left bg-coral"
-          style={{ transform: `scaleX(${pageProgress})` }}
-        />
-      </div>
+      {/* One canary rectangle, edge to edge, square corners, always opaque.
+          This replaces a floating pill that branched four ways on breakpoint,
+          scroll position and route -- with the bar permanently on a surface
+          none of that had anything left to decide.
 
-      <header
-      className={[
-        'fixed left-0 top-0 z-50 w-full transition-all duration-300',
-        navVisible || open ? 'translate-y-0' : '-translate-y-[140%]',
-        condensed ? 'px-3 py-3 md:px-6 md:py-4' : 'px-4 py-5 md:px-10 md:py-8',
-      ].join(' ')}
-    >
-      <nav
-        aria-label="Primary"
-        className={[
-          'mx-auto flex items-center justify-between transition-all duration-300',
-          // While the menu is a button the bar never takes a surface -- the mark
-          // and the button float directly on the page. Branching in JS rather
-          // than with a `max-xl:` override so the desktop string stays
-          // byte-identical and cannot depend on Tailwind's class-ordering.
-          isCompact
-            ? 'max-w-[1600px] bg-transparent'
-            : condensed
-            // Opaque, not `white/85`: the bar passes over cobalt sections, and a
-            // translucent pill let their copy read through its left half while the
-            // rest stayed white -- a hard vertical seam across the bar.
-            // Same `1600px` cap as every other state. At `max-w-7xl` the pill was
-            // 1280px while its own content measured 1348px, so the row overflowed
-            // it and the WhatsApp disc hung outside the white shape. The bar
-            // condenses by tightening its padding, not by narrowing.
-            ? 'max-w-[1600px] rounded-full bg-white px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.10)] md:px-6'
-            : needsTopNavSurface
-              ? 'max-w-[1600px] rounded-full bg-paper px-4 py-2 shadow-[0_8px_30px_rgba(24,82,142,0.12)] md:px-6'
-            : 'max-w-[1600px] bg-transparent',
-        ].join(' ')}
-      >
+          Canary is what makes the single bar possible. Coral could only ever
+          be a field (1.84:1 as ink on powder, and no pairing lists it as an
+          element), so a coral bar forced the desktop links off it. Cobalt on
+          canary is 6.37:1 and a p24 pairing, so the mark, the links and the
+          hamburger all sit on the one surface at full contrast. */}
+      <header className="fixed left-0 top-0 z-50 w-full bg-canary">
+        <nav
+          aria-label="Primary"
+          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-3 md:px-10"
+        >
         {/* p8: the mark's default placement is top-left. */}
         <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
-          {/* Never below 64px -- the guide's minimum digital size (p7). The nav
-              condenses by tightening the pill, not by shrinking the mark. */}
+          {/* Never below 64px -- the guide's minimum digital size (p7). The
+              bar is sized around the mark rather than the other way round. */}
           <Logo size={64} tone="cobalt" title={`${CLINIC.name} logo`} />
           <span className="sr-only">{CLINIC.fullName}</span>
         </a>
 
-        {/* `pr` pulls the whole cluster in off the right edge -- the bar read
-            as pinned to the window before, and the booking pill now has the
-            WhatsApp disc outboard of it. Scales with the bar's own condensing
-            so the inset does not jump when the header tightens.
+        {/* The old `pr` here pulled the cluster in off the right edge, back
+            when the bar was a pill that read as pinned to the window. The
+            rectangle carries the nav's own `px`, so that inset is now the
+            header's job and the list just ends where the row does.
 
             The list appears at 1360px, not `md`: eight labels plus the booking
             pill and the WhatsApp disc measure 1188px at `gap-6`, and with the
@@ -163,12 +122,7 @@ export function Nav() {
             the pill. Widths were measured in a browser -- do not lower this
             breakpoint without re-measuring, and note that a longer label eats
             the slack. */}
-        <ul
-          className={[
-            'hidden items-center gap-6 min-[1360px]:flex 2xl:gap-8',
-            condensed ? 'min-[1360px]:pr-2' : 'min-[1360px]:pr-8 2xl:pr-12',
-          ].join(' ')}
-        >
+        <ul className="hidden items-center gap-6 min-[1360px]:flex 2xl:gap-8">
           {LINKS.map((l) => {
             const active = isCurrent(l.href)
             return (
@@ -215,10 +169,7 @@ export function Nav() {
           className="flex h-11 w-11 items-center justify-center rounded-full min-[1360px]:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
-          onClick={() => {
-            setNavVisible(true)
-            setOpen((v) => !v)
-          }}
+          onClick={() => setOpen((v) => !v)}
         >
           <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
           <span aria-hidden="true" className="relative block h-4 w-6">
@@ -232,7 +183,20 @@ export function Nav() {
             />
           </span>
         </button>
-      </nav>
+        </nav>
+
+        {/* On the bar's bottom edge rather than the window's: with a permanent
+            full-width header the line reads as the bar's own underline, and at
+            `top-0` it would have sat inside the canary instead of under it. */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-1 bg-cobalt/10"
+          aria-hidden="true"
+        >
+          <div
+            className="h-full origin-left bg-coral"
+            style={{ transform: `scaleX(${pageProgress})` }}
+          />
+        </div>
       </header>
 
       {/* Tapping anywhere off the panel closes it, which a dropdown needs and
@@ -253,18 +217,21 @@ export function Nav() {
       {/* Mobile: a powder dropdown anchored to the top right, under the menu
           button, with the staggered reveal and a doodle in its corner.
 
-          This MUST stay a sibling of the header, never a child. The header
-          carries a `translate-y` for its hide-on-scroll, and any transform
+          This MUST stay a sibling of the header, never a child. Any transform
           other than `none` makes an element the containing block for its
-          `position: fixed` descendants -- so nested here, the panel resolved
+          `position: fixed` descendants -- nested inside the header, back when
+          it carried a `translate-y` for its hide-on-scroll, the panel resolved
           against the ~90px header box instead of the viewport. The links
-          simply overflowed it with no background behind them, and whatever
-          was underneath showed through. It read as correct only while the
-          page behind happened to be powder too.
+          simply overflowed it with no background behind them, and whatever was
+          underneath showed through. It read as correct only while the page
+          behind happened to be powder too. The transform is gone with the
+          hide-on-scroll, but a sibling is what the panel wants regardless.
 
-          `top-28` clears the header in both its normal and condensed states.
-          The header is transparent but still takes pointer events, so a panel
-          tucked any higher would have its first link swallowed by it. */}
+          `top-24` (96px) clears the header, which is now one fixed height --
+          `py-3` twice plus the 64px mark is 88px, and there is no condensed
+          state left to also clear. The header takes pointer events across its
+          full width, so a panel tucked any higher has its first link swallowed
+          by it. Re-measure if the bar's padding or the mark's size changes. */}
       <div
         id="mobile-nav"
         ref={panelRef}
@@ -277,7 +244,7 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed right-3 top-28 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
+          'fixed right-3 top-24 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
           'overflow-hidden rounded-[1.5rem] bg-powder px-4 py-4',
           // The hero is powder too, so a powder card on it had only its shadow
           // to say where the panel stopped and the page began. A white edge
