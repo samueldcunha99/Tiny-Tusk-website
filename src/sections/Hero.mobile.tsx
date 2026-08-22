@@ -2,10 +2,9 @@ import { useEffect, useRef } from 'react'
 import { LoopField } from '@/components/LoopField'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { Doodle } from '@/components/Doodle'
-import { Roundel } from '@/components/Roundel'
 import { SectionMarker } from '@/components/SectionMarker'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { CLINIC, HERO } from '@/content/site'
+import { HERO } from '@/content/site'
 import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
@@ -37,10 +36,11 @@ import { useSectionMeta } from '@/content/sectionOrder'
  *
  * WHAT THE REDESIGN ADDS
  *
- * The tagline roundel, set beside the headline. It is the guide's own p14 unit
- * and the phone site previously used it once, 900px down in the footer. At
- * 6.5rem it reads as a stamp against the display face without competing with
- * it, and it fills the ragged right of a two-line flush-left headline.
+ * The headline is the whole row. A 6.5rem tagline roundel used to sit beside
+ * it, filling the rag of the flush-left type; it has been removed at the
+ * client's request, so "Welcome to" over "Tiny Tusk" runs across the full
+ * measure with nothing competing against it. The roundel is still the guide's
+ * p14 unit and still renders in the footer if it is ever wanted back.
  *
  * Body copy is `HERO.body` -- the guide's p34 welcome in full, verbatim, never
  * a reworded summary. It used to be the one-sentence `bodyLede`, because at the
@@ -101,38 +101,28 @@ export function HeroMobile() {
           <SectionMarker label={meta.label} />
         </div>
 
-        {/* Headline and roundel share a row: the headline is flush left and
-            ragged right, and the roundel occupies the rag instead of leaving
-            it as a hole. `items-start` so the roundel hangs off the cap line
-            of the first word rather than centring against three lines. */}
-        <div className="mt-5 flex items-start justify-between gap-3">
-          <h1
-            className="font-display text-[clamp(3rem,16vw,4.5rem)] font-semibold leading-[0.88] tracking-[-0.035em] text-cobalt"
-            data-animate
-          >
-            {/* `pb`/`-mb` pair: at leading 0.88 the line box is shorter than
-                the glyphs, so `overflow-hidden` (which the clip reveal needs)
-                sliced the descender off the "y" in Tiny. The padding gives the
-                clip box room; the negative margin takes it back off layout. */}
-            {HERO.headline.map((line) => (
-              <span
-                key={line}
-                data-hero-line
-                className="-mb-[0.16em] block overflow-hidden pb-[0.16em]"
-              >
-                <span className="block">{line}</span>
-              </span>
-            ))}
-          </h1>
-
-          <div className="mt-1.5 w-[6.5rem] shrink-0" data-hero-fade>
-            <Roundel
-              tone="cobalt"
-              title={CLINIC.name + ': ' + CLINIC.tagline}
-              className="aspect-square w-full"
-            />
-          </div>
-        </div>
+        {/* The headline used to share this row with the roundel, which sat in
+            the rag of the flush-left type so the ragged right was not a hole.
+            With the roundel gone the row has one child, so the headline is the
+            row: "Welcome to" over "Tiny Tusk", two lines, nothing beside them. */}
+        <h1
+          className="mt-5 font-display text-[clamp(3rem,16vw,4.5rem)] font-semibold leading-[0.88] tracking-[-0.035em] text-cobalt"
+          data-animate
+        >
+          {/* `pb`/`-mb` pair: at leading 0.88 the line box is shorter than the
+              glyphs, so `overflow-hidden` (which the clip reveal needs) sliced
+              the descender off the "y" in Tiny. The padding gives the clip box
+              room; the negative margin takes it back off layout. */}
+          {HERO.headline.map((line) => (
+            <span
+              key={line}
+              data-hero-line
+              className="-mb-[0.16em] block overflow-hidden pb-[0.16em]"
+            >
+              <span className="block">{line}</span>
+            </span>
+          ))}
+        </h1>
 
         <p
           // Full-strength: cobalt on powder is 4.92:1, so every tint of it
