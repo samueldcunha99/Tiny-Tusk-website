@@ -17,7 +17,7 @@ export const CLINIC = {
  * mount at all. Set to false on launch day and the full site returns exactly
  * as it was; nothing else needs editing.
  */
-export const OPENING_SOON = true
+export const OPENING_SOON = false
 
 /**
  * TODO: set to the clinic's confirmed opening date or month once it exists,
