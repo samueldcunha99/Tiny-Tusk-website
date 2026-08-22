@@ -96,9 +96,14 @@ export function Nav() {
           canary is 6.37:1 and a p24 pairing, so the mark, the links and the
           hamburger all sit on the one surface at full contrast. */}
       <header className="fixed left-0 top-0 z-50 w-full bg-canary">
+        {/* `py-2` is close to the floor. The mark is 64px wide -- p7's minimum
+            digital size, with a dev guard on it -- and the logo viewBox is
+            524.91x414.20, so it renders 50.5px tall and sets the bar's height
+            on its own. 8px top and bottom puts the bar at ~66px; the only way
+            below that is to shrink the mark past the guide's minimum. */}
         <nav
           aria-label="Primary"
-          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-3 md:px-10"
+          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-2 md:px-10"
         >
         {/* p8: the mark's default placement is top-left. */}
         <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
@@ -172,10 +177,18 @@ export function Nav() {
           onClick={() => setOpen((v) => !v)}
         >
           <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
+          {/* Three rules at 0, 7 and 14 inside a 16px box. Opening folds the
+              outer two onto the middle's line to make the X, and the middle
+              itself fades rather than moving -- three bars converging on one
+              point leaves a visibly thicker stroke where they overlap. */}
           <span aria-hidden="true" className="relative block h-4 w-6">
             <span
               className="absolute left-0 block h-[2px] w-6 bg-cobalt transition-transform duration-300"
               style={{ top: open ? 7 : 0, transform: open ? 'rotate(45deg)' : 'none' }}
+            />
+            <span
+              className="absolute left-0 top-[7px] block h-[2px] w-6 bg-cobalt transition-opacity duration-300"
+              style={{ opacity: open ? 0 : 1 }}
             />
             <span
               className="absolute left-0 block h-[2px] w-6 bg-cobalt transition-transform duration-300"
@@ -227,11 +240,13 @@ export function Nav() {
           behind happened to be powder too. The transform is gone with the
           hide-on-scroll, but a sibling is what the panel wants regardless.
 
-          `top-24` (96px) clears the header, which is now one fixed height --
-          `py-3` twice plus the 64px mark is 88px, and there is no condensed
-          state left to also clear. The header takes pointer events across its
-          full width, so a panel tucked any higher has its first link swallowed
-          by it. Re-measure if the bar's padding or the mark's size changes. */}
+          `top-20` (80px) clears the header, which is now one fixed height --
+          `py-2` twice plus the mark's 50.5px rendered height is ~66px, and
+          there is no condensed state left to also clear. Note the mark's 64px
+          is its WIDTH; the 524.91x414.20 viewBox is what makes it 50.5px tall.
+          The header takes pointer events across its full width, so a panel
+          tucked any higher has its first link swallowed by it. Re-measure if
+          the bar's padding or the mark's size changes. */}
       <div
         id="mobile-nav"
         ref={panelRef}
@@ -244,7 +259,7 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed right-3 top-24 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
+          'fixed right-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
           'overflow-hidden rounded-[1.5rem] bg-powder px-4 py-4',
           // The hero is powder too, so a powder card on it had only its shadow
           // to say where the panel stopped and the page began. A white edge
