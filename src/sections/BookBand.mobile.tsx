@@ -1,8 +1,8 @@
-import { Doodle } from '@/components/Doodle'
+import { Logo } from '@/components/Logo'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { SectionMarker } from '@/components/SectionMarker'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
-import { CLINIC_ADDRESS, CLINIC_PHONE, MAP_DIRECTIONS_HREF } from '@/content/site'
+import { CLINIC, CLINIC_ADDRESS, CLINIC_PHONE, MAP_DIRECTIONS_HREF } from '@/content/site'
 import { useSectionMeta } from '@/content/sectionOrder'
 
 /**
@@ -36,7 +36,10 @@ export function BookBandMobile() {
 
       {/* Clean White Card for Clinic Address & Contact Details */}
       <div className="mt-6 rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/[0.04]">
-        <Doodle name="journeyCare" tone="cobalt" drawOnScroll className="mb-3 w-10" />
+        {/* The real mark, not a doodle: this card is the clinic's address, so
+            it carries the identity rather than a drawing that resembles it.
+            64px is p7's minimum digital size and the guard's floor. */}
+        <Logo size={64} tone="cobalt" title={`${CLINIC.name} logo`} className="mb-3" />
 
         <address className="font-sans text-[0.92rem] not-italic leading-[1.6] text-cobalt">
           <span className="block font-semibold text-cobalt">{CLINIC_ADDRESS.society}</span>

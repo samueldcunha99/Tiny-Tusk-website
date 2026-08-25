@@ -47,7 +47,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-center gap-3.5 text-center md:items-start md:gap-4 md:text-left">
-          <h3 className="font-display text-xl text-canary">Plan a visit</h3>
+          <h3 className="font-display text-xl text-canary">Come say hi!</h3>
           <address className="max-w-[34ch] font-sans text-[0.92rem] not-italic leading-[1.6] text-white/90 md:leading-[1.7]">
             <span className="block font-semibold text-white">{CLINIC_ADDRESS.society}</span>
             <span className="block">{CLINIC_ADDRESS.unit}</span>

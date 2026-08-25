@@ -25,6 +25,18 @@ export interface LogoProps {
   clearSpace?: boolean
   drawable?: boolean
   title?: string
+  /**
+   * Opt out of the `LOGO_MIN_PX` warning for ONE call site, on purpose.
+   *
+   * The guard exists to catch a mark accidentally shrunk below the guide's
+   * minimum, and it has caught a real regression. This is not a way around it:
+   * it is how a knowing exception gets recorded instead of the warning being
+   * deleted or the whole console going quiet. Exactly one caller uses it --
+   * the phone nav bar, where the client asked repeatedly for a thinner bar and
+   * the mark is what sets its height. Any new use needs the same kind of note
+   * beside it, naming who decided.
+   */
+  allowBelowMinimum?: boolean
 }
 
 const [, , LOGO_W, LOGO_H] = LOGO.viewBox.split(/\s+/).map(Number) as [
@@ -44,20 +56,21 @@ export const Logo = forwardRef<SVGSVGElement, LogoProps>(function Logo(
     clearSpace = false,
     drawable = false,
     title,
+    allowBelowMinimum = false,
   },
   ref,
 ) {
   const warned = useRef(false)
   useEffect(() => {
     if (!import.meta.env.DEV || warned.current) return
-    if (size < LOGO_MIN_PX) {
+    if (size < LOGO_MIN_PX && !allowBelowMinimum) {
       warned.current = true
       console.warn(
         `[Logo] Rendered at ${size}px. The identity guide (p7) sets a minimum ` +
           `digital size of ${LOGO_MIN_PX}px so the mark stays legible.`,
       )
     }
-  }, [size])
+  }, [size, allowBelowMinimum])
 
   const paint = colourVar(tone)
   // Clear space is the mark's own height, per p7.

@@ -31,6 +31,13 @@ export function HeroDesktop() {
         const nav = document.getElementById('site-nav') ?? document.querySelector('header')
         if (!nav) return
         const sync = () => {
+          // Only a fixed bar overlaps the hero. Above 1360px it sits in the
+          // flow and already takes its own height, so compensating for it
+          // again would open a second gap the same size as the bar.
+          if (getComputedStyle(nav).position !== 'fixed') {
+            node.style.paddingTop = ''
+            return
+          }
           const height = Math.ceil(nav.getBoundingClientRect().height)
           node.style.paddingTop = `${Math.max(144, height + 44)}px`
         }

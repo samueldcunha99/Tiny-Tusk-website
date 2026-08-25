@@ -31,13 +31,13 @@ export function JourneyMobile({ asPage = false }: { asPage?: boolean | undefined
     setActiveIndex((prev) => (prev - 1 + JOURNEY.length) % JOURNEY.length)
   }, [])
 
-  // Faster auto-scroll through steps every 2.6s (pauses on user interaction / reduced motion)
+  // Auto-scroll through steps every 2.5s (pauses on user interaction / reduced motion)
   useEffect(() => {
     if (isPaused || reduced) return
 
     const timer = setInterval(() => {
       nextStep()
-    }, 2600)
+    }, 2500)
 
     return () => clearInterval(timer)
   }, [isPaused, reduced, nextStep])

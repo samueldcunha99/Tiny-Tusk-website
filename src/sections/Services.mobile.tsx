@@ -3,7 +3,6 @@ import { Doodle } from '@/components/Doodle'
 import { ServiceIcon } from '@/components/ServiceIcon'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { SectionMarker } from '@/components/SectionMarker'
-import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { TREATMENTS } from '@/content/treatments'
 import { TREATMENT_CATEGORIES, TREATMENT_HREF } from '@/content/treatmentCategories'
@@ -119,9 +118,12 @@ export function ServicesMobile({ asPage = false }: { asPage?: boolean | undefine
         <div className="mt-9 flex flex-col gap-9" data-service-grid>
           {TREATMENT_CATEGORIES.map((category) => (
             <section key={category.id} data-service-cell data-animate>
-              <h2 className="flex items-center gap-3.5 font-display text-[1.4375rem] leading-[1.1] text-cobalt">
-                <ServiceIcon slug={category.icon} className="h-[2.5rem] w-[2.5rem] shrink-0" />
-                <MixedWeightLabel lead={category.title.lead} rest={category.title.rest} display />
+              {/* No category icon and no mixed weight here: the client asked
+                  for plain bold category headings, so the row icons below are
+                  the only drawings in the list and the heading is one weight.
+                  `MixedWeightLabel` still governs labels everywhere else. */}
+              <h2 className="font-display text-[1.4375rem] font-semibold leading-[1.1] text-cobalt">
+                {category.title.lead} {category.title.rest}
               </h2>
 
               <ul className="mt-3">

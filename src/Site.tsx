@@ -15,12 +15,15 @@ import { Team } from '@/sections/Team'
 import { BrushTimer } from '@/sections/BrushTimer'
 import { Games } from '@/sections/Games'
 import { ParentsCorner } from '@/sections/ParentsCorner'
+import { ParentsArticle } from '@/sections/ParentsArticle'
+import { parentArticle } from '@/content/parents'
 import { Testimonials } from '@/sections/Testimonials'
 import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+import { PhoneButton } from '@/components/PhoneButton'
 
 /**
  * The full site, behind the pre-opening gate in `App.tsx`.
@@ -91,6 +94,22 @@ function PageRoute({
 function CurrentRoute() {
   const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
 
+  // One blog post. Ahead of the switch because it is the only route with a
+  // variable segment; an unknown slug falls through to the 404 below.
+  if (pathname.startsWith('/parents-corner/')) {
+    const article = parentArticle(pathname.slice('/parents-corner/'.length))
+    if (article) {
+      return (
+        <PageRoute
+          title={`${article.question} | Tiny Tusk`}
+          description={article.summary}
+        >
+          <ParentsArticle article={article} />
+        </PageRoute>
+      )
+    }
+  }
+
   switch (pathname) {
     case '/':
       return (
@@ -104,8 +123,8 @@ function CurrentRoute() {
     case '/dr-nupur':
       return (
         <PageRoute
-          title="Meet Dr. Nupur | Tiny Tusk"
-          description="Meet Dr. Nupur, BDS · MDS in Pediatric Dentistry, and learn what families can expect from her calm approach."
+          title="Meet Dr. Nupur Agarwal | Tiny Tusk"
+          description="Meet Dr. Nupur Agarwal, BDS · MDS in Pediatric Dentistry, and learn what families can expect from her calm approach."
         >
           <Team asPage />
         </PageRoute>
@@ -217,6 +236,7 @@ export default function Site() {
         <CurrentRoute />
       </main>
       <Footer />
+      <PhoneButton variant="floating" />
       <WhatsAppButton variant="floating" />
     </>
   )

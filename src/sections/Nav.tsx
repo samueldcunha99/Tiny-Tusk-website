@@ -3,6 +3,7 @@ import { Logo } from '@/components/Logo'
 import { Doodle } from '@/components/Doodle'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
+import { useIsMobile } from '@/lib/viewport'
 import { CLINIC } from '@/content/site'
 
 /**
@@ -25,17 +26,18 @@ export function Nav() {
   const [pageProgress, setPageProgress] = useState(0)
   const panelRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
+  const isMobile = useIsMobile()
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
   // `condensed`, `navVisible` and `needsTopNavSurface` all lived here to decide
   // which surface the bar took and whether it was on screen at all. A permanent
-  // canary rectangle answers every one of those questions the same way, so the
+  // white rectangle answers every one of those questions the same way, so the
   // state, the media query and the /games and /brush-timer special case are gone.
   const isCurrent = (href: string) =>
     currentPath === href || (currentPath === '/brush-timer' && href === '/games')
 
-  // Scroll only drives the progress line now. The bar itself is fixed in every
-  // sense: it does not hide on the way down, does not condense, and does not
-  // swap surface -- one canary rectangle from the top of the page to the end.
+  // Scroll only drives the progress line now. The bar does not hide on the way
+  // down, does not condense and does not swap surface -- it is one white
+  // rectangle, pinned below 1360px and in the flow above it.
   useEffect(() => {
     const onScroll = () => {
       const scrollable =
@@ -71,12 +73,16 @@ export function Nav() {
     const panel = panelRef.current
     if (!panel || !open || reduced) return
     const items = panel.querySelectorAll('[data-nav-item]')
-    // Short travel: the panel is a card now, not a full screen, so a 28px
-    // rise would read as items sliding in from outside their own container.
-    const tl = gsap.fromTo(
+    const tl = gsap.timeline()
+    tl.fromTo(
+      panel,
+      { x: -24, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.32, ease: EASE.entrance },
+    ).fromTo(
       items,
-      { y: 12, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.42, ease: EASE.entrance, stagger: STAGGER * 0.6 },
+      { x: -12, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.36, ease: EASE.entrance, stagger: STAGGER * 0.5 },
+      '-=0.18',
     )
     return () => {
       tl.kill()
@@ -85,31 +91,43 @@ export function Nav() {
 
   return (
     <>
-      {/* One canary rectangle, edge to edge, square corners, always opaque.
-          This replaces a floating pill that branched four ways on breakpoint,
-          scroll position and route -- with the bar permanently on a surface
-          none of that had anything left to decide.
+      {/* One white rectangle, edge to edge, square corners, always opaque.
+          White carries cobalt at full contrast, so the mark, the links and the
+          hamburger all sit on the one surface.
 
-          Canary is what makes the single bar possible. Coral could only ever
-          be a field (1.84:1 as ink on powder, and no pairing lists it as an
-          element), so a coral bar forced the desktop links off it. Cobalt on
-          canary is 6.37:1 and a p24 pairing, so the mark, the links and the
-          hamburger all sit on the one surface at full contrast. */}
-      <header className="fixed left-0 top-0 z-50 w-full bg-canary">
-        {/* `py-2` is close to the floor. The mark is 64px wide -- p7's minimum
-            digital size, with a dev guard on it -- and the logo viewBox is
-            524.91x414.20, so it renders 50.5px tall and sets the bar's height
-            on its own. 8px top and bottom puts the bar at ~66px; the only way
-            below that is to shrink the mark past the guide's minimum. */}
+          Fixed only where the bar is the only way back to the menu: below
+          1360px the links are behind the hamburger, so it has to stay
+          reachable. At 1360px and up every link is already on screen, so the
+          bar is a normal block and scrolls away with the page. */}
+      <header className="fixed left-0 top-0 z-50 w-full bg-white min-[1360px]:static">
+        {/* PHONE BAR HEIGHT IS THE 44px MENU BUTTON, AND NOTHING ELSE.
+            The bar used to be ~66px because the mark set its height: 64px wide
+            is p7's minimum digital size, and the logo viewBox is 524.91x414.20,
+            so it rendered 50.5px tall and the padding sat on top of that.
+            The client asked three times for a thinner bar, so the mark is now
+            44px on phones -- below the guide's minimum, deliberately, via
+            `allowBelowMinimum` (see `Logo.tsx`). At 44 it renders 34.7px tall
+            and fits inside the menu button's own 44px touch target, so the row
+            is exactly 44px with no padding of its own.
+            44px is the floor now for an accessibility reason rather than a
+            brand one: it is the minimum touch target, and the button is not
+            shrinking. Desktop is untouched -- full 64px mark, `py-2`. */}
         <nav
           aria-label="Primary"
-          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-2 md:px-10"
+          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-0 md:px-10 md:py-2"
         >
         {/* p8: the mark's default placement is top-left. */}
         <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
-          {/* Never below 64px -- the guide's minimum digital size (p7). The
-              bar is sized around the mark rather than the other way round. */}
-          <Logo size={64} tone="cobalt" title={`${CLINIC.name} logo`} />
+          {/* 64px on desktop -- the guide's minimum digital size (p7). 44px on
+              a phone, which is under it, at the client's explicit and repeated
+              request; the opt-out is named at the call site rather than the
+              guard being weakened for everyone. */}
+          <Logo
+            size={isMobile ? 44 : 64}
+            allowBelowMinimum={isMobile}
+            tone="cobalt"
+            title={`${CLINIC.name} logo`}
+          />
           <span className="sr-only">{CLINIC.fullName}</span>
         </a>
 
@@ -202,7 +220,7 @@ export function Nav() {
             full-width header the line reads as the bar's own underline, and at
             `top-0` it would have sat inside the canary instead of under it. */}
         <div
-          className="absolute inset-x-0 bottom-0 h-1 bg-cobalt/10"
+          className="absolute inset-x-0 bottom-0 h-[3px] bg-cobalt/10"
           aria-hidden="true"
         >
           <div
@@ -227,8 +245,8 @@ export function Nav() {
         </button>
       ) : null}
 
-      {/* Mobile: a powder dropdown anchored to the top right, under the menu
-          button, with the staggered reveal and a doodle in its corner.
+      {/* Mobile: a powder dropdown anchored to the top left, under the logo
+          mark, with the staggered reveal and a doodle in its corner.
 
           This MUST stay a sibling of the header, never a child. Any transform
           other than `none` makes an element the containing block for its
@@ -259,7 +277,7 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed right-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
+          'fixed left-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
           'overflow-hidden rounded-[1.5rem] bg-powder px-4 py-4',
           // The hero is powder too, so a powder card on it had only its shadow
           // to say where the panel stopped and the page began. A white edge

@@ -1,6 +1,5 @@
-import { BrandImage } from '@/components/BrandImage'
+import { ArticleImage } from '@/components/ArticleImage'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
-import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionNumber } from '@/components/SectionNumber'
 import { colourVar } from '@/components/BrandArtView'
 import { PARENT_ARTICLES } from '@/content/parents'
@@ -11,13 +10,30 @@ import { TextPanel } from '@/components/TextPanel'
 /**
  * 08 Parents' Corner -- paper.
  *
- * Five articles on the same six-column editorial grid the services use, so the
- * two card sections rhyme: 3+3 on the first row, 2+2+2 on the second. Each card
- * is an image head (full p32 treatment) over a tinted body, and the `fill`
- * already in `content/parents.ts` drives the body surface -- including the
- * coral card, which keeps its field and floats its copy on cobalt.
+ * This IS the blog. Seven posts on the same six-column editorial grid the
+ * services use, so the two card sections rhyme: 3+3, then 2+2+2, then 3+3.
+ *
+ * A card is the client's photograph, then her question under it, then the
+ * summary -- her own running order. The `<BrandImage>` head that used to sit
+ * up there (logo watermark, title ellipse, doodle overlays) is still gone at
+ * her request: this is a plain photograph on a plain tinted box, the `fill`
+ * from `content/parents.ts`. The coral card keeps its field and floats its
+ * copy on cobalt via `TextPanel`, because coral cannot carry text.
+ *
+ * A post with no photograph yet gets the placeholder tile, not a missing head,
+ * so the row of cards stays one shape (see `ArticleImage`).
+ *
+ * Every card is a link to `/parents-corner/<id>` (`ParentsArticle.tsx`).
  */
-const SPANS = ['md:col-span-3', 'md:col-span-3', 'md:col-span-2', 'md:col-span-2', 'md:col-span-2']
+const SPANS = [
+  'md:col-span-3',
+  'md:col-span-3',
+  'md:col-span-2',
+  'md:col-span-2',
+  'md:col-span-2',
+  'md:col-span-3',
+  'md:col-span-3',
+]
 
 export function ParentsCorner({ asPage = false }: { asPage?: boolean | undefined }) {
   const meta = useSectionMeta('parents')
@@ -53,40 +69,48 @@ export function ParentsCorner({ asPage = false }: { asPage?: boolean | undefined
                 style={{ background: colourVar(article.fill) }}
                 data-surface={article.fill}
               >
-                <BrandImage
-                  webp={`/images/${article.image.stem}.webp`}
-                  png={`/images/${article.image.stem}.png`}
-                  alt={article.image.alt}
-                  width={article.image.width}
-                  height={article.image.height}
-                  title={{ ...article.title, fill: article.fill, href: '/parents' }}
-                  logoTone={article.image.logoTone}
-                  doodle={article.image.doodle}
-                  doodleTone={article.image.doodleTone}
-                  className="aspect-[16/10] rounded-b-none"
-                />
-                <div className="p-7">
-                  <TextPanel surface={article.fill}>
-                    <p
-                      className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
-                      style={{ color: colourVar(onPanel ? 'canary' : 'cobalt-60') }}
-                    >
-                      {article.category}
-                    </p>
-                    <ItemHeading
-                      className="mt-3 font-display text-[clamp(1.2rem,1.8vw,1.55rem)] leading-snug"
-                      style={{ color: colourVar(onPanel ? 'canary' : 'cobalt') }}
-                    >
-                      <MixedWeightLabel lead={article.title.lead} rest={article.title.rest} display />
-                    </ItemHeading>
-                    <p
-                      className="mt-3 max-w-measure font-sans text-[0.95rem] leading-relaxed"
-                      style={{ color: colourVar(onPanel ? 'white' : 'cobalt') }}
-                    >
-                      {article.summary}
-                    </p>
-                  </TextPanel>
-                </div>
+                <a
+                  href={`/parents-corner/${article.id}`}
+                  className="block transition-transform duration-500 ease-entrance active:-translate-y-0.5"
+                >
+                  {/* Photograph first, question under it -- the client's own
+                      running order. The tile is flush to the card's top edge,
+                      so the tinted fill reads as the card's lower half rather
+                      than a border around a picture. */}
+                  <ArticleImage image={article.image} className="aspect-[16/10]" />
+
+                  <div className="p-7">
+                    <TextPanel surface={article.fill}>
+                      <p
+                        className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
+                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt-60') }}
+                      >
+                        {article.category}
+                      </p>
+                      {/* The client's question verbatim, not a rewritten label:
+                          it is what she asked for under each photograph, and it
+                          is the same string the article page carries as its h1. */}
+                      <ItemHeading
+                        className="mt-3 font-display text-[clamp(1.2rem,1.8vw,1.55rem)] font-semibold leading-snug"
+                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt') }}
+                      >
+                        {article.question}
+                      </ItemHeading>
+                      <p
+                        className="mt-3 max-w-measure font-sans text-[0.95rem] leading-relaxed"
+                        style={{ color: colourVar(onPanel ? 'white' : 'cobalt') }}
+                      >
+                        {article.summary}
+                      </p>
+                      <p
+                        className="mt-4 font-sans text-[0.85rem] font-semibold underline underline-offset-[3px]"
+                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt') }}
+                      >
+                        Read this
+                      </p>
+                    </TextPanel>
+                  </div>
+                </a>
               </article>
             )
           })}

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrandImage } from '@/components/BrandImage'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
@@ -11,16 +10,17 @@ import { useSectionMeta } from '@/content/sectionOrder'
  * Creative Mobile Inside the Clinic -- paper ground.
  *
  * Designed for mobile:
- * 1. Interactive room selector tabs (Reception, Treatment Room, Family Corner)
- *    let parents explore the concept imagery seamlessly.
- * 2. Visual card with authentic brand doodle overlays and concept badge.
- * 3. Vision statement and 6 scannable amenity chips with animated doodles.
+ * 1. All three concept visuals stacked, with brand doodle overlays.
+ * 2. Vision statement and 6 scannable amenity chips with animated doodles.
+ *
+ * The three room tabs are gone at the client's request. Each tile already
+ * carries its own title ellipse ("A warm welcome", "Calm care spaces",
+ * "Learn together"), so the pills were repeating the picture underneath --
+ * and stacking them means no room is behind a tap.
  */
 export function InsideClinicMobile({ asPage = false }: { asPage?: boolean | undefined }) {
   const meta = useSectionMeta('clinic')
   const Heading = asPage ? 'h1' : 'h2'
-  const [activeRoomIndex, setActiveRoomIndex] = useState(0)
-  const activeConcept = CLINIC_CONCEPTS[activeRoomIndex] ?? CLINIC_CONCEPTS[0]!
 
   return (
     <section
@@ -42,52 +42,25 @@ export function InsideClinicMobile({ asPage = false }: { asPage?: boolean | unde
         Concept visuals of the space being built, not photographs of the finished clinic.
       </p>
 
-      {/* Interactive Room Explorer */}
-      <div className="mt-7">
-        {/* Room Tab Selector */}
-        <div
-          role="tablist"
-          aria-label="Clinic spaces"
-          className="flex gap-2 overflow-x-auto pb-2 scrollbar-none"
-        >
-          {CLINIC_CONCEPTS.map((concept, index) => {
-            const isActive = index === activeRoomIndex
-            return (
-              <button
-                key={concept.id}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActiveRoomIndex(index)}
-                className={[
-                  'flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200',
-                  isActive
-                    ? 'bg-cobalt text-white shadow-sm ring-1 ring-cobalt'
-                    : 'bg-white text-cobalt hover:bg-powder/40',
-                ].join(' ')}
-              >
-                <span>{concept.title.lead} {concept.title.rest}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Active Concept Visual */}
-        <div className="relative mt-3 overflow-hidden rounded-[1.5rem] shadow-sm">
-          <BrandImage
-            key={activeConcept.id}
-            webp={`/images/${activeConcept.image.stem}.webp`}
-            png={`/images/${activeConcept.image.stem}.png`}
-            alt={activeConcept.image.alt}
-            width={activeConcept.image.width}
-            height={activeConcept.image.height}
-            title={{ ...activeConcept.title, href: '/book' }}
-            logoTone={activeConcept.image.logoTone}
-            doodle={activeConcept.image.doodle}
-            doodleTone={activeConcept.image.doodleTone}
-            className="aspect-[4/3] w-full"
-            eager
-          />
-        </div>
+      {/* Concept visuals, all three, in order. */}
+      <div className="mt-7 flex flex-col gap-4">
+        {CLINIC_CONCEPTS.map((concept, index) => (
+          <div key={concept.id} className="relative overflow-hidden rounded-[1.5rem] shadow-sm">
+            <BrandImage
+              webp={`/images/${concept.image.stem}.webp`}
+              png={`/images/${concept.image.stem}.png`}
+              alt={concept.image.alt}
+              width={concept.image.width}
+              height={concept.image.height}
+              title={{ ...concept.title, href: '/book' }}
+              logoTone={concept.image.logoTone}
+              doodle={concept.image.doodle}
+              doodleTone={concept.image.doodleTone}
+              className="aspect-[4/3] w-full"
+              {...(index === 0 ? { eager: true } : {})}
+            />
+          </div>
+        ))}
       </div>
 
       {/* Vision & Amenities */}

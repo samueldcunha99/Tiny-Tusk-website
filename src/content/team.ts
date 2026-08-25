@@ -10,7 +10,7 @@ export interface PractitionerBeat {
 }
 
 export const DR_NUPUR = {
-  name: 'Dr. Nupur',
+  name: 'Dr. Nupur Agarwal',
   /**
    * CLIENT-CONFIRMED — DO NOT REMOVE OR WEAKEN.
    *
@@ -21,7 +21,7 @@ export const DR_NUPUR = {
    */
   credentials: 'BDS · MDS, Pediatric Dentistry',
   portrait: {
-    alt: 'Portrait of Dr. Nupur, photography to be supplied.',
+    alt: 'Portrait of Dr. Nupur Agarwal, photography to be supplied.',
     /**
      * Internal production note. NEVER render this in the UI — it is guidance
      * for whoever commissions the shoot, not copy for visitors.
