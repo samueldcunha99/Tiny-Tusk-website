@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
 import { SectionNumber } from '@/components/SectionNumber'
 import { colourVar } from '@/components/BrandArtView'
+import { TextPanel } from '@/components/TextPanel'
+import { carriesText } from '@/design/pairings'
 import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import { JOURNEY } from '@/content/journey'
 import { useSectionMeta } from '@/content/sectionOrder'
@@ -132,58 +134,86 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
           />
         </svg>
 
-        {JOURNEY.map((panel) => (
-          <article
-            key={panel.id}
-            data-panel
-            data-surface="paper"
-            className="relative z-10 flex h-full w-[100vw] shrink-0 items-center justify-center px-6 py-4 md:w-[50vw] md:px-10"
-          >
-            <div
-              data-panel-inner
-              className="flex max-h-full w-full max-w-lg flex-col items-center text-center gap-4"
+        {JOURNEY.map((panel) => {
+          // The box is back. Because the copy now sits on the panel's own
+          // surface rather than on the section's paper, the tones have to come
+          // from the panel instead of being hardcoded to cobalt -- and the
+          // coral panel's copy has to be bedded on cobalt, which is what
+          // `TextPanel` does (hard rule 1: coral cannot carry text).
+          const onSurface = carriesText(panel.surface)
+          const headingTone = onSurface ? panel.element : 'canary'
+          const bodyTone = onSurface ? panel.element : 'white'
+
+          return (
+            <article
+              key={panel.id}
+              data-panel
+              data-surface={panel.surface}
+              className="relative z-10 flex h-full w-[100vw] shrink-0 items-center justify-center px-6 py-4 md:w-[50vw] md:px-10"
             >
-              {panel.kind === 'beat' ? (
-                <>
-                  <div className="w-20 shrink-0 md:w-28">
-                    <Doodle name={panel.glyph} tone="cobalt" drawOnScroll />
-                  </div>
-                  <div className="flex flex-col items-center text-center gap-3">
-                    <SectionNumber
-                      number={panel.number}
-                      label="Step"
-                      tone="coral"
-                      className="justify-center"
-                    />
-                    <h3 className="font-display text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-tight text-cobalt">
-                      {panel.title}
-                    </h3>
-                    <p className="max-w-[38ch] font-sans text-[1.05rem] leading-[1.6] text-cobalt/85">
-                      {panel.body}
+              <div
+                data-panel-inner
+                className="flex max-h-full w-full max-w-lg flex-col items-center gap-4 overflow-hidden rounded-[2.5rem] p-6 text-center md:p-9"
+                style={{ background: colourVar(panel.surface) }}
+              >
+                {panel.kind === 'beat' ? (
+                  <>
+                    <div className="w-20 shrink-0 md:w-28">
+                      <Doodle name={panel.glyph} tone={panel.element} drawOnScroll />
+                    </div>
+                    <TextPanel
+                      surface={panel.surface}
+                      className="flex flex-col items-center gap-3 text-center"
+                    >
+                      <SectionNumber
+                        number={panel.number}
+                        label="Step"
+                        tone={headingTone}
+                        className="justify-center"
+                      />
+                      <h3
+                        className="font-display text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-tight"
+                        style={{ color: colourVar(headingTone) }}
+                      >
+                        {panel.title}
+                      </h3>
+                      <p
+                        className="max-w-[38ch] font-sans text-[1.05rem] leading-[1.6]"
+                        style={{ color: colourVar(bodyTone) }}
+                      >
+                        {panel.body}
+                      </p>
+                    </TextPanel>
+                  </>
+                ) : (
+                  <div className="flex w-full flex-col items-center gap-5 py-4 text-center">
+                    <div className="w-36 md:w-44">
+                      <Doodle
+                        name={panel.glyph}
+                        tone={panel.element}
+                        drawOnScroll
+                        title="The Tiny Tusk mark"
+                      />
+                    </div>
+                    {/* Was coral, which fails on the cobalt box now behind it. */}
+                    <span
+                      className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
+                      style={{ color: colourVar(panel.element) }}
+                    >
+                      The Logo Story
+                    </span>
+                    <p
+                      className="max-w-sm font-display text-[1.65rem] font-semibold leading-snug"
+                      style={{ color: colourVar(panel.element) }}
+                    >
+                      {panel.caption}
                     </p>
                   </div>
-                </>
-              ) : (
-                <div className="flex w-full flex-col items-center gap-5 py-4 text-center">
-                  <div className="w-36 md:w-44">
-                    <Doodle
-                      name={panel.glyph}
-                      tone="cobalt"
-                      drawOnScroll
-                      title="The Tiny Tusk mark"
-                    />
-                  </div>
-                  <span className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-coral">
-                    The Logo Story
-                  </span>
-                  <p className="max-w-sm font-display text-[1.65rem] font-semibold leading-snug text-cobalt">
-                    {panel.caption}
-                  </p>
-                </div>
-              )}
-            </div>
-          </article>
-        ))}
+                )}
+              </div>
+            </article>
+          )
+        })}
       </div>
     </section>
   )
