@@ -10,7 +10,23 @@
     />
     <meta name="theme-color" content="#18528E" />
 
+    <!--
+      The mark reversed out of cobalt, rather than the bare cobalt stroke on
+      transparent it used to be. On transparent, Google composited it onto its
+      own white circle and the thin strokes came out muddy at search-result
+      size; a solid cobalt field with a white mark holds up all the way down to
+      a 16px tab.
+
+      The full cover roundel (p1) was tried here and abandoned: its arc text and
+      "Pediatric Dental Clinic" line turn to mush below about 48px.
+
+      SVG first, since a mark with no type in it needs no webfont and so stays
+      sharp at any size. The PNGs are for Google, which wants a square raster
+      of at least 48px -- 192 is the one it uses in search results.
+    -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <link rel="preconnect" href="/" />
