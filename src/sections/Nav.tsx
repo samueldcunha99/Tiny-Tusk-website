@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
-import { Doodle } from '@/components/Doodle'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { useIsMobile } from '@/lib/viewport'
@@ -277,8 +276,8 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed left-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] flex-col',
-          'overflow-hidden rounded-[1.5rem] bg-powder px-4 py-4',
+          'fixed left-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] max-h-[calc(100svh-5.5rem)] overflow-y-auto flex-col',
+          'rounded-[1.5rem] bg-powder px-3.5 py-3',
           // The hero is powder too, so a powder card on it had only its shadow
           // to say where the panel stopped and the page began. A white edge
           // separates it on any surface -- the same white-on-powder rule the
@@ -289,9 +288,9 @@ export function Nav() {
         ].join(' ')}
       >
         {/* Spacing lives in each row's padding, not in the gap between rows:
-            at `gap-4` with no padding the links measured 22px tall, half the
-            44px a thumb needs, with dead space between them doing nothing. */}
-        <ul className="flex flex-col gap-1">
+            compact rows ensure comfortable thumb targets without pushing
+            the card off-screen on smaller phones. */}
+        <ul className="flex flex-col gap-0.5">
           {LINKS.map((l) => {
             const active = isCurrent(l.href)
             return (
@@ -300,7 +299,7 @@ export function Nav() {
                   href={l.href}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setOpen(false)}
-                  className="block rounded-2xl px-2 py-3 font-display text-[1.4rem] leading-none text-cobalt"
+                  className="block rounded-xl px-2.5 py-2 font-display text-[1.25rem] leading-none text-cobalt"
                 >
                   {/* The rule tracks the word, not the tap target, so it stays
                       tight under the label now that the row is padded out. */}
@@ -308,7 +307,7 @@ export function Nav() {
                     {l.label}
                     {active ? (
                       <span
-                        className="absolute -bottom-1.5 left-0 h-[3px] w-9 rounded-full bg-coral"
+                        className="absolute -bottom-1 left-0 h-[2.5px] w-8 rounded-full bg-coral"
                         aria-hidden="true"
                       />
                     ) : null}
@@ -320,13 +319,13 @@ export function Nav() {
           {/* Booking is the one action worth separating from the list. In the
               full-screen panel its size did that; in a dropdown, a rule and a
               filled row do it instead. */}
-          <li data-nav-item className="mx-2 mt-2 border-t-2 border-white/70 pt-4">
+          <li data-nav-item className="mx-1 mt-2 border-t border-white/70 pt-2.5">
             <a
               href="/book"
               aria-current={currentPath === '/book' ? 'page' : undefined}
               onClick={() => setOpen(false)}
               className={[
-                'block rounded-full bg-cobalt px-5 py-3 text-center font-display text-[1.25rem]',
+                'block rounded-full bg-cobalt px-4 py-2.5 text-center font-display text-[1.15rem]',
                 'leading-none text-white',
                 currentPath === '/book' ? 'ring-2 ring-coral ring-offset-2 ring-offset-powder' : '',
               ].join(' ')}
@@ -336,21 +335,10 @@ export function Nav() {
           </li>
           {/* Labelled here, unlike the desktop disc: in a list of words an
               unlabelled icon reads as decoration rather than an action. */}
-          <li data-nav-item className="mx-2 mt-2 flex">
+          <li data-nav-item className="mx-1 mt-1.5 flex">
             <WhatsAppButton variant="row" onNavigate={() => setOpen(false)} />
           </li>
         </ul>
-
-        {/* Kept from the full-screen panel, sized for a card. It rests
-            complete, so it is art rather than a third animation system. */}
-        <div className="pointer-events-none mt-5 flex justify-end gap-2 opacity-90" aria-hidden="true">
-          <span className="w-8 self-start pt-1">
-            <Doodle name="markDashes" tone="cobalt" />
-          </span>
-          <span className="w-16">
-            <Doodle name="doodleFace" tone="cobalt" />
-          </span>
-        </div>
       </div>
     </>
   )
