@@ -16,14 +16,15 @@ export interface RoundelProps {
 }
 
 /**
- * The tagline roundel exactly as the client's lollipop board sets it: curved
+ * The tagline roundel exactly as the guide's cover (p1) sets it: curved
  * tagline, the mark, the smile and its two tabs, one unit. Geometry comes from
  * `tools/extract-roundel.py`, so the mark's size and position inside the ring
- * are the board's, not a call site's guess -- do not re-compose this from
- * `<TextOnPath>` plus a separate `<Logo>`.
+ * are the guide's, not a call site's guess -- do not re-compose this from
+ * `<TextOnPath>` plus a separate `<Logo>`. (An earlier extraction from the
+ * client's lollipop board drew the mark ~40% larger; the user rejected it.)
  *
- * The board prints it white on a cobalt disc; here it is a single tone on
- * whatever surface it sits on, which is why there is no disc.
+ * The cover prints it white on cobalt; here it is a single tone on whatever
+ * surface it sits on.
  */
 export function Roundel({ tone = 'cobalt', title, className }: RoundelProps) {
   return (

@@ -2,9 +2,10 @@ import { useRef } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { colourVar } from '@/components/BrandArtView'
 import { Doodle } from '@/components/Doodle'
+import { Wordmark } from '@/components/Logo'
 import { Roundel } from '@/components/Roundel'
 import { StylisedCTA } from '@/components/StylisedCTA'
-import { HERO } from '@/content/site'
+import { CLINIC, HERO } from '@/content/site'
 import {
   gsap,
   ScrollTrigger,
@@ -154,8 +155,15 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hidden lg:block" aria-hidden="true">
-          <Roundel tone="cobalt" className="w-[clamp(12rem,17vw,16rem)]" />
+        {/* The guide's cover lockup (p1) -- roundel, wordmark and tag, in the
+            cover's proportions -- in cobalt, the element colour for powder.
+            Desktop only: the client asked for no roundel in the phone hero.
+            Top-aligned with the headline rather than centred on the whole
+            column, which left it hanging low beside the button. */}
+        <div className="hidden flex-col items-center lg:flex lg:self-start" aria-hidden="true">
+          <Roundel tone="cobalt" className="block h-auto w-[clamp(13rem,18vw,17rem)]" />
+          <Wordmark tone="cobalt" className="mt-1 h-auto w-[clamp(9.5rem,13.1vw,12.4rem)]" />
+          <p className="mt-2 font-sans text-[clamp(0.8rem,0.95vw,0.9rem)] font-medium text-cobalt">{CLINIC.tag}</p>
         </div>
 
         {/* A full-height hero needs to say there is more below; this link is

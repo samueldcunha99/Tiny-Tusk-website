@@ -1,25 +1,38 @@
-import { useEffect, useRef, useState } from 'react'
-import { Logo } from '@/components/Logo'
+import { useRef, useState } from 'react'
+import { Wordmark } from '@/components/Logo'
+import { Roundel } from '@/components/Roundel'
+import { SmileEdge } from '@/components/SmileEdge'
 import { CLINIC } from '@/content/site'
 import {
-  gsap,
   EASE,
+  STAGGER,
+  gsap,
   introPending,
   markIntroDone,
-  primeDraw,
+  useIsoLayoutEffect,
   usePrefersReducedMotion,
 } from '@/lib/motion'
 
 /**
- * First visit of a session only: the mark draws itself on cobalt, then shrinks
- * into its slot in the nav. `markIntroDone` hands the screen to the hero, whose
- * own entrance waits for it (see `onIntroDone`).
+ * First visit of a session only: the guide's own cover (p1) on cobalt -- the
+ * tagline roundel in white, the name and "Pediatric Dental Clinic" in canary
+ * beneath it.
+ *
+ * The roundel is the client's artwork (`<Roundel>`), never re-set type, so it
+ * keeps the guide's lettering. The mark sits alone first; then the tagline
+ * writes itself round it in one clockwise sweep from its first letter, and the
+ * sweep carries on underneath to draw the smile -- the tagline unit assembling
+ * (`.tt-sweep` in index.css holds the geometry). The name rises by clip reveal,
+ * and the whole cover lifts away like a page, its trailing edge the tagline's
+ * smile. `markIntroDone` then hands the screen to the hero, whose own entrance
+ * waits for it (see `onIntroDone`).
+ *
+ * It replaces a hand-set version -- the tagline typed flat in the body face
+ * over a separate arc, and the mark flown to a measured nav position.
  */
 export function Preloader() {
   const [visible, setVisible] = useState(introPending)
   const rootRef = useRef<HTMLDivElement>(null)
-  const unitRef = useRef<HTMLDivElement>(null)
-  const arcRef = useRef<SVGPathElement>(null)
   const reduced = usePrefersReducedMotion()
 
   const finish = () => {
@@ -27,57 +40,66 @@ export function Preloader() {
     setVisible(false)
   }
 
-  useEffect(() => {
+  // Layout effect: the sweep's start state must be set before the first paint,
+  // or the finished roundel flashes up and then vanishes.
+  useIsoLayoutEffect(() => {
     if (!visible) return
     const root = rootRef.current
-    const unit = unitRef.current
-    const arc = arcRef.current
-    if (!root || !unit || !arc) return
-    const paths = Array.from(unit.querySelectorAll<SVGPathElement>('[data-draw]'))
+    if (!root) return
     if (reduced) {
-      paths.forEach((path) => primeDraw(path, true))
       finish()
       return
     }
     const ctx = gsap.context(() => {
-      paths.forEach((path) => primeDraw(path, false))
-      const arcLength = primeDraw(arc, false)
-
-      const targetNav = document.getElementById('nav-logo')
-      let targetX = -180
-      let targetY = -240
-      let targetScale = 0.24
-
-      if (targetNav) {
-        const targetRect = targetNav.getBoundingClientRect()
-        const unitRect = unit.getBoundingClientRect()
-        targetScale = (targetRect.width || 64) / unitRect.width
-        targetX = targetRect.left + targetRect.width / 2 - (unitRect.left + unitRect.width / 2)
-        targetY = targetRect.top + targetRect.height / 2 - (unitRect.top + unitRect.height / 2)
-      }
-
-      const tl = gsap.timeline({ onComplete: finish })
-      tl.to(paths, { strokeDashoffset: 0, duration: 0.62, ease: EASE.entrance, stagger: 0.08 })
-        .to(arc, { strokeDashoffset: 0, duration: 0.36, ease: EASE.entrance }, 0.3)
-        .fromTo('[data-tagline]', { rotation: -12, opacity: 0 }, { rotation: 0, opacity: 1, duration: 0.34, ease: EASE.entrance }, 0.42)
-        .to(unit, { scale: targetScale, x: targetX, y: targetY, duration: 0.38, ease: EASE.transform }, 1.05)
-        .to(root, { opacity: 0, duration: 0.22, ease: EASE.entrance }, 1.48)
-      gsap.set(arc, { strokeDashoffset: arcLength })
+      gsap
+        .timeline({ onComplete: finish })
+        .fromTo('[data-sweep]', { '--sweep': '0deg' }, { '--sweep': '360deg', duration: 1.1, ease: EASE.transform })
+        .from('[data-rise]', { yPercent: 110, duration: 0.7, ease: EASE.entrance, stagger: STAGGER }, 0.6)
+        // Past -100% so the smile hanging under the cover clears the top too.
+        .to(root, { yPercent: -120, duration: 0.75, ease: EASE.transform }, 1.9)
     }, root)
     return () => ctx.revert()
   }, [reduced, visible])
 
   if (!visible) return null
   return (
-    <div ref={rootRef} className="fixed inset-0 z-[100] grid place-items-center bg-cobalt" data-surface="cobalt">
-      <div ref={unitRef} className="relative flex w-[min(76vw,390px)] flex-col items-center" data-animate>
-        <svg viewBox="0 0 420 110" className="absolute -top-16 w-full overflow-visible" aria-hidden="true">
-          <path ref={arcRef} d="M 55 95 Q 210 0 365 95" fill="none" stroke="var(--tt-canary)" strokeWidth="3" strokeLinecap="round" data-draw />
-          <text data-tagline x="210" y="44" textAnchor="middle" fill="var(--tt-canary)" className="font-sans text-[16px] tracking-[0.14em]">{CLINIC.tagline.toUpperCase()}</text>
-        </svg>
-        <Logo drawable size={260} tone="canary" title="Tiny Tusk" />
+    <div
+      ref={rootRef}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cobalt px-6"
+      data-surface="cobalt"
+    >
+      <div data-sweep className="tt-sweep w-[clamp(12rem,56vw,17rem)]">
+        <Roundel tone="white" title={CLINIC.tagline} className="block h-auto w-full" />
       </div>
-      <button type="button" onClick={finish} className="absolute bottom-8 min-h-11 rounded-full bg-canary px-5 py-3 font-sans text-sm font-semibold text-cobalt">Skip intro</button>
+      {/* Sizes keep the cover's proportions: the name is ~0.73 of the roundel's
+          box, and the box's own margin already makes the gap above it. */}
+      <div className="mt-1 overflow-hidden">
+        <div data-rise data-animate>
+          <Wordmark tone="canary" title={CLINIC.name} className="h-auto w-[clamp(8.75rem,41vw,12.4rem)]" />
+        </div>
+      </div>
+      <p className="tt-mask mt-2">
+        <span
+          data-rise
+          data-animate
+          className="block font-sans text-[clamp(0.75rem,3.2vw,0.85rem)] font-medium text-canary"
+        >
+          {CLINIC.tag}
+        </span>
+      </p>
+
+      <button
+        type="button"
+        onClick={finish}
+        className="absolute bottom-6 min-h-11 px-4 font-sans text-sm font-semibold text-white/80 underline decoration-2 underline-offset-4 transition-colors hover:text-white"
+      >
+        Skip intro
+      </button>
+
+      {/* The cover's trailing edge as it lifts: the tagline's smile. */}
+      <div className="absolute inset-x-0 top-full">
+        <SmileEdge from="cobalt" />
+      </div>
     </div>
   )
 }

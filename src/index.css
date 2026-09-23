@@ -247,6 +247,24 @@ then in :root below:
     animation: tt-marquee 46s linear infinite;
   }
 
+  /* The intro's roundel (Preloader.tsx): two mask layers, added together. The
+     disc keeps the mark visible from the start; the conic sweep then uncovers
+     the ring clockwise from 9 o'clock -- between the left tab (ends 265deg)
+     and the tagline's first letter (starts 275deg), so the tagline is written
+     in reading order and the smile follows underneath. Centre and radius are
+     measured from roundelPaths.ts: ring centre (303.6, 314.4) of 600; the mark
+     reaches radius 104, the nearest letter starts at 188, so the disc is 144.
+     GSAP drives --sweep; untouched it rests at a full turn, roundel whole. */
+  .tt-sweep {
+    --sweep: 360deg;
+    -webkit-mask-image:
+      radial-gradient(ellipse 24% 24% at 50.6% 52.4%, #000 99%, transparent 100%),
+      conic-gradient(from 270deg at 50.6% 52.4%, #000 var(--sweep), transparent 0);
+    mask-image:
+      radial-gradient(ellipse 24% 24% at 50.6% 52.4%, #000 99%, transparent 100%),
+      conic-gradient(from 270deg at 50.6% 52.4%, #000 var(--sweep), transparent 0);
+  }
+
   @keyframes tt-marquee {
     to { transform: translateX(-50%); }
   }
@@ -346,6 +364,11 @@ then in :root below:
   .tt-marquee-track {
     animation: none !important;
     transform: none !important;
+  }
+
+  .tt-sweep {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
 
   /* The holding screen arrives already arrived. */
