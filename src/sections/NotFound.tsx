@@ -1,9 +1,13 @@
+import { Doodle } from '@/components/Doodle'
 import { StylisedCTA } from '@/components/StylisedCTA'
-import { LoopField } from '@/components/LoopField'
 import { Roundel } from '@/components/Roundel'
 
 /**
  * 404 treatment: the tagline roundel + smile arc and centered text/CTA.
+ *
+ * The loop is sized to sit wholly inside the section at every width: it runs
+ * off the sides like a book page's crop, never off the bottom, where the cobalt
+ * footer starts and a clipped stroke would read as a straight cut.
  */
 export function NotFound() {
   return (
@@ -12,7 +16,13 @@ export function NotFound() {
       data-surface="powder"
       aria-labelledby="notfound-heading"
     >
-      <LoopField surface="powder" contrast="low" depth={0.2} count={1} />
+      <Doodle
+        name="loopStroke"
+        tone="white"
+        drawOnScroll
+        duration={1.8}
+        className="pointer-events-none absolute -left-[30%] top-[6%] w-[110%] max-w-none md:-left-[12%] md:w-[52%] lg:w-[40%]"
+      />
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
         <div className="relative grid aspect-square w-[clamp(10rem,16vw,14rem)] place-items-center">
           <Roundel tone="cobalt" className="absolute inset-0 h-full w-full" />

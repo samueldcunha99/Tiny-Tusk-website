@@ -1,16 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
 import { CLINIC } from '@/content/site'
-import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import {
+  gsap,
+  EASE,
+  introPending,
+  markIntroDone,
+  primeDraw,
+  usePrefersReducedMotion,
+} from '@/lib/motion'
 
-const STORAGE_KEY = 'tiny-tusk-preloader-seen'
-
+/**
+ * First visit of a session only: the mark draws itself on cobalt, then shrinks
+ * into its slot in the nav. `markIntroDone` hands the screen to the hero, whose
+ * own entrance waits for it (see `onIntroDone`).
+ */
 export function Preloader() {
-  const [visible, setVisible] = useState(() => sessionStorage.getItem(STORAGE_KEY) !== 'yes')
+  const [visible, setVisible] = useState(introPending)
   const rootRef = useRef<HTMLDivElement>(null)
   const unitRef = useRef<HTMLDivElement>(null)
   const arcRef = useRef<SVGPathElement>(null)
   const reduced = usePrefersReducedMotion()
+
+  const finish = () => {
+    markIntroDone()
+    setVisible(false)
+  }
 
   useEffect(() => {
     if (!visible) return
@@ -19,10 +34,6 @@ export function Preloader() {
     const arc = arcRef.current
     if (!root || !unit || !arc) return
     const paths = Array.from(unit.querySelectorAll<SVGPathElement>('[data-draw]'))
-    const finish = () => {
-      sessionStorage.setItem(STORAGE_KEY, 'yes')
-      setVisible(false)
-    }
     if (reduced) {
       paths.forEach((path) => primeDraw(path, true))
       finish()
@@ -37,7 +48,7 @@ export function Preloader() {
       let targetY = -240
       let targetScale = 0.24
 
-      if (targetNav && unit) {
+      if (targetNav) {
         const targetRect = targetNav.getBoundingClientRect()
         const unitRect = unit.getBoundingClientRect()
         targetScale = (targetRect.width || 64) / unitRect.width
@@ -66,7 +77,7 @@ export function Preloader() {
         </svg>
         <Logo drawable size={260} tone="canary" title="Tiny Tusk" />
       </div>
-      <button type="button" onClick={() => { sessionStorage.setItem(STORAGE_KEY, 'yes'); setVisible(false) }} className="absolute bottom-8 rounded-full bg-canary px-5 py-3 font-sans text-sm font-semibold text-cobalt">Skip intro</button>
+      <button type="button" onClick={finish} className="absolute bottom-8 min-h-11 rounded-full bg-canary px-5 py-3 font-sans text-sm font-semibold text-cobalt">Skip intro</button>
     </div>
   )
 }

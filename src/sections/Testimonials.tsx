@@ -1,116 +1,107 @@
+import { useRef } from 'react'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
-import { Logo } from '@/components/Logo'
-import { SectionNumber } from '@/components/SectionNumber'
+import { SectionMarker } from '@/components/SectionMarker'
 import { StylisedCTA } from '@/components/StylisedCTA'
+import { TextOnPath } from '@/components/TextOnPath'
 import { TESTIMONIALS, TESTIMONIAL_PROMPTS, type Testimonial } from '@/content/testimonials'
 import { useSectionMeta } from '@/content/sectionOrder'
+import { useReveal } from '@/lib/motion'
 
 /**
- * 09 Parent Voices -- powder.
+ * Parent voices -- a cobalt plate between the canary treatments and the
+ * powder questions, so the page no longer runs three pale chapters in a row.
+ * Set like the guide's p35 cobalt square: canary type on a path ringing a
+ * canary face, and the parent's own words large beside it in canary display
+ * type (p24).
  *
- * Two states, chosen by whether `TESTIMONIALS` actually holds anything. There
- * is no separate flag to keep in sync: an empty array renders the "we are
- * collecting these properly" state, a populated one renders real words.
- *
- * Reviews are small pinned notes, not a pull-quote. A single review set at
- * heading size filled a whole viewport and read as a wall of text -- it made
- * one parent's sentence look like a manifesto. At card size the same words read
- * as what they are: someone leaning over and telling you it went fine. The
- * cards alternate white and canary, sit at alternating slight angles like notes
- * on a board, and straighten under the cursor. The angle is a static transform
- * and the straightening is `motion-safe` only, so reduced motion gets tidy
- * upright cards and no movement.
- *
- * The layout is the same two-column grid as the awaiting state on purpose: the
- * left column carries the weight so one lonely card never floats in dead space.
+ * Real, sourced words only (content/testimonials.ts). With nothing sourced, it
+ * says so and shows what is being collected instead.
  */
 export function Testimonials() {
+  const ref = useRef<HTMLElement>(null)
   const meta = useSectionMeta('voices')
+  useReveal(ref)
 
   return (
     <section
       id="voices"
-      className="tt-section relative overflow-hidden bg-powder px-6 py-20 md:px-10 md:py-24"
-      data-surface="powder"
+      ref={ref}
+      data-surface="cobalt"
       aria-labelledby="voices-heading"
+      className="tt-section relative overflow-hidden bg-cobalt px-6 pb-20 pt-20 text-white md:px-10 md:pb-24 md:pt-28"
     >
-      <div className="pointer-events-none absolute -left-10 top-10 w-[13.75rem] opacity-[0.33]" aria-hidden="true">
-        <Logo variant="mark" tone="white" size={220} className="h-full w-full" />
-      </div>
-      <div className="pointer-events-none absolute -right-8 bottom-5 w-[10.625rem] opacity-[0.33]" aria-hidden="true">
-        <Logo variant="mark" tone="white" size={170} className="h-full w-full" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1400px]">
-        <SectionNumber number={meta.number} label={meta.label} tone="coral" />
+      <div className="relative mx-auto max-w-[1320px]">
+        <SectionMarker label={meta.label} on="dark" />
         {TESTIMONIALS.length > 0 ? <Voices /> : <Awaiting />}
       </div>
     </section>
   )
 }
 
+/**
+ * Phone: the headline with the stamp beside it, the words below. Desktop: the
+ * headline runs the full width on one line, then the stamp and the words sit
+ * side by side, so neither column is left with a hole under it.
+ */
 function Voices() {
   return (
-    <div className="mt-4 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-14">
-      <div>
-        <h2 id="voices-heading" className="max-w-[16ch] font-display text-h1 text-cobalt">
-          Parents tell it <Circled tone="coral">better</Circled> than we can
-        </h2>
-        <p className="mt-5 max-w-measure font-sans text-body text-cobalt">
-          Every word here was written by a parent who brought their child in. We publish them as
-          they were written, and we do not tidy anyone&rsquo;s grammar.
-        </p>
-        <div className="mt-9">
-          <StylisedCTA lead="Book" rest="your child's first visit" href="/book" fill="canary" />
-        </div>
+    <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-5 gap-y-10 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center lg:gap-x-20 lg:gap-y-14">
+      <h2
+        id="voices-heading"
+        data-reveal
+        className="max-w-[12ch] font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em] lg:col-span-2 lg:max-w-none"
+      >
+        Parents tell it <Circled tone="canary">better</Circled> than we can
+      </h2>
+
+      <div className="relative mt-2 aspect-square w-28 md:w-40 lg:row-start-2 lg:mt-0 lg:w-80" aria-hidden="true">
+        <TextOnPath text="Kindness • Patience • A whole lot of heart" mode="ring" tone="canary" className="absolute inset-0 h-full w-full" />
+        <Doodle
+          name="doodleFace"
+          tone="canary"
+          drawOnScroll
+          tap
+          className="absolute left-1/2 top-1/2 w-[50%] -translate-x-1/2 -translate-y-1/2"
+        />
       </div>
 
-      <ul className="flex list-none flex-col gap-7">
-        {TESTIMONIALS.map((testimonial, index) => (
-          <Note key={testimonial.parent + testimonial.quote} testimonial={testimonial} index={index} />
+      <ul className="col-span-2 flex list-none flex-col gap-12 lg:col-span-1 lg:col-start-2 lg:row-start-2">
+        {TESTIMONIALS.map((testimonial) => (
+          <Note key={testimonial.parent + testimonial.quote} testimonial={testimonial} />
         ))}
+        <li>
+          <p className="max-w-[46ch] font-sans text-[0.95rem] leading-[1.6] text-white/80">
+            Every word here was written by a parent who brought their child in. We publish them as
+            they were written, and we do not tidy anyone&rsquo;s grammar.
+          </p>
+        </li>
       </ul>
     </div>
   )
 }
 
-/**
- * One pinned note. `index` only picks the fill and which way it leans, so the
- * stack alternates instead of looking like a form.
- */
-function Note({ testimonial, index }: { testimonial: Testimonial; index: number }) {
-  const even = index % 2 === 0
-  // Both fills carry text; coral is never used here (hard rule 1).
-  const fill = even ? 'bg-white' : 'bg-canary'
-  // Coral reads at 2.39:1 on canary. Decorative, so not a failure, but weak --
-  // the heart takes cobalt on the canary card and coral on the white one.
-  const heart = even ? 'coral' : 'cobalt'
-
+/** An open quotation: no card, no rotation -- the words and who said them. */
+function Note({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <li
-      className={[
-        even ? 'rotate-[-1.4deg]' : 'rotate-[1.4deg]',
-        'motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:rotate-0',
-      ].join(' ')}
-    >
-      <blockquote className={`relative max-w-[30rem] rounded-[1.75rem] p-6 md:p-7 ${fill}`}>
-        <p className="font-sans text-base leading-relaxed text-cobalt">
-          {`\u201c${testimonial.quote}\u201d`}
-        </p>
-        <footer className="mt-4 flex items-center gap-2.5">
-          <Doodle name="doodleHeart" tone={heart} drawOnScroll className="w-5 shrink-0" />
-          <p className="font-sans text-sm text-cobalt">
-            <cite className="font-semibold not-italic">{testimonial.parent}</cite>
-            {` \u00b7 ${testimonial.child}`}
+    <li>
+      <figure>
+        <blockquote>
+          <p
+            data-reveal="fast"
+            className="max-w-[30ch] font-display text-[clamp(1.6rem,6.6vw,2.75rem)] leading-[1.2] tracking-[-0.01em] text-canary"
+          >
+            {`“${testimonial.quote}”`}
           </p>
-        </footer>
-        {/* The bubble's tail: a corner of the card itself, so it inherits the fill. */}
-        <span
-          aria-hidden="true"
-          className={`absolute -bottom-2 left-10 h-5 w-5 rotate-45 rounded-br-[0.35rem] ${fill}`}
-        />
-      </blockquote>
+        </blockquote>
+        <figcaption className="mt-6 flex items-center gap-3 font-sans text-[1rem]">
+          <Doodle name="doodleHeart" tone="canary" drawOnScroll tap className="w-7 shrink-0" />
+          <span>
+            <cite className="font-semibold not-italic">{testimonial.parent}</cite>
+            <span className="text-white/80">{` · ${testimonial.child}`}</span>
+          </span>
+        </figcaption>
+      </figure>
     </li>
   )
 }
@@ -118,35 +109,31 @@ function Note({ testimonial, index }: { testimonial: Testimonial; index: number 
 /** No reviews in hand. Says so, and says what is being collected. */
 function Awaiting() {
   return (
-    <div className="mt-4 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-14">
+    <div className="mt-5 grid gap-10 lg:grid-cols-2 lg:gap-20">
       <div>
-        <h2 id="voices-heading" className="max-w-[20ch] font-display text-h1 text-cobalt">
+        <h2
+          id="voices-heading"
+          data-reveal
+          className="max-w-[16ch] font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em]"
+        >
           We are collecting these properly
         </h2>
-        <p className="mt-5 max-w-measure font-sans text-body text-cobalt">
+        <p className="mt-5 max-w-[48ch] font-sans text-[1.05rem] leading-[1.6] text-white/90">
           There are no reviews here yet, and we would rather show none than invent any. Once
           families have visited we will ask for their words in writing, publish only what they
           approve, and attribute them exactly as they prefer.
         </p>
-        <div className="mt-9">
+        <div className="-m-4 mt-5 p-4">
           <StylisedCTA lead="Be" rest="one of the first families" href="/book" fill="canary" />
         </div>
       </div>
-
-      <ul className="flex list-none flex-col gap-4">
+      <ul className="flex list-none flex-col gap-8">
         {TESTIMONIAL_PROMPTS.map((prompt) => (
-          <li key={prompt.title} className="flex items-start gap-[1.125rem] rounded-[2rem] bg-white p-7">
-            <Doodle
-              name={prompt.glyph}
-              tone={prompt.glyph === 'markDashes' ? 'coral' : 'cobalt'}
-              drawOnScroll
-              className="w-11 shrink-0"
-            />
+          <li key={prompt.title} className="flex items-start gap-4">
+            <Doodle name={prompt.glyph} tone="canary" drawOnScroll className="w-10 shrink-0" />
             <div>
-              <h3 className="font-display text-xl leading-snug text-cobalt">{prompt.title}</h3>
-              <p className="mt-1.5 max-w-measure font-sans text-base leading-relaxed text-cobalt">
-                {prompt.body}
-              </p>
+              <h3 className="font-display text-[1.35rem] leading-snug text-canary">{prompt.title}</h3>
+              <p className="mt-1 max-w-[44ch] font-sans text-[1rem] leading-relaxed text-white/90">{prompt.body}</p>
             </div>
           </li>
         ))}

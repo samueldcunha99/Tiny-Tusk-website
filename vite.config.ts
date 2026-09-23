@@ -9,6 +9,12 @@ export default defineConfig(({ isSsrBuild }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  // The prerender pass writes `dist-ssr/`, which the dev server would
+  // otherwise watch; on this OneDrive folder a freshly written file can be
+  // locked (EBUSY) and that crashes `npm run dev` mid-build.
+  server: {
+    watch: { ignored: ['**/dist/**', '**/dist-ssr/**'] },
+  },
   build: {
     target: 'es2020',
     cssCodeSplit: true,

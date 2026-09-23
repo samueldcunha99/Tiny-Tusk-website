@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { colourVar } from './BrandArtView'
 import { MixedWeightLabel } from './MixedWeightLabel'
-import { gsap, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, ScrollTrigger, EASE, REVEAL_START, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 type Fill = 'canary' | 'powder' | 'coral'
@@ -64,7 +64,8 @@ export interface StylisedCTAProps {
  * The signature button (guide p33): a filled ellipse with a hand-drawn cobalt
  * outline that deliberately does not quite register with the fill.
  *
- * On hover the outline redraws itself and the button is magnetic. Both are
+ * The outline draws itself in as the button scrolls into view, redraws on
+ * hover, focus or tap, and the button is magnetic under a pointer. All of it is
  * skipped under reduced motion, where it stays a perfectly good static button.
  *
  * Note on colour: the guide permits canary elements on coral, but that pairing
@@ -90,8 +91,15 @@ export function StylisedCTA({
     const outline = outlineRef.current
     if (!root || !outline || reduced) return
 
+    // The outline sketches itself in once, as the button reaches the reveal
+    // line -- on a phone, with no hover, that is the gesture's only showing.
     const length = primeDraw(outline, false)
-    gsap.set(outline, { strokeDashoffset: 0 })
+    const arrival = ScrollTrigger.create({
+      trigger: root,
+      start: REVEAL_START,
+      once: true,
+      onEnter: () => gsap.to(outline, { strokeDashoffset: 0, duration: 0.9, ease: EASE.entrance }),
+    })
 
     const redraw = () => {
       gsap.fromTo(
@@ -120,6 +128,7 @@ export function StylisedCTA({
     root.addEventListener('pointerleave', onLeave)
     root.addEventListener('focus', redraw)
     return () => {
+      arrival.kill()
       root.removeEventListener('pointerenter', redraw)
       root.removeEventListener('pointermove', onMove)
       root.removeEventListener('pointerleave', onLeave)

@@ -166,6 +166,26 @@ then in :root below:
     stroke-width: 1px !important;
   }
 
+  /* A treatment drawing on a colour disc (Services.tsx) keeps its accents: a
+     coral detail would vanish into a coral disc, so it turns canary there, and
+     a powder one turns white on a powder disc -- each the disc's own p24/p25
+     partner. The icons read their fills from these properties, so redefining
+     them on the icon re-tints only that drawing. Cobalt discs need nothing.
+     The line is a touch heavier on a disc: canary on coral is the weakest
+     legal pairing, and a hairline of it all but disappears. `!important` for
+     the same reason as the monochrome rule above. */
+  .tt-disc-icon svg * {
+    stroke-width: 2px !important;
+  }
+
+  .tt-on-coral {
+    --tt-coral: var(--tt-canary);
+  }
+
+  .tt-on-powder {
+    --tt-powder: var(--tt-white);
+  }
+
   /* A treatment tile's icon wobbles once when the pointer arrives -- the same
      cartoon vocabulary as the doodles' replay gesture, and it rests complete,
      so a tile nobody hovers still shows finished art. Neutralised wholesale by
@@ -180,10 +200,45 @@ then in :root below:
     animation: tt-icon-wobble 0.6s ease-in-out;
   }
 
-  /* Long sections skip layout/paint work until they approach the viewport. */
+  /* Clip-reveal masks (CLAUDE.md §4: text enters by clip reveal). `.tt-mask`
+     is hand-placed; `.tt-line-mask` is what SplitText wraps each line in (see
+     `useReveal`). The padding gives descenders room inside the clip and the
+     negative margin takes it back off the layout -- on the bottom edge only:
+     top-and-bottom negative margins collapse between stacked lines, so a split
+     paragraph came out taller than the same paragraph unsplit, and every
+     scroll trigger below it drifted when the reveal reverted. */
+  .tt-mask,
+  .tt-line-mask {
+    overflow: hidden;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  /* Sections land on fractional pixels (their heights come from type), and at
+     2x density two same-colour grounds then antialias into a faint seam. Each
+     section overlaps the next by one pixel, so a run of one colour is
+     continuous -- the next section, painted later, covers the overlap. */
   .tt-section {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 720px;
+    margin-bottom: -1px;
+  }
+
+  /* A horizontal swipe row: native scroll-snap, no library, no scrollbar. */
+  .tt-swipe {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tt-swipe::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tt-swipe > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
   }
 
   /* Parent voices move as one calm continuous strip; the duplicate cards make
@@ -314,6 +369,7 @@ then in :root below:
     display: none;
   }
 
+  /* The p31 arrow points at its answer: right while closed, down when open. */
   details[open] [data-faq-arrow] {
     transform: rotate(90deg);
   }

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { BrandArtView } from './BrandArtView'
-import { gsap, ScrollTrigger, EASE, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, ScrollTrigger, EASE, REVEAL_START, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 export type DoodleName =
@@ -18,6 +18,8 @@ export type DoodleName =
   | 'journeyLogo'
   | 'journeyCare'
   | 'journeySmile'
+  /** The p28 background loop, for a chapter that draws its own field on. */
+  | 'loopStroke'
 
 export interface DoodleProps {
   name: DoodleName
@@ -34,6 +36,12 @@ export interface DoodleProps {
    * icon. `play` re-runs the gesture, it does not gate visibility.
    */
   play?: boolean | undefined
+  /**
+   * Redraw the doodle by hand when it is tapped or clicked -- a small reward
+   * for a curious child. Decorative only: nothing depends on it, so it needs
+   * no keyboard equivalent. Skipped under reduced motion.
+   */
+  tap?: boolean | undefined
   duration?: number | undefined
   stagger?: number | undefined
   /** Pass `"none"` to stretch the mark to its box (see `<Circled>`). */
@@ -54,6 +62,7 @@ export function Doodle({
   title,
   drawOnScroll = false,
   play,
+  tap = false,
   duration = 0.9,
   stagger = 0.12,
   preserveAspectRatio,
@@ -112,7 +121,7 @@ export function Doodle({
 
     const st = ScrollTrigger.create({
       trigger: svg,
-      start: 'top 85%',
+      start: REVEAL_START,
       once: true,
       onEnter: draw,
     })
@@ -121,6 +130,24 @@ export function Doodle({
       gsap.killTweensOf(paths)
     }
   }, [art, drawOnScroll, duration, play, reduced, stagger])
+
+  useEffect(() => {
+    const svg = ref.current
+    if (!svg || !tap || reduced) return
+    const paths = Array.from(svg.querySelectorAll<SVGPathElement>('[data-draw]'))
+    if (!paths.length) return
+    const replay = () => {
+      const lengths = paths.map((p) => p.getTotalLength())
+      gsap.set(paths, { strokeDasharray: (i: number) => lengths[i] ?? 0 })
+      gsap.fromTo(
+        paths,
+        { strokeDashoffset: (i: number) => lengths[i] ?? 0 },
+        { strokeDashoffset: 0, duration, ease: EASE.entrance, stagger, overwrite: true },
+      )
+    }
+    svg.addEventListener('pointerdown', replay)
+    return () => svg.removeEventListener('pointerdown', replay)
+  }, [tap, reduced, duration, stagger])
 
   if (!art) return null
 

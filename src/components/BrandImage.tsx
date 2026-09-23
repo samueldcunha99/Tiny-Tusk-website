@@ -13,9 +13,17 @@ export interface BrandImageProps {
   height: number
   title?: { lead: string; rest: string; fill: 'canary' | 'powder' | 'coral'; href: string } | undefined
   showCTA?: boolean | undefined
-  logoTone: Extract<BrandColour, 'white' | 'cobalt'>
-  doodle: DoodleName
-  doodleTone: Extract<BrandColour, 'canary' | 'coral'>
+  /**
+   * The p31 overlay set: mark watermark, a drawn doodle, and the coral motion
+   * dashes. All three are OPTIONAL. They are the guide's treatment for a
+   * feature image standing alone -- repeated across a row of three tiles in one
+   * section they stopped being a treatment and became noise, so a caller may
+   * legitimately want the photograph clean. Omitting `logoTone` drops the
+   * watermark; omitting `doodle` drops both the doodle and its dashes.
+   */
+  logoTone?: Extract<BrandColour, 'white' | 'cobalt'> | undefined
+  doodle?: DoodleName | undefined
+  doodleTone?: Extract<BrandColour, 'canary' | 'coral'> | undefined
   className?: string | undefined
   eager?: boolean | undefined
 }
@@ -65,23 +73,32 @@ export function BrandImage({
           <div className="pointer-events-none absolute inset-0 opacity-20">
             <Logo variant="mark" tone="cobalt" size={240} className="h-full w-full" />
           </div>
+          {/* No "photography" caption: a brand field must not imply that a
+              photograph exists. The title is the only words on it. */}
           <div className="relative z-10 flex flex-col items-center gap-3">
             <Doodle name="doodleHeart" tone="cobalt" className="w-16" />
-            <span className="font-display text-h2 text-cobalt">
-              {title ? `${title.lead} ${title.rest}` : 'Dr. Nupur'}
-            </span>
-            <span className="font-sans text-xs uppercase tracking-[0.15em] text-cobalt-80">Tiny Tusk Photography</span>
+            {title ? (
+              <span className="font-display text-h2 text-cobalt">{`${title.lead} ${title.rest}`}</span>
+            ) : null}
           </div>
         </div>
       ) : null}
-      <div className="pointer-events-none absolute left-2 top-2 z-10" aria-hidden="true">
-        <Logo variant="mark" tone={logoTone} size={64} clearSpace />
-      </div>
-      <Doodle name={doodle} tone={doodleTone} drawOnScroll className="pointer-events-none absolute right-4 top-[10%] z-10 w-[20%] max-w-24 opacity-90" />
-      <Doodle name="markDashes" tone="coral" drawOnScroll className="pointer-events-none absolute right-4 top-4 z-10 w-10" />
+      {logoTone ? (
+        <div className="pointer-events-none absolute left-2 top-2 z-10" aria-hidden="true">
+          <Logo variant="mark" tone={logoTone} size={64} clearSpace />
+        </div>
+      ) : null}
+      {doodle ? (
+        <>
+          <Doodle name={doodle} tone={doodleTone ?? 'coral'} drawOnScroll className="pointer-events-none absolute right-4 top-[10%] z-10 w-[20%] max-w-24 opacity-90" />
+          <Doodle name="markDashes" tone="coral" drawOnScroll className="pointer-events-none absolute right-4 top-4 z-10 w-10" />
+        </>
+      ) : null}
+      {/* No box-shadow: on the link it drew a grey rectangle behind the
+          ellipse. Capped width so the drawn ellipse keeps its proportions. */}
       {showCTA && title ? (
-        <div className="absolute bottom-2 left-2 right-2 z-20 sm:bottom-3 sm:left-3 sm:right-3">
-          <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full text-center shadow-lg" />
+        <div className="absolute inset-x-3 bottom-3 z-20 flex justify-center">
+          <StylisedCTA lead={title.lead} rest={title.rest} href={title.href} fill={title.fill} className="w-full max-w-[17rem] text-center" />
         </div>
       ) : null}
     </figure>

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { colourVar } from './BrandArtView'
-import { gsap, ScrollTrigger, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 /**
@@ -52,11 +52,11 @@ export function LoopField({
 
   useEffect(() => {
     const el = ref.current
-    if (!el || reduced) return
+    if (!el || reduced || depth === 0) return
     const loops = Array.from(el.querySelectorAll<SVGSVGElement>('[data-loop]'))
-    const triggers: ScrollTrigger[] = []
+    const ctx = gsap.context(() => {
     loops.forEach((loop, i) => {
-      const tween = gsap.to(loop, {
+      gsap.to(loop, {
         yPercent: -18 * depth * (i + 1),
         ease: 'none',
         scrollTrigger: {
@@ -66,21 +66,19 @@ export function LoopField({
           scrub: true,
         },
       })
-      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger)
     })
-    return () => {
-      triggers.forEach((t) => t.kill())
-      gsap.killTweensOf(loops)
-    }
+    }, el)
+    return () => ctx.revert()
   }, [depth, reduced])
 
   const part = art.parts[0]
   if (!part || part.kind !== 'stroke') return null
 
-  // Placements chosen to echo p28: loops run off the edges rather than sitting
-  // politely inside the frame.
+  // Placements chosen to echo p28: loops run off the left and right edges, as
+  // the guide crops at the page edge -- but never off the top or bottom, where
+  // the next section starts and a clipped stroke reads as a straight cut.
   const placements = [
-    { top: '-18%', left: '-22%', width: '86%', rotate: 0 },
+    { top: '6%', left: '-22%', width: '86%', rotate: 0 },
     { top: '34%', left: '52%', width: '78%', rotate: 18 },
     { top: '4%', left: '18%', width: '64%', rotate: -12 },
   ].slice(0, count)

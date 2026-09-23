@@ -1,76 +1,91 @@
+import { useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
-import { CoralPageAccent } from '@/components/CoralPageAccent'
-import { SectionNumber } from '@/components/SectionNumber'
+import { SectionMarker } from '@/components/SectionMarker'
+import { StylisedCTA } from '@/components/StylisedCTA'
 import { FAQS } from '@/content/faq'
+import { CLINIC_PHONE } from '@/content/site'
 import { useSectionMeta } from '@/content/sectionOrder'
+import { useReveal } from '@/lib/motion'
 
 /**
- * 10 Questions -- paper.
+ * Questions -- powder, straight on from parent voices, before the coral game.
  *
- * Eight questions do not need a search field and four category filters on top
- * of them; the controls were bigger than the content they filtered, and the
- * "no exact match" branch existed only to serve them. The rows are now native
- * `<details>` -- open/close state, keyboard behaviour and find-in-page all come
- * free, and the section drops its `useState` entirely.
- *
- * The coral `+` rotating to `x` is CSS on `details[open]`; see the snippet in
- * `patch/src/index.css.append.css`.
+ * Native `<details>` rows, so they open without JavaScript and announce their
+ * state for free. The p31 arrow points at its answer: right while closed, down
+ * when open (index.css). Hairlines only -- no cards.
  */
 export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
+  const ref = useRef<HTMLElement>(null)
   const meta = useSectionMeta('faq')
   const Heading = asPage ? 'h1' : 'h2'
   const ItemHeading = asPage ? 'h2' : 'h3'
+  useReveal(ref)
 
   return (
     <section
       id="faq"
-      data-surface="canary"
-      className={[
-        // Canary: the questions block is the warm stop near the foot of the
-        // page. Cobalt copy is 6.37:1 on it and the answer cards are white,
-        // so the pairing (p24) and every measurement inside are unchanged.
-        'tt-section relative bg-canary px-6 md:px-10',
-        asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
-      ].join(' ')}
+      ref={ref}
+      data-surface="powder"
       aria-labelledby="faq-heading"
+      className={[
+        'tt-section relative overflow-hidden bg-powder px-6 text-cobalt md:px-10',
+        asPage ? 'pb-24 pt-24 md:pb-32 md:pt-36' : 'pb-16 pt-10 md:pb-20 md:pt-12',
+      ].join(' ')}
     >
-      {asPage ? <CoralPageAccent /> : null}
-      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <SectionNumber number={meta.number} label={meta.label} tone="coral" />
-          <Heading id="faq-heading" className="mt-4 max-w-[18ch] font-display text-h1 text-cobalt">
+      {/* p32 exactly: a canary toothpaste scaled up into a field on powder,
+          set behind the headline the way the guide sets it. */}
+      <Doodle
+        name="doodleToothpaste"
+        tone="canary"
+        drawOnScroll
+        duration={1.4}
+        className="pointer-events-none absolute -right-8 top-10 w-40 rotate-[18deg] md:right-[6%] md:w-52 lg:left-[24%] lg:right-auto lg:top-4 lg:w-40"
+      />
+
+      <div className="relative mx-auto grid max-w-[1320px] gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
+        <div>
+          <SectionMarker label={meta.label} />
+          <Heading
+            id="faq-heading"
+            data-reveal
+            className="mt-5 max-w-[12ch] font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em]"
+          >
             Ask us anything, in advance
           </Heading>
-          <p className="mt-5 max-w-measure font-sans text-body text-cobalt">
-            If your question is not here, ring the clinic and ask. Nothing about a child's teeth is
-            too small to check.
+          <p data-reveal="fast" className="mt-4 max-w-[38ch] font-sans text-[1.05rem] leading-[1.6] md:text-[1.15rem]">
+            If your question is not here, call the clinic and ask. Nothing about a child&rsquo;s
+            teeth or comfort is too small to check.
           </p>
+          <a
+            href={CLINIC_PHONE.href}
+            className="mt-5 inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold"
+          >
+            <span className="underline decoration-2 underline-offset-[6px]">Call {CLINIC_PHONE.display}</span>
+          </a>
         </div>
 
-        <div className="flex flex-col gap-3">
-          {FAQS.map((item, index) => (
-            <details
-              key={item.question}
-              open={index === 0}
-              className="rounded-[1.625rem] bg-white p-6 shadow-[0_12px_34px_rgba(24,82,142,0.06)] md:p-7"
-            >
-              <summary className="flex cursor-pointer items-start justify-between gap-5">
-                <ItemHeading className="font-display text-[clamp(1.05rem,1.5vw,1.3rem)] leading-snug text-cobalt">
+        <div className="border-t-2 border-cobalt/20">
+          {FAQS.map((item) => (
+            <details key={item.question} className="border-b-2 border-cobalt/20">
+              <summary className="flex min-h-[4.5rem] items-center justify-between gap-6 py-4">
+                <ItemHeading className="font-display text-[clamp(1.3rem,5.4vw,1.7rem)] leading-[1.15]">
                   {item.question}
                 </ItemHeading>
-                <div
-                  data-faq-arrow
-                  aria-hidden="true"
-                  className="w-10 h-10 shrink-0 text-coral transition-transform duration-300 ease-transform flex items-center justify-center"
-                >
-                  <Doodle name="markArrow" tone="coral" className="w-8 h-8" />
-                </div>
+                <span data-faq-arrow aria-hidden="true" className="block w-6 shrink-0 transition-transform duration-300 ease-transform">
+                  <Doodle name="markArrow" tone="cobalt" />
+                </span>
               </summary>
-              <p className="mt-3.5 max-w-measure font-sans text-body leading-relaxed text-cobalt">
+              <p className="max-w-[56ch] pb-6 font-sans text-[1.02rem] leading-[1.65] md:text-[1.1rem]">
                 {item.answer}
               </p>
             </details>
           ))}
+
+          {asPage ? (
+            <div className="-m-4 mt-10 p-4">
+              <StylisedCTA lead="Book" rest="a visit" href="/book" fill="powder" />
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

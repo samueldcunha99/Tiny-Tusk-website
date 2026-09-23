@@ -1,29 +1,23 @@
 import type { ReactNode } from 'react'
 import { RouteMeta } from '@/components/RouteMeta'
-import { SectionOrder } from '@/content/sectionOrder'
-import { type SectionId } from '@/content/site'
-import { useIsMobile } from '@/lib/viewport'
 import { Nav } from '@/sections/Nav'
-import { Hero } from '@/sections/Hero'
-import { HomeMobile } from '@/sections/Home.mobile'
+import { Home } from '@/sections/Home'
 import { Journey } from '@/sections/Journey'
 import { LaughingGas } from '@/sections/LaughingGas'
 import { Services } from '@/sections/Services'
 import { InsideClinic } from '@/sections/InsideClinic'
 import { Preloader } from '@/sections/Preloader'
 import { Team } from '@/sections/Team'
-import { BrushTimer } from '@/sections/BrushTimer'
 import { Games } from '@/sections/Games'
 import { ParentsCorner } from '@/sections/ParentsCorner'
 import { ParentsArticle } from '@/sections/ParentsArticle'
 import { parentArticle } from '@/content/parents'
-import { Testimonials } from '@/sections/Testimonials'
+import { NOT_FOUND_HEAD, ROUTE_HEADS, articleHead, type StaticPath } from '@/content/routes'
 import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
-import { PhoneButton } from '@/components/PhoneButton'
 
 /**
  * The full site, behind the pre-opening gate in `App.tsx`.
@@ -33,44 +27,6 @@ import { PhoneButton } from '@/components/PhoneButton'
  * importing them from `App` still shipped every one of them to every visitor --
  * a quarter of a megabyte of JavaScript parsed to render a holding screen.
  */
-
-/**
- * What the desktop home renders, in order. The section numbers are counted off
- * this list rather than off the registry, so dropping or reordering a section
- * here renumbers the rest instead of leaving a gap (see `sectionOrder.tsx`).
- * Keep it in step with the JSX below.
- */
-const HOME_ORDER: readonly SectionId[] = [
-  'hero',
-  'journey',
-  'team',
-  'services',
-  'clinic',
-  'brush-timer',
-  'voices',
-  'faq',
-  'book',
-]
-
-function Home() {
-  // Mobile gets a different page, not a narrower one: see `Home.mobile.tsx`.
-  // The desktop composition below is untouched and never mounts under `md`.
-  if (useIsMobile()) return <HomeMobile />
-
-  return (
-    <SectionOrder ids={HOME_ORDER}>
-      <Hero />
-      <Journey />
-      <Team />
-      <Services />
-      <InsideClinic />
-      <BrushTimer />
-      <Testimonials />
-      <Faq />
-      <Booking />
-    </SectionOrder>
-  )
-}
 
 function PageRoute({
   title,
@@ -91,137 +47,50 @@ function PageRoute({
   )
 }
 
+/** What each static path renders. Titles and descriptions live in `content/routes.ts`. */
+const PAGES: Record<StaticPath, () => ReactNode> = {
+  '/': () => <Home />,
+  '/dr-nupur': () => <Team asPage />,
+  '/services': () => <Services asPage />,
+  '/laughing-gas': () => <LaughingGas />,
+  '/journey': () => <Journey asPage />,
+  '/inside-clinic': () => <InsideClinic asPage />,
+  '/games': () => <Games />,
+  // A non-indexed compatibility route for the old brush-timer link.
+  '/brush-timer': () => <Games />,
+  '/parents-corner': () => <ParentsCorner asPage />,
+  '/faq': () => <Faq asPage />,
+  '/book': () => <Booking asPage />,
+}
+
+// Every key starts with "/", so `in` cannot hit an inherited property.
+const isStaticPath = (path: string): path is StaticPath => path in ROUTE_HEADS
+
 function CurrentRoute() {
   const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
 
-  // One blog post. Ahead of the switch because it is the only route with a
-  // variable segment; an unknown slug falls through to the 404 below.
+  // One blog post. Ahead of the static paths because it is the only route with
+  // a variable segment; an unknown slug falls through to the 404 below.
   if (pathname.startsWith('/parents-corner/')) {
     const article = parentArticle(pathname.slice('/parents-corner/'.length))
     if (article) {
       return (
-        <PageRoute
-          title={`${article.question} | Tiny Tusk`}
-          description={article.summary}
-        >
+        <PageRoute {...articleHead(article)}>
           <ParentsArticle article={article} />
         </PageRoute>
       )
     }
   }
 
-  switch (pathname) {
-    case '/':
-      return (
-        <PageRoute
-          title="Tiny Tusk Pediatric Dental Clinic"
-          description="Gentle pediatric dental care explained with kindness, patience, and plain-spoken guidance for families."
-        >
-          <Home />
-        </PageRoute>
-      )
-    case '/dr-nupur':
-      return (
-        <PageRoute
-          title="Meet Dr. Nupur Agarwal | Tiny Tusk"
-          description="Meet Dr. Nupur Agarwal, BDS · MDS in Pediatric Dentistry, and learn what families can expect from her calm approach."
-        >
-          <Team asPage />
-        </PageRoute>
-      )
-    case '/services':
-      return (
-        <PageRoute
-          title="Pediatric Dental Services | Tiny Tusk"
-          description="A plain-spoken overview of the pediatric dental services Tiny Tusk is designed to provide for growing smiles."
-        >
-          <Services asPage />
-        </PageRoute>
-      )
-    case '/laughing-gas':
-      return (
-        <PageRoute
-          title="Laughing Gas (Nitrous Oxide) for Kids | Tiny Tusk"
-          description="Learn how gentle Nitrous Oxide (Laughing Gas) helps children feel calm, comfortable, and relaxed during dental visits at Tiny Tusk."
-        >
-          <LaughingGas />
-        </PageRoute>
-      )
-    case '/journey':
-      return (
-        <PageRoute
-          title="How a Visit Goes | Tiny Tusk"
-          description="A step-by-step walk through a first pediatric dental visit at Tiny Tusk, so families know what to expect before they arrive."
-        >
-          <Journey asPage />
-        </PageRoute>
-      )
-    case '/inside-clinic':
-      return (
-        <PageRoute
-          title="Inside the Clinic | Tiny Tusk"
-          description="Explore branded concept visuals for Tiny Tusk's planned reception, treatment room, and family learning corner."
-        >
-          <InsideClinic asPage />
-        </PageRoute>
-      )
-    case '/games':
-      return (
-        <PageRoute
-          title="Games for Kids | Tiny Tusk"
-          description="Play Tiny Tusk's friendly two-minute brushing game and follow along with everyday healthy-routine activities for kids."
-        >
-          <Games />
-        </PageRoute>
-      )
-    case '/brush-timer':
-      return (
-        <PageRoute
-          title="Games for Kids | Tiny Tusk"
-          description="Play Tiny Tusk's friendly two-minute brushing game and follow along with everyday healthy-routine activities for kids."
-          noIndex
-        >
-          <Games />
-        </PageRoute>
-      )
-    case '/parents-corner':
-      return (
-        <PageRoute
-          title="Parents' Corner | Tiny Tusk"
-          description="Warm, practical guidance for everyday questions about children's teeth, brushing, and dental visits."
-        >
-          <ParentsCorner asPage />
-        </PageRoute>
-      )
-    case '/faq':
-      return (
-        <PageRoute
-          title="Frequently Asked Questions | Tiny Tusk"
-          description="Kind, plain-spoken answers to common family questions about pediatric dental visits and care."
-        >
-          <Faq asPage />
-        </PageRoute>
-      )
-    case '/book':
-      return (
-        <PageRoute
-          title="Book a Visit | Tiny Tusk"
-          description="Start a secure appointment request for Tiny Tusk Pediatric Dental Clinic."
-        >
-          <Booking asPage />
-        </PageRoute>
-      )
-    default:
-      return (
-        <PageRoute
-          title="Page Not Found | Tiny Tusk"
-          description="The requested Tiny Tusk page could not be found."
-          noIndex
-        >
-          <NotFound />
-        </PageRoute>
-      )
+  if (isStaticPath(pathname)) {
+    return <PageRoute {...ROUTE_HEADS[pathname]}>{PAGES[pathname]()}</PageRoute>
   }
+
+  return (
+    <PageRoute {...NOT_FOUND_HEAD}>
+      <NotFound />
+    </PageRoute>
+  )
 }
 
 export default function Site() {
@@ -236,7 +105,8 @@ export default function Site() {
         <CurrentRoute />
       </main>
       <Footer />
-      <PhoneButton variant="floating" />
+      {/* The client supplied this number for exactly this button. The phone
+          line is in the nav bar ("Call us"), so it needs no floating twin. */}
       <WhatsAppButton variant="floating" />
     </>
   )

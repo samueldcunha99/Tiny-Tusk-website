@@ -148,6 +148,8 @@ export function whatsappIsVerified(): boolean {
 
 /** The guide's own welcome copy, p34. Used verbatim. */
 export const HERO = {
+  // The guide's own welcome page (p34) sets it as "Welcome to" over the name,
+  // and that is what the client approved. The h1 reads the whole line.
   headline: ['Welcome to', 'Tiny Tusk'],
   headlineTail: 'Pediatric Dental Clinic',
   body:
@@ -186,7 +188,7 @@ export const HERO = {
  */
 export const SECTIONS = [
   { id: 'hero', number: '00', label: 'Welcome' },
-  { id: 'journey', number: '01', label: 'The Journey' },
+  { id: 'journey', number: '01', label: 'How a visit goes' },
   { id: 'team', number: '02', label: 'Dr. Nupur' },
   { id: 'services', number: '03', label: 'Services' },
   { id: 'clinic', number: '04', label: 'Inside the Clinic' },

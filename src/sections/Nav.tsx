@@ -3,7 +3,7 @@ import { Logo } from '@/components/Logo'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
 import { useIsMobile } from '@/lib/viewport'
-import { CLINIC } from '@/content/site'
+import { CLINIC, CLINIC_PHONE } from '@/content/site'
 
 /**
  * Every destination below has a real route or home-page section. Keeping this
@@ -98,29 +98,23 @@ export function Nav() {
           1360px the links are behind the hamburger, so it has to stay
           reachable. At 1360px and up every link is already on screen, so the
           bar is a normal block and scrolls away with the page. */}
-      <header className="fixed left-0 top-0 z-50 w-full bg-white min-[1360px]:static">
-        {/* PHONE BAR HEIGHT IS THE 44px MENU BUTTON, AND NOTHING ELSE.
-            The bar used to be ~66px because the mark set its height: 64px wide
-            is p7's minimum digital size, and the logo viewBox is 524.91x414.20,
-            so it rendered 50.5px tall and the padding sat on top of that.
-            The client asked three times for a thinner bar, so the mark is now
-            44px on phones -- below the guide's minimum, deliberately, via
-            `allowBelowMinimum` (see `Logo.tsx`). At 44 it renders 34.7px tall
-            and fits inside the menu button's own 44px touch target, so the row
-            is exactly 44px with no padding of its own.
-            44px is the floor now for an accessibility reason rather than a
-            brand one: it is the minimum touch target, and the button is not
-            shrinking. Desktop is untouched -- full 64px mark, `py-2`. */}
+      <header className="fixed left-0 top-0 z-50 w-full bg-white min-[1360px]:relative">
+        {/* PHONE BAR HEIGHT IS THE 44px MENU BUTTON, AND NOTHING ELSE. The
+            client asked three times for a thinner bar, so on phones the mark is
+            44px -- under the guide's 64px minimum, deliberately, via
+            `allowBelowMinimum` (see Logo.tsx). At 44 it fits inside the menu
+            button's own 44px touch target. Desktop keeps the full 64px mark. */}
+        {/* Three zones rather than two: the mark holds the left, the links sit
+            centred in the middle column, and booking plus WhatsApp stay right.
+            `1fr` on the middle column is what centres the links against the bar
+            itself rather than against whatever is left over after the mark --
+            with `justify-between` they drifted left as labels were added. */}
         <nav
           aria-label="Primary"
-          className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-0 md:px-10 md:py-2"
+          className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-0 md:px-10 md:py-2"
         >
         {/* p8: the mark's default placement is top-left. */}
         <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
-          {/* 64px on desktop -- the guide's minimum digital size (p7). 44px on
-              a phone, which is under it, at the client's explicit and repeated
-              request; the opt-out is named at the call site rather than the
-              guard being weakened for everyone. */}
           <Logo
             size={isMobile ? 44 : 64}
             allowBelowMinimum={isMobile}
@@ -144,20 +138,24 @@ export function Nav() {
             the pill. Widths were measured in a browser -- do not lower this
             breakpoint without re-measuring, and note that a longer label eats
             the slack. */}
-        <ul className="hidden items-center gap-6 min-[1360px]:flex 2xl:gap-8">
+        <ul className="hidden items-center justify-center gap-1 min-[1360px]:flex 2xl:gap-2">
           {LINKS.map((l) => {
             const active = isCurrent(l.href)
             return (
               <li key={l.href}>
+                {/* A powder pill on hover rather than the old `opacity-70`:
+                    fading cobalt on white barely registered, and a parent
+                    scanning the bar could not tell what was hittable. Cobalt on
+                    powder is 4.92:1, so the label stays legible inside it. */}
                 <a
                   href={l.href}
                   aria-current={active ? 'page' : undefined}
-                  className="relative whitespace-nowrap pb-1 font-sans text-[0.95rem] text-cobalt transition-opacity hover:opacity-70"
+                  className="relative block whitespace-nowrap rounded-full px-3 py-2 font-sans text-[0.95rem] text-cobalt transition-colors duration-200 hover:bg-powder focus-visible:bg-powder"
                 >
                   {l.label}
                   {active ? (
                     <span
-                      className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-coral"
+                      className="absolute inset-x-3 bottom-0.5 h-[3px] rounded-full bg-coral"
                       aria-hidden="true"
                     />
                   ) : null}
@@ -165,27 +163,35 @@ export function Nav() {
               </li>
             )
           })}
-          <li>
-            <a
-              href="/book"
-              aria-current={currentPath === '/book' ? 'page' : undefined}
-              className={[
-                'whitespace-nowrap rounded-full bg-cobalt px-5 py-2.5 font-sans text-[0.95rem] text-white transition-opacity hover:opacity-90',
-                currentPath === '/book' ? 'ring-2 ring-coral ring-offset-2 ring-offset-paper' : '',
-              ].join(' ')}
-            >
-              Book a visit
-            </a>
-          </li>
-          {/* Outboard of the booking pill, and smaller than it: booking stays
-              the primary action, WhatsApp is the quicker informal route for a
-              parent who just wants to ask something. Renders nothing until a
-              real number exists. */}
-          <li className="flex items-center">
-            <WhatsAppButton />
-          </li>
         </ul>
 
+        {/* Booking and WhatsApp hold the right edge, outboard of the links.
+            Booking stays the primary action; WhatsApp is the quicker informal
+            route for a parent who just wants to ask something. The disc renders
+            nothing until a real number exists. */}
+        {/* ONE right-hand cell, not two. The grid has three columns, so a
+            separate mobile cluster would have been a fourth child and wrapped
+            onto its own row. Both sets live here and hide themselves. */}
+        <div className="flex items-center justify-end gap-4">
+          <a
+            href="/book"
+            aria-current={currentPath === '/book' ? 'page' : undefined}
+            className={[
+              'hidden whitespace-nowrap rounded-full bg-cobalt px-5 py-2.5 font-sans text-[0.95rem] text-white transition-opacity hover:opacity-90 min-[1360px]:inline-block',
+              currentPath === '/book' ? 'ring-2 ring-coral ring-offset-2 ring-offset-paper' : '',
+            ].join(' ')}
+          >
+            Book a visit
+          </a>
+          <span className="hidden items-center min-[1360px]:flex">
+            <WhatsAppButton />
+          </span>
+        <a
+          href={CLINIC_PHONE.href}
+          className="inline-flex min-h-11 items-center font-sans text-sm font-semibold text-cobalt min-[1360px]:hidden"
+        >
+          Call us
+        </a>
         <button
           type="button"
           className="flex h-11 w-11 items-center justify-center rounded-full min-[1360px]:hidden"
@@ -213,6 +219,7 @@ export function Nav() {
             />
           </span>
         </button>
+        </div>
         </nav>
 
         {/* On the bar's bottom edge rather than the window's: with a permanent
@@ -257,13 +264,12 @@ export function Nav() {
           behind happened to be powder too. The transform is gone with the
           hide-on-scroll, but a sibling is what the panel wants regardless.
 
-          `top-20` (80px) clears the header, which is now one fixed height --
-          `py-2` twice plus the mark's 50.5px rendered height is ~66px, and
-          there is no condensed state left to also clear. Note the mark's 64px
-          is its WIDTH; the 524.91x414.20 viewBox is what makes it 50.5px tall.
-          The header takes pointer events across its full width, so a panel
-          tucked any higher has its first link swallowed by it. Re-measure if
-          the bar's padding or the mark's size changes. */}
+          `top-14` (56px) clears the 44px phone bar; `md:top-20` (80px) clears
+          the ~66px bar from `md` up, where the mark is 64px wide and so 50.5px
+          tall (the 524.91x414.20 viewBox) plus `py-2` twice. The header takes
+          pointer events across its full width, so a panel tucked any higher
+          has its first link swallowed by it. Re-measure if the bar's padding
+          or the mark's size changes. */}
       <div
         id="mobile-nav"
         ref={panelRef}
@@ -276,7 +282,7 @@ export function Nav() {
         // class list instead, and `inert` keeps the closed panel out of the
         // tab order.
         className={[
-          'fixed left-3 top-20 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] max-h-[calc(100svh-5.5rem)] overflow-y-auto flex-col',
+          'fixed left-3 top-14 z-40 w-[16rem] max-w-[calc(100vw-1.5rem)] max-h-[calc(100svh-4.5rem)] overflow-y-auto flex-col md:top-20',
           'rounded-[1.5rem] bg-powder px-3.5 py-3',
           // The hero is powder too, so a powder card on it had only its shadow
           // to say where the panel stopped and the page began. A white edge
@@ -299,7 +305,7 @@ export function Nav() {
                   href={l.href}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setOpen(false)}
-                  className="block rounded-xl px-2.5 py-2 font-display text-[1.25rem] leading-none text-cobalt"
+                  className="flex min-h-11 items-center rounded-xl px-2.5 py-2 font-display text-[1.25rem] leading-none text-cobalt"
                 >
                   {/* The rule tracks the word, not the tap target, so it stays
                       tight under the label now that the row is padded out. */}

@@ -23,7 +23,7 @@ import { JOURNEY } from '@/content/journey'
  * label measures. Labels alternate by beat index, which reproduces the book's
  * above / below / above / below rhythm.
  */
-function Leader({ flip = false }: { flip?: boolean }) {
+function Leader({ flip = false, dark = false }: { flip?: boolean; dark?: boolean }) {
   return (
     <svg
       viewBox="0 0 20 26"
@@ -34,8 +34,8 @@ function Leader({ flip = false }: { flip?: boolean }) {
       <path
         d="M5 1 C 5 13, 15 13, 15 25"
         fill="none"
-        stroke={colourVar('cobalt')}
-        strokeOpacity={0.4}
+        stroke={colourVar(dark ? 'white' : 'cobalt')}
+        strokeOpacity={dark ? 0.55 : 0.4}
         strokeWidth={1.25}
         strokeLinecap="round"
       />
@@ -43,7 +43,25 @@ function Leader({ flip = false }: { flip?: boolean }) {
   )
 }
 
-export function LogoStory({ className }: { className?: string | undefined }) {
+/**
+ * `on="light"` is the book's own page (coral stages, cobalt mark) for paper,
+ * powder or canary. `on="dark"` is for cobalt, where the stages turn canary and
+ * the mark white -- the p24 and p26 pairings for a cobalt ground.
+ *
+ * `active` (a beat id) turns the row into a storyboard: the stage being read
+ * stays at full strength and the rest step back.
+ */
+export function LogoStory({
+  className,
+  on = 'light',
+  active,
+}: {
+  className?: string | undefined
+  on?: 'light' | 'dark' | undefined
+  active?: string | undefined
+}) {
+  const dark = on === 'dark'
+  const ink = dark ? 'text-white' : 'text-cobalt'
   const beats = JOURNEY.filter((panel) => panel.kind === 'beat')
   const hinge = JOURNEY.find((panel) => panel.kind === 'hinge')
   // Above for Detection and Care, below for Treatment and Smile!, as on p3.
@@ -66,10 +84,10 @@ export function LogoStory({ className }: { className?: string | undefined }) {
           <div key={column.id} className="flex flex-col items-center">
             {column.label && column.above ? (
               <>
-                <span className="font-sans text-[0.65rem] leading-tight text-cobalt">
+                <span className={`font-display text-[0.9rem] leading-tight md:text-base ${ink}`}>
                   {column.label}
                 </span>
-                <Leader />
+                <Leader dark={dark} />
               </>
             ) : null}
           </div>
@@ -79,12 +97,20 @@ export function LogoStory({ className }: { className?: string | undefined }) {
       {/* Row 2: the five glyphs, all one size. */}
       <ul className={`${row} mt-1 list-none`}>
         {columns.map((column) => (
-          <li key={column.id} className="flex justify-center">
+          <li
+            key={column.id}
+            className={[
+              'flex justify-center transition duration-300',
+              active === undefined || active === column.id ? 'opacity-100' : 'opacity-40',
+              active === column.id ? 'scale-110' : '',
+            ].join(' ')}
+          >
             <Doodle
               name={column.glyph}
-              tone={column.id === hinge?.id ? 'cobalt' : 'coral'}
+              tone={column.id === hinge?.id ? (dark ? 'white' : 'cobalt') : dark ? 'canary' : 'coral'}
               drawOnScroll
-              className="w-full max-w-[3.25rem]"
+              tap
+              className="w-full max-w-[3.75rem]"
             />
           </li>
         ))}
@@ -96,8 +122,8 @@ export function LogoStory({ className }: { className?: string | undefined }) {
           <div key={column.id} className="flex flex-col items-center">
             {column.label && !column.above ? (
               <>
-                <Leader flip />
-                <span className="font-sans text-[0.65rem] leading-tight text-cobalt">
+                <Leader flip dark={dark} />
+                <span className={`font-display text-[0.9rem] leading-tight md:text-base ${ink}`}>
                   {column.label}
                 </span>
               </>
@@ -108,11 +134,11 @@ export function LogoStory({ className }: { className?: string | undefined }) {
 
       {/* The stages are decorative above; this is the accessible version, and
           the one line of copy the guide's own page carries. */}
-      <figcaption className="mt-4 text-center font-sans text-[0.8rem] leading-[1.5] text-cobalt">
+      <figcaption className={`mt-5 text-center font-sans text-[0.9rem] leading-[1.5] ${ink}`}>
         {hinge?.caption}
         <span className="sr-only">
           {' '}
-          The mark is drawn in four stages: {beats.map((b) => b.title).join(', ')}.
+          The mark is drawn in four stages: {beats.map((b) => b.title).join(', ')}
         </span>
       </figcaption>
     </figure>

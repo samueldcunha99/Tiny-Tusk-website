@@ -320,3 +320,102 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
   only after credentials are connected.
 - **Do not edit source files with PowerShell string replacement** — the
   round-trip mangles em-dashes into mojibake. Use an editor that writes UTF-8.
+
+## 8. Home page composition (2026-09-23 redesign) — read before touching a section
+
+Mobile first. `docs/audit-2026-07-29.md` items 40–67 record the audit and what
+changed; tag `checkpoint/pre-mobile-redesign-2026-09-23` is the state before it.
+
+- **A powder ground with colour plates**, in `sections/Home.tsx`: powder
+  (welcome) → canary (Dr. Nupur) → cobalt (how a visit goes) → powder (inside
+  the clinic) → canary (services) → cobalt (parent voices) → powder (Parents'
+  Corner, questions) → coral (brushing game) → cobalt (booking, footer). No
+  paper grounds: the user asked for more colour. Apart from Parents' Corner →
+  questions and booking → footer, no two chapters of one colour touch:
+  welcome and Dr. Nupur on one powder field read as "one long page box", and
+  three canary chapters in a row read as "too much yellow". Each change of
+  colour is `<SmileEdge from="outgoing colour" />`.
+- **No artwork crosses a section's top or bottom edge.** Loops and scaled-up
+  doodles may run off the left and right (the guide's page-edge crop), never off
+  the top or bottom: the next section starts there, and a clipped stroke reads
+  as a straight cut (item 56).
+- **No boxes.** Content sits on the ground. Coral still carries no text: the
+  game's title is on a canary ellipse and its clock inside a cobalt disc.
+- **Motion is two systems.** *Draw*: strokes, doodles, glyphs, CTA outlines
+  (they draw in on arrival), and the journey's scroll-scrubbed canary thread.
+  *Reveal*: `useReveal(ref)` in a section, plus `data-reveal` on a heading or
+  `data-reveal="fast"` on a paragraph — SplitText line masks, played once at
+  `REVEAL_START`, then reverted. Anything that must not be split carries
+  `data-split-keep` (`<Circled>` already does). The hero builds its entrance
+  paused and plays it through `onIntroDone`, so it waits for the preloader.
+- **One responsive component per section.** The mobile twins are gone;
+  `asPage` switches a home-page introduction to the full standalone page.
+- **Client decisions to preserve:** the 44px phone nav mark
+  (`allowBelowMinimum`), no roundel in the phone hero, "Welcome to / Tiny Tusk",
+  the label "How a visit goes", the p3 `LogoStory` row, the ten-treatment swipe
+  strip (`HOME_SLUGS` in `Services.tsx`), the floating WhatsApp disc, and the
+  footer's tagline marquee.
+- **Four FAQ answers are parked** in `FAQS_AWAITING_REVIEW` (agent-written
+  clinical advice, one of it wrong). Never render them without Dr. Nupur's
+  approval.
+- **Parents' Corner on the home page** is a wave of speech bubbles
+  (`ParentsStrip` in `ParentsCorner.tsx`): each question on the p33 stylised
+  title ellipse (`<EllipseTitle>`, shared with the brushing game), canary and
+  cobalt in turn, with a coral illustration stuck on its shoulder. The user
+  rejected the coloured tiles ("dont like these boxes") and then the bare list
+  that replaced them (items 63, 66). The article photographs stay plain
+  everywhere -- the client asked for nothing to be laid over them -- and two
+  are clinical close-ups, which is why the home strip uses illustrations.
+- **Treatments sit on colour discs** (item 64): cobalt, powder and coral in a
+  cycle that never puts two equal discs side by side, each drawing in its
+  disc's p24 partner (canary on cobalt and coral, cobalt on powder).
+  `.tt-on-coral` and `.tt-on-powder` re-tint accents that would vanish into
+  their disc, and `.tt-disc-icon` thickens the line. On the home strip the
+  discs wipe in like the timer's ring. `/services` uses the same discs.
+- **Dr. Nupur's portrait slot** (item 67): a round badge ringed with her name.
+  `DR_NUPUR.portrait.src` stays null until an approved photograph arrives, and
+  the badge shows the heart on a cobalt disc meanwhile. Set it and the
+  photograph takes the disc; nothing else needs to change.
+- **The footer opens with the tagline marquee** (item 65), restored at the
+  user's request: two identical halves so the loop never jumps, 90s a lap.
+- **One content column, modest spacing** (item 63). Every home section starts
+  on the same line: a 1320px column with 40px gutters -- `max-w-[1320px]`
+  inside a padded section, or `max-w-[1400px]` where the padding sits inside
+  the container (the swipe strips, which bleed to the screen edge on phones).
+  The user found the old section padding empty; keep new sections to the
+  current values. Booking's bottom padding is small because it runs straight on
+  into the cobalt footer.
+- **`<Doodle tap>`** redraws a drawing when tapped (decorative, skipped under
+  reduced motion). **`<LogoStory active>`** lights the stage being read; the
+  journey drives it from scroll, and on phones a slim sticky rail of the same
+  glyphs sits under the nav while the beats are on screen.
+- **Route heads live in `content/routes.ts`.** `Site.tsx` reads them, and
+  `scripts/prerender.mjs` writes `dist/<route>/index.html` for every route with
+  its own title, description and social tags (the body is still
+  client-rendered). A new route goes in that table and in `PAGES` in
+  `Site.tsx`. `public/og-image.png` is the brand cover at 1200x630.
+
+Traps from this pass:
+
+- Decorative art is `absolute`. Content that follows it must be positioned
+  (`relative`), or the art paints over it — that is how a loop hid two service
+  labels.
+- A backgrounded or occluded browser window throttles `requestAnimationFrame`,
+  so reveals freeze half-played and text looks clipped. Bring the tab to the
+  front before judging motion. A full-page screenshot resizes the viewport and
+  replays any reveal that has not yet played.
+- Cross-document View Transitions do not work while the full site is
+  client-rendered: the incoming frame is blank and Chrome logs an uncaught
+  promise rejection. Do not re-add them before the full site prerenders.
+- `.tt-section` overlaps the next section by 1px on purpose; it removes
+  sub-pixel seams between same-colour grounds at 2x density.
+- `TextOnPath` `ring` fits one pass of its phrase to the circle with
+  `textLength`. Phrases of about 35–55 characters read best.
+- GSAP position offsets use `+=` (`"top top+=140"`) or a plain pixel value
+  (`"top 140px"`). `"top top+140"` is not an error -- it silently reads as
+  `"top top"`.
+- Reveal masks pad the bottom only. Padding and negative margins on both edges
+  collapse between stacked lines, so split text grows taller than unsplit text
+  and every scroll trigger below it drifts when the reveal reverts.
+- On this Windows machine the Bash tool can collapse backslashes even inside
+  quoted heredocs. Write helper scripts with the file tool, not a heredoc.

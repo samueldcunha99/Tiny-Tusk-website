@@ -7,14 +7,13 @@ import { useEffect, useState } from 'react'
 export const MOBILE_QUERY = '(max-width: 767px)'
 
 /**
- * Which layout family to render.
+ * Which side of the `md` split the viewport is on.
  *
- * Sections that have a mobile twin dispatch on this. The two trees are
- * mutually exclusive: only one mounts, so only one builds GSAP contexts and
- * only one is in the DOM. Crossing the breakpoint unmounts the outgoing tree,
- * which reverts its context -- that is the intended cleanup path, so mobile
- * twins must follow the same `gsap.context` + revert-on-unmount contract as
- * every other section.
+ * No section has a separate mobile twin any more (the 2026-09-23 redesign made
+ * every section one responsive component). Today only the nav reads this, to
+ * size its mark. Prefer responsive classes; reach for this only when a value
+ * cannot be expressed in CSS. If a twin ever returns, only one tree mounts, so
+ * it must follow the same `gsap.context` + revert-on-unmount contract.
  */
 export function useIsMobile(): boolean {
   return useMediaQuery(MOBILE_QUERY)

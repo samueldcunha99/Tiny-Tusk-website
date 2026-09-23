@@ -1,11 +1,132 @@
+import { useRef } from 'react'
 import { ArticleImage } from '@/components/ArticleImage'
+import { Circled } from '@/components/Circled'
 import { CoralPageAccent } from '@/components/CoralPageAccent'
+import { Doodle, type DoodleName } from '@/components/Doodle'
+import { EllipseTitle } from '@/components/EllipseTitle'
+import { SectionMarker } from '@/components/SectionMarker'
 import { SectionNumber } from '@/components/SectionNumber'
 import { colourVar } from '@/components/BrandArtView'
 import { PARENT_ARTICLES } from '@/content/parents'
 import { useSectionMeta } from '@/content/sectionOrder'
 import { carriesText } from '@/design/pairings'
 import { TextPanel } from '@/components/TextPanel'
+import { useReveal } from '@/lib/motion'
+
+/** The home page shows the clinic's first four questions; all seven are one tap on. */
+const HOME_POSTS = PARENT_ARTICLES.slice(0, 4)
+
+/** One brand illustration per post, drawn above its question. */
+const POST_ART: Record<string, DoodleName> = {
+  'baby-teeth-cavities': 'journeyDetection',
+  'first-dental-visit': 'doodleFace',
+  'thumb-sucking-and-pacifiers': 'doodleHeart',
+  'early-signs-of-decay': 'doodleToothbrush',
+}
+
+/**
+ * Parents' Corner on the home page: the clinic's questions as speech bubbles --
+ * the guide's stylised title (p33-34) stretched round a question a parent
+ * might ask at the sink. Canary and cobalt in turn on the powder ground,
+ * riding a gentle wave, each with one hand-drawn coral illustration stuck on
+ * its shoulder. A row that swipes on a phone, four across on desktop. No
+ * boxes: the user turned down the tiles ("dont like these boxes"), then the
+ * bare list that replaced them.
+ *
+ * Illustrations rather than photographs on purpose. Two of the client's article
+ * photographs are clinical close-ups of decay and one has stock captions baked
+ * in -- right inside an article, wrong as a first impression. The photographs
+ * stay plain on the Parents' Corner cards and the articles, as the client
+ * asked, and nothing is laid over them.
+ */
+function ParentsStrip() {
+  const ref = useRef<HTMLElement>(null)
+  const meta = useSectionMeta('parents')
+  useReveal(ref)
+
+  const allLink = (
+    <a href="/parents-corner" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+      <span className="underline decoration-2 underline-offset-[6px]">All seven questions</span>
+      <span className="block w-5" aria-hidden="true">
+        <Doodle name="markArrow" tone="cobalt" />
+      </span>
+    </a>
+  )
+
+  return (
+    <section
+      id="parents"
+      ref={ref}
+      data-surface="powder"
+      aria-labelledby="parents-heading"
+      className="tt-section relative overflow-hidden bg-powder pb-10 pt-20 text-cobalt md:pb-16 md:pt-28"
+    >
+      <div className="mx-auto grid max-w-[1400px] gap-4 px-6 md:px-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div>
+          <SectionMarker label={meta.label} />
+          <h2
+            id="parents-heading"
+            data-reveal
+            className="mt-5 max-w-[14ch] font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em] lg:max-w-none lg:text-balance"
+          >
+            The questions that come up at the <Circled tone="cobalt">sink</Circled>
+          </h2>
+        </div>
+        <div className="hidden lg:block">{allLink}</div>
+      </div>
+
+      {/* The swipe row clips at its padding edge, so `pt-6` and `pb-10` hold
+          the stickers above and the wave below inside it. */}
+      <ul
+        aria-label="Parents' Corner posts"
+        className="tt-swipe relative mt-4 list-none gap-5 px-6 pb-8 pt-6 [scroll-padding-inline:1.5rem] md:mt-6 md:px-10 lg:mx-auto lg:grid lg:max-w-[1400px] lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-10"
+      >
+        {HOME_POSTS.map((post, index) => (
+          <li
+            key={post.id}
+            className={['w-[82%] md:w-[46%] lg:w-auto', index % 2 === 1 ? 'translate-y-6 lg:translate-y-10' : ''].join(' ')}
+          >
+            <QuestionBubble post={post} fill={index % 2 === 0 ? 'canary' : 'cobalt'} />
+          </li>
+        ))}
+      </ul>
+
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 lg:hidden">{allLink}</div>
+    </section>
+  )
+}
+
+/**
+ * One question in its bubble. The sticker draws itself in as the row arrives;
+ * on hover or focus the bubble tips a little, a transform only.
+ */
+function QuestionBubble({ post, fill }: { post: (typeof HOME_POSTS)[number]; fill: 'canary' | 'cobalt' }) {
+  const ink = fill === 'canary' ? 'text-cobalt' : 'text-canary'
+  return (
+    <a
+      href={`/parents-corner/${post.id}`}
+      className="relative block transition-transform duration-300 ease-entrance hover:-rotate-2 focus-visible:-rotate-2 active:scale-[0.97]"
+    >
+      <EllipseTitle fill={fill} className="grid min-h-[14.5rem] place-items-center px-11 py-10 text-center">
+        <span className={`block font-sans text-[0.68rem] font-semibold uppercase tracking-[0.2em] ${ink}`}>
+          {post.category}
+        </span>
+        {/* The clinic's question, verbatim -- the article's own h1. */}
+        <h3 className={`mt-2 font-display text-[1.28rem] font-semibold leading-[1.12] ${ink}`}>{post.question}</h3>
+        <span className="mx-auto mt-3 block w-6" aria-hidden="true">
+          <Doodle name="markArrow" tone={fill === 'canary' ? 'cobalt' : 'canary'} />
+        </span>
+      </EllipseTitle>
+      <Doodle
+        name={POST_ART[post.id] ?? 'doodleHeart'}
+        tone="coral"
+        drawOnScroll
+        duration={1.2}
+        className="pointer-events-none absolute -top-5 left-1 w-14 -rotate-12 md:w-16"
+      />
+    </a>
+  )
+}
 
 /**
  * 08 Parents' Corner -- paper.
@@ -36,6 +157,13 @@ const SPANS = [
 ]
 
 export function ParentsCorner({ asPage = false }: { asPage?: boolean | undefined }) {
+  if (!asPage) return <ParentsStrip />
+  return <ParentsCornerPage />
+}
+
+/** The `/parents-corner` page: every post as the client's photograph card. */
+function ParentsCornerPage() {
+  const asPage = true
   const meta = useSectionMeta('parents')
   const Heading = asPage ? 'h1' : 'h2'
   const ItemHeading = asPage ? 'h2' : 'h3'

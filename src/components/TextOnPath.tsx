@@ -22,7 +22,10 @@ export function TextOnPath({ text, mode = 'arc', tone = 'cobalt', className }: T
   const pathId = useId().replace(/:/g, '')
 
   if (mode === 'ring') {
-    const ringText = `${text} • ${text} • `
+    // One pass of the phrase, fitted to the circle: `textLength` opens or
+    // tightens the letter spacing so the ring always closes on itself, rather
+    // than doubling the phrase and cutting it off wherever the path ends.
+    // Phrases of roughly 35-55 characters sit best at this size.
     return (
       <svg
         viewBox="0 0 240 240"
@@ -35,10 +38,12 @@ export function TextOnPath({ text, mode = 'arc', tone = 'cobalt', className }: T
         </defs>
         <text
           fill={colourVar(tone)}
-          className="font-sans text-[13px] font-semibold tracking-[0.12em] uppercase"
+          className="font-sans text-[17px] font-semibold uppercase"
+          textLength={612}
+          lengthAdjust="spacing"
         >
           <textPath href={`#${pathId}`} startOffset="0%">
-            {ringText}
+            {`${text} • `}
           </textPath>
         </text>
       </svg>

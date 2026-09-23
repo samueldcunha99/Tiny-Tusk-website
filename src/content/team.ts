@@ -21,7 +21,14 @@ export const DR_NUPUR = {
    */
   credentials: 'BDS · MDS, Pediatric Dentistry',
   portrait: {
-    alt: 'Portrait of Dr. Nupur Agarwal, photography to be supplied.',
+    /**
+     * TODO (clinic): the approved portrait, e.g. '/images/dr-nupur.jpg' in
+     * `public/images/`. While this is null the Dr. Nupur badge shows its
+     * placeholder (the heart on a cobalt disc); set it and the photograph
+     * takes the badge, cropped to a circle around the face.
+     */
+    src: null as string | null,
+    alt: 'Portrait of Dr. Nupur Agarwal',
     /**
      * Internal production note. NEVER render this in the UI — it is guidance
      * for whoever commissions the shoot, not copy for visitors.

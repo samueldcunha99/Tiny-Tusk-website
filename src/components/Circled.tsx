@@ -28,6 +28,7 @@ export function Circled({
 }) {
   return (
     <span
+      data-split-keep
       className={[
         'relative inline-block px-[0.35em] py-[0.05em]',
         allowWrap ? '' : 'whitespace-nowrap',

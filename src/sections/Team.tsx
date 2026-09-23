@@ -1,191 +1,173 @@
-import { BrandImage } from '@/components/BrandImage'
+import { useRef } from 'react'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
-import { SectionNumber } from '@/components/SectionNumber'
+import { SectionMarker } from '@/components/SectionMarker'
 import { StylisedCTA } from '@/components/StylisedCTA'
-import { TextPanel } from '@/components/TextPanel'
-import { colourVar } from '@/components/BrandArtView'
-import { carriesText } from '@/design/pairings'
+import { TextOnPath } from '@/components/TextOnPath'
 import { DR_NUPUR } from '@/content/team'
 import { useSectionMeta } from '@/content/sectionOrder'
-import { useIsMobile } from '@/lib/viewport'
-import { TeamMobile } from './Team.mobile'
+import { useReveal } from '@/lib/motion'
 
 /**
- * 06 Dr. Nupur -- paper.
+ * Dr. Nupur -- the canary plate straight after the welcome. The welcome's
+ * powder dips into it in the tagline's smile, so the first two chapters no
+ * longer run together as one long field (the user: "this feels one long page
+ * box").
  *
- * The philosophy quote becomes the section heading with the p32 lasso around
- * the single word "understood" (never the whole line -- see `Circled`), and the
- * credentials move into an official-register cobalt panel under the portrait so
- * they read as verified fact rather than card copy.
+ * A book spread (p5): the quote as the headline with its one lassoed word, her
+ * own words, and her portrait as a badge -- the guide's p35 type on a path,
+ * her name and specialty ringed round a round photograph. There is no approved
+ * portrait yet, so the badge holds the heart on a cobalt disc: the slot is kept
+ * (the user asked for it) without a grey box pretending a photograph exists.
+ * Set `DR_NUPUR.portrait.src` and the photograph takes the disc.
  *
- * The cobalt panel under the portrait carries Dr. Nupur's own bio, first
- * person and verbatim from the client, and the white card opposite carries the
- * five client-stated key specialities. Both are official-register surfaces
- * because both are verified fact rather than marketing copy. That card was
- * powder until the section ground became powder itself.
- *
- * The portrait is still `BrandImage placeholder`: nothing here fakes a
- * photograph, and `portrait.productionNote` stays out of the UI. It is
- * deliberately not portrait-shaped while it is empty -- see the note on the
- * height clamp below.
- *
- * The phone renders `Team.mobile.tsx` instead; this composition never mounts
- * under `md`.
+ * On a phone the story reads straight down: headline, portrait, her words. On
+ * desktop the headline runs the full width and the portrait stands beside the
+ * words, so neither column is left with a hole. On the home page this is an
+ * introduction (first paragraph, specialities); the `/dr-nupur` page carries
+ * the full biography and what a visit feels like.
  */
 export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
-  if (useIsMobile()) return <TeamMobile asPage={asPage} />
-  return <TeamDesktop asPage={asPage} />
-}
-
-function TeamDesktop({ asPage }: { asPage: boolean }) {
+  const ref = useRef<HTMLElement>(null)
   const meta = useSectionMeta('team')
   const Heading = asPage ? 'h1' : 'h2'
+  const Sub = asPage ? 'h2' : 'h3'
   const [quoteHead, quoteTail] = DR_NUPUR.philosophy.quote.split('understood')
+  useReveal(ref)
 
   return (
     <section
       id="team"
-      data-surface="powder"
-      className={[
-        // Powder, not paper. Four paper sections ran back to back down the
-        // desktop scroll (journey, team, services, clinic) and the page read
-        // as white. Powder carries the same cobalt copy at 4.92:1, so nothing
-        // inside had to be recoloured -- only the two powder cards below,
-        // which would have disappeared into their own ground.
-        'tt-section relative bg-powder px-6 md:px-10',
-        asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
-      ].join(' ')}
+      ref={ref}
+      data-surface="canary"
       aria-labelledby="team-heading"
+      className={[
+        'tt-section relative overflow-hidden bg-canary px-6 text-cobalt md:px-10',
+        asPage ? 'pb-20 pt-24 md:pb-28 md:pt-36' : 'pb-20 pt-20 md:pb-24 md:pt-28',
+      ].join(' ')}
     >
-      <div className="relative z-10 mx-auto max-w-[1400px]">
-        <SectionNumber number={meta.number} label={meta.label} tone="coral" />
+      {/* Low-contrast register, p25: white on canary, looping round behind the
+          portrait. Tablet and up only: on a phone everything stacks in one
+          column, so any loop behind the badge also runs behind her name and
+          words. */}
+      <Doodle
+        name="loopStroke"
+        tone="white"
+        drawOnScroll
+        duration={1.8}
+        className="pointer-events-none absolute hidden max-w-none md:-right-[16%] md:top-[10%] md:block md:w-[46%]"
+      />
 
-        <div className="mt-4 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
-          <div className="relative">
-            <BrandImage
-              placeholder
-              alt={DR_NUPUR.portrait.alt}
-              width={1000}
-              height={1250}
-              showCTA={false}
-              logoTone="cobalt"
-              doodle="doodleHeart"
-              doodleTone="coral"
-              // Height-clamped, not `aspect-[4/5]`. At 4:5 in a half of a
-              // 1400px grid this placeholder was ~840px tall -- most of a
-              // screen of empty powder standing in for a photograph that does
-              // not exist yet. Same clamp the Laughing Gas placeholder uses.
-              // Restore the 4:5 ratio when a real portrait is supplied.
-              // The ring is needed now the section ground is powder too:
-              // without it the tile has no edge and reads as a hole.
-              className="h-[clamp(20rem,38vh,28rem)] ring-2 ring-cobalt/15"
-            />
-            <Doodle
-              name="markDashes"
-              tone="coral"
-              drawOnScroll
-              className="pointer-events-none absolute -top-4 right-[-0.625rem] w-16"
-            />
+      <div className="relative mx-auto grid max-w-[1320px] gap-10 [grid-template-areas:'head'_'badge'_'bio'_'spec'_'more'] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-x-20 lg:[grid-template-areas:'head_head'_'bio_badge'_'spec_badge'_'more_badge']">
+        <div className="[grid-area:head]">
+          <SectionMarker label={meta.label} />
+          <Heading
+            id="team-heading"
+            data-reveal
+            className="mt-5 max-w-[16ch] text-balance font-display text-[clamp(2.4rem,10vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.025em] lg:max-w-none"
+          >
+            {quoteHead}
+            <Circled tone="cobalt">understood</Circled>
+            {/* The lasso's own padding would strand the full stop. */}
+            <span className="-ml-[0.3em]">{quoteTail}</span>
+          </Heading>
+        </div>
 
-            <div className="mt-5 rounded-[2rem] bg-cobalt p-7 md:p-8" data-surface="cobalt">
-              <h3 className="font-display text-h2 text-canary">{DR_NUPUR.name}</h3>
-              <p className="mt-2.5 font-sans text-base tracking-[0.02em] text-canary">
-                {DR_NUPUR.credentials}
-              </p>
-              {DR_NUPUR.bio.map((para) => (
-                <p
-                  key={para.slice(0, 24)}
-                  className="mt-4 max-w-measure font-sans text-base leading-relaxed text-white"
-                >
-                  {para}
-                </p>
-              ))}
-            </div>
+        {/* On the full page the text runs long, so the portrait stays in view
+            beside it; on the home page it simply centres on the text. */}
+        <div
+          className={[
+            'flex flex-col items-center text-center [grid-area:badge]',
+            asPage ? 'lg:sticky lg:top-28 lg:self-start' : 'lg:self-center',
+          ].join(' ')}
+        >
+          <PortraitBadge />
+          <Sub className="mt-6 font-display text-[clamp(1.75rem,6.5vw,2.5rem)] font-semibold leading-[1.05]">
+            {DR_NUPUR.name}
+          </Sub>
+          {/* CLIENT-VERIFIED credentials (content/team.ts). */}
+          <p className="mt-1.5 font-sans text-[0.95rem] font-semibold">{DR_NUPUR.credentials}</p>
+        </div>
 
-            {/* Specialities sit under the credentials, not opposite them. Both
-                are client-verified clinical fact in the official register, so
-                they belong together -- and the expectations column opposite ran
-                ~270px taller, which left this one ending in a slab of bare
-                powder before the section did. */}
-            <div className="mt-5 rounded-[2rem] bg-white p-7" data-surface="white">
-              <h3 className="font-display text-xl text-cobalt">Key specialities</h3>
-              <ul className="mt-4 flex list-none flex-col gap-3">
-                {DR_NUPUR.specialities.map((speciality) => (
-                  <li key={speciality} className="flex items-start gap-3">
-                    <Doodle
-                      name="markArrow"
-                      tone="cobalt"
-                      drawOnScroll
-                      className="mt-1 w-5 shrink-0"
-                    />
-                    <span className="font-sans text-base leading-relaxed text-cobalt">
-                      {speciality}
-                    </span>
+        {/* Her own words, first person, verbatim (content/team.ts). */}
+        <div className="flex flex-col gap-5 font-sans text-[1.05rem] leading-[1.65] [grid-area:bio] md:text-[1.15rem]">
+          {(asPage ? DR_NUPUR.bio : DR_NUPUR.bio.slice(0, 1)).map((para) => (
+            <p key={para.slice(0, 24)} data-reveal="fast" className="max-w-[54ch]">
+              {para}
+            </p>
+          ))}
+        </div>
+
+        <div className="[grid-area:spec]">
+          <Sub className="font-display text-[1.4rem] font-semibold">Key specialities</Sub>
+          <ul className="mt-4 flex flex-col gap-3">
+            {DR_NUPUR.specialities.map((speciality) => (
+              <li key={speciality} className="flex items-start gap-3.5 font-sans text-[1rem] leading-snug">
+                <span className="mt-[0.2em] block w-5 shrink-0" aria-hidden="true">
+                  <Doodle name="markArrow" tone="cobalt" />
+                </span>
+                {speciality}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="[grid-area:more]">
+          {asPage ? (
+            <>
+              <Sub className="font-display text-[1.4rem] font-semibold">What a visit with her feels like</Sub>
+              <ul className="mt-5 flex flex-col gap-6">
+                {DR_NUPUR.expectations.map((beat) => (
+                  <li key={beat.title} className="flex items-start gap-4">
+                    <Doodle name={beat.glyph} tone="cobalt" drawOnScroll className="mt-1 w-9 shrink-0" />
+                    <div>
+                      <p className="font-display text-[1.25rem] font-semibold leading-tight">{beat.title}</p>
+                      <p className="mt-1 max-w-[48ch] font-sans text-[1rem] leading-relaxed">{beat.body}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-
-          <div>
-            <Heading id="team-heading" className="font-display text-h1 text-cobalt">
-              {quoteHead}
-              <Circled tone="coral">understood</Circled>
-              {quoteTail}
-            </Heading>
-
-            <ul className="mt-11 flex list-none flex-col gap-5">
-              {DR_NUPUR.expectations.map((beat) => {
-                const onPanel = !carriesText(beat.surface)
-                return (
-                  <li
-                    key={beat.title}
-                    data-surface={beat.surface}
-                    className="flex items-start gap-5 rounded-[2rem] p-7"
-                    style={{ background: colourVar(beat.surface) }}
-                  >
-                    <Doodle name={beat.glyph} tone={beat.element} drawOnScroll className="w-[3.25rem] shrink-0" />
-                    <TextPanel surface={beat.surface}>
-                      <h3
-                        className="font-display text-xl leading-snug"
-                        style={{ color: colourVar(onPanel ? 'canary' : beat.element) }}
-                      >
-                        {beat.title}
-                      </h3>
-                      <p
-                        className="mt-2 max-w-measure font-sans text-base leading-relaxed"
-                        style={{ color: colourVar(onPanel ? 'white' : beat.element) }}
-                      >
-                        {beat.body}
-                      </p>
-                    </TextPanel>
-                  </li>
-                )
-              })}
-            </ul>
-
-            {DR_NUPUR.hasFavouritePart ? (
-              <blockquote className="mt-8 rounded-[2rem] bg-white p-7 font-display text-h2 text-cobalt">
-                {DR_NUPUR.favouritePart}
-              </blockquote>
-            ) : null}
-
-            {/* Closes the column, so it takes the column's width rather than
-                sitting in it as a chip. */}
-            <div className="mt-9">
-              <StylisedCTA
-                lead="Book"
-                rest="with Dr. Nupur"
-                href="/book"
-                fill="canary"
-                size="lg"
-                className="w-full"
-              />
-            </div>
-          </div>
+              {/* Powder, not canary: a canary button would vanish into the ground. */}
+              <div className="-m-4 mt-8 p-4">
+                <StylisedCTA lead="Book" rest="a visit with Dr. Nupur" href="/book" fill="powder" />
+              </div>
+            </>
+          ) : (
+            <a href="/dr-nupur" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+              <span className="underline decoration-2 underline-offset-[6px]">More about Dr. Nupur</span>
+              <span className="block w-5" aria-hidden="true">
+                <Doodle name="markArrow" tone="cobalt" />
+              </span>
+            </a>
+          )}
         </div>
       </div>
     </section>
+  )
+}
+
+/**
+ * Her name ringed round her portrait. The ring's type sits outside a circle of
+ * radius 100 in a 240 box, so the disc stops at 74% of the width, clear of the
+ * letters' descenders.
+ */
+function PortraitBadge() {
+  const { src, alt } = DR_NUPUR.portrait
+  return (
+    <div className="relative aspect-square w-[17rem] md:w-[20rem] lg:w-[22rem]">
+      <TextOnPath
+        text="Dr. Nupur Agarwal • Pediatric Dentistry"
+        mode="ring"
+        tone="cobalt"
+        className="absolute inset-0 h-full w-full"
+      />
+      <div className="absolute inset-[13%] grid place-items-center overflow-hidden rounded-full bg-cobalt" data-surface="cobalt">
+        {src ? (
+          <img src={src} alt={alt} className="h-full w-full object-cover" />
+        ) : (
+          <Doodle name="doodleHeart" tone="canary" drawOnScroll tap className="w-[44%]" />
+        )}
+      </div>
+    </div>
   )
 }
