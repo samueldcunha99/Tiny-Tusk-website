@@ -350,6 +350,14 @@ changed; tag `checkpoint/pre-mobile-redesign-2026-09-23` is the state before it.
   paused and plays it through `onIntroDone`, so it waits for the preloader.
 - **One responsive component per section.** The mobile twins are gone;
   `asPage` switches a home-page introduction to the full standalone page.
+- **Standalone pages are composed the same way** (item 70). `/parents-corner`,
+  `/inside-clinic` and `/laughing-gas` are colour chapters joined by
+  `<SmileEdge>`, with no boxes, and each ends on `<BookingClose>`
+  (`sections/BookingClose.tsx`, the home page's cobalt close, which takes a
+  page's own heading and line) running on into the cobalt footer. Parents'
+  Corner keeps the client's order -- photograph, question, summary -- with the
+  photographs plain; a post with no photograph shows its drawing on a disc of
+  its `fill`.
 - **Client decisions to preserve:** the 44px phone nav mark
   (`allowBelowMinimum`), no roundel in the phone hero, "Welcome to / Tiny Tusk",
   the label "How a visit goes", the p3 `LogoStory` row, the ten-treatment swipe

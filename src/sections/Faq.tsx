@@ -65,21 +65,7 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
         </div>
 
         <div className="border-t-2 border-cobalt/20">
-          {FAQS.map((item) => (
-            <details key={item.question} className="border-b-2 border-cobalt/20">
-              <summary className="flex min-h-[4.5rem] items-center justify-between gap-6 py-4">
-                <ItemHeading className="font-display text-[clamp(1.3rem,5.4vw,1.7rem)] leading-[1.15]">
-                  {item.question}
-                </ItemHeading>
-                <span data-faq-arrow aria-hidden="true" className="block w-6 shrink-0 transition-transform duration-300 ease-transform">
-                  <Doodle name="markArrow" tone="cobalt" />
-                </span>
-              </summary>
-              <p className="max-w-[56ch] pb-6 font-sans text-[1.02rem] leading-[1.65] md:text-[1.1rem]">
-                {item.answer}
-              </p>
-            </details>
-          ))}
+          <QuestionRows items={FAQS} ItemHeading={ItemHeading} />
 
           {asPage ? (
             <div className="-m-4 mt-10 p-4">
@@ -89,5 +75,34 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
         </div>
       </div>
     </section>
+  )
+}
+
+/** The ruled rows themselves, shared with the laughing gas page's questions. */
+export function QuestionRows({
+  items,
+  ItemHeading,
+}: {
+  items: readonly { question: string; answer: string }[]
+  ItemHeading: 'h2' | 'h3'
+}) {
+  return (
+    <>
+      {items.map((item) => (
+        <details key={item.question} className="border-b-2 border-cobalt/20">
+          <summary className="flex min-h-[4.5rem] items-center justify-between gap-6 py-4">
+            <ItemHeading className="font-display text-[clamp(1.3rem,5.4vw,1.7rem)] leading-[1.15]">
+              {item.question}
+            </ItemHeading>
+            <span data-faq-arrow aria-hidden="true" className="block w-6 shrink-0 transition-transform duration-300 ease-transform">
+              <Doodle name="markArrow" tone="cobalt" />
+            </span>
+          </summary>
+          <p className="max-w-[56ch] pb-6 font-sans text-[1.02rem] leading-[1.65] md:text-[1.1rem]">
+            {item.answer}
+          </p>
+        </details>
+      ))}
+    </>
   )
 }

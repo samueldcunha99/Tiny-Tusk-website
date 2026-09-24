@@ -1,27 +1,31 @@
-import { useRef } from 'react'
+import { Fragment, useRef, type ReactNode } from 'react'
 import { ArticleImage } from '@/components/ArticleImage'
 import { Circled } from '@/components/Circled'
-import { CoralPageAccent } from '@/components/CoralPageAccent'
 import { Doodle, type DoodleName } from '@/components/Doodle'
 import { EllipseTitle } from '@/components/EllipseTitle'
 import { SectionMarker } from '@/components/SectionMarker'
-import { SectionNumber } from '@/components/SectionNumber'
+import { SmileEdge } from '@/components/SmileEdge'
 import { colourVar } from '@/components/BrandArtView'
-import { PARENT_ARTICLES } from '@/content/parents'
+import { PARENT_ARTICLES, type ParentArticle } from '@/content/parents'
 import { useSectionMeta } from '@/content/sectionOrder'
-import { carriesText } from '@/design/pairings'
-import { TextPanel } from '@/components/TextPanel'
 import { useReveal } from '@/lib/motion'
+import { BookingClose } from './BookingClose'
 
 /** The home page shows the clinic's first four questions; all seven are one tap on. */
 const HOME_POSTS = PARENT_ARTICLES.slice(0, 4)
 
-/** One brand illustration per post, drawn above its question. */
+/**
+ * One brand illustration per post: the sticker on its home-page bubble, and
+ * the cover on `/parents-corner` of a post that has no photograph yet.
+ */
 const POST_ART: Record<string, DoodleName> = {
   'baby-teeth-cavities': 'journeyDetection',
   'first-dental-visit': 'doodleFace',
   'thumb-sucking-and-pacifiers': 'doodleHeart',
   'early-signs-of-decay': 'doodleToothbrush',
+  'inside-tiny-tusk': 'journeyLogo',
+  'choosing-a-pediatric-dentist': 'journeySmile',
+  'fluoride-varnish': 'doodleToothpaste',
 }
 
 /**
@@ -128,122 +132,200 @@ function QuestionBubble({ post, fill }: { post: (typeof HOME_POSTS)[number]; fil
   )
 }
 
-/**
- * 08 Parents' Corner -- paper.
- *
- * This IS the blog. Seven posts on the same six-column editorial grid the
- * services use, so the two card sections rhyme: 3+3, then 2+2+2, then 3+3.
- *
- * A card is the client's photograph, then her question under it, then the
- * summary -- her own running order. The `<BrandImage>` head that used to sit
- * up there (logo watermark, title ellipse, doodle overlays) is still gone at
- * her request: this is a plain photograph on a plain tinted box, the `fill`
- * from `content/parents.ts`. The coral card keeps its field and floats its
- * copy on cobalt via `TextPanel`, because coral cannot carry text.
- *
- * A post with no photograph yet gets the placeholder tile, not a missing head,
- * so the row of cards stays one shape (see `ArticleImage`).
- *
- * Every card is a link to `/parents-corner/<id>` (`ParentsArticle.tsx`).
- */
-const SPANS = [
-  'md:col-span-3',
-  'md:col-span-3',
-  'md:col-span-2',
-  'md:col-span-2',
-  'md:col-span-2',
-  'md:col-span-3',
-  'md:col-span-3',
-]
-
 export function ParentsCorner({ asPage = false }: { asPage?: boolean | undefined }) {
   if (!asPage) return <ParentsStrip />
   return <ParentsCornerPage />
 }
 
-/** The `/parents-corner` page: every post as the client's photograph card. */
+type Ground = 'powder' | 'canary' | 'cobalt'
+
+const GROUND_CLASS: Record<Ground, string> = {
+  powder: 'bg-powder text-cobalt',
+  canary: 'bg-canary text-cobalt',
+  cobalt: 'bg-cobalt text-white',
+}
+
+/**
+ * The seven posts in the clinic's own order, two to a chapter, on the home
+ * page's grounds: powder, then a canary plate, then a cobalt one, then back to
+ * powder. No two chapters of one colour touch, and the cobalt close runs on
+ * into the cobalt footer. The two posts still waiting for photographs share
+ * the cobalt chapter, where their colour discs stand out most.
+ */
+const CHAPTERS: readonly { ground: Ground; posts: readonly ParentArticle[] }[] = [
+  { ground: 'powder', posts: PARENT_ARTICLES.slice(0, 2) },
+  { ground: 'canary', posts: PARENT_ARTICLES.slice(2, 4) },
+  { ground: 'cobalt', posts: PARENT_ARTICLES.slice(4, 6) },
+  { ground: 'powder', posts: PARENT_ARTICLES.slice(6) },
+]
+
+/**
+ * `/parents-corner` -- the blog, composed like the home page: colour chapters
+ * joined by the tagline's smile, and no boxes. Each post sits straight on its
+ * ground in the client's own running order: her photograph, then her question
+ * under it, then the summary. The photographs stay plain, as she asked --
+ * nothing is laid over them.
+ *
+ * The header is the home strip's, with the p32 move behind it: a canary
+ * toothbrush scaled up into the powder field.
+ */
 function ParentsCornerPage() {
-  const asPage = true
   const meta = useSectionMeta('parents')
-  const Heading = asPage ? 'h1' : 'h2'
-  const ItemHeading = asPage ? 'h2' : 'h3'
 
   return (
-    <section
-      id="parents"
+    <>
+      <section id="parents" aria-labelledby="parents-heading">
+        {CHAPTERS.map((chapter, index) => {
+          const previous = CHAPTERS[index - 1]
+          return (
+            <Fragment key={chapter.posts[0]?.id ?? index}>
+              {previous ? <SmileEdge from={previous.ground} /> : null}
+              <PostChapter ground={chapter.ground} posts={chapter.posts}>
+                {index === 0 ? (
+                  <>
+                    <Doodle
+                      name="doodleToothbrush"
+                      tone="canary"
+                      drawOnScroll
+                      duration={1.4}
+                      className="pointer-events-none absolute -right-14 top-20 w-48 rotate-[28deg] md:right-[2%] md:top-24 md:w-64 lg:right-[8%] lg:top-16 lg:w-80"
+                    />
+                    <div className="relative">
+                      <SectionMarker label={meta.label} />
+                      <h1
+                        id="parents-heading"
+                        data-reveal
+                        className="mt-5 max-w-[14ch] font-display text-[clamp(2.4rem,10vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.025em] lg:max-w-none lg:text-balance"
+                      >
+                        The questions that come up at the <Circled tone="cobalt">sink</Circled>
+                      </h1>
+                      <p data-reveal="fast" className="mt-5 max-w-[36ch] font-sans text-[1.05rem] leading-[1.6] md:text-[1.15rem]">
+                        Seven short reads, from first teeth and first visits to the habits in between.
+                      </p>
+                    </div>
+                  </>
+                ) : null}
+              </PostChapter>
+            </Fragment>
+          )
+        })}
+      </section>
+      <SmileEdge from="powder" />
+      <BookingClose />
+    </>
+  )
+}
+
+/**
+ * One colour chapter. Two posts sit side by side from `md`, the second a step
+ * lower -- the home strip's wave, slowed down. A chapter holding one post sets
+ * it as a spread instead, photograph and words side by side, so the row has no
+ * hole in it.
+ */
+function PostChapter({ ground, posts, children }: { ground: Ground; posts: readonly ParentArticle[]; children?: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useReveal(ref)
+  const spread = posts.length === 1
+
+  return (
+    <div
+      ref={ref}
+      data-surface={ground}
       className={[
-        'tt-section relative bg-paper px-6 md:px-10',
-        asPage ? 'py-24 md:py-32' : 'py-20 md:py-24',
+        'tt-section relative overflow-hidden px-6 pb-20 md:px-10 md:pb-28',
+        children ? 'pt-24 md:pt-36' : 'pt-20 md:pt-28',
+        GROUND_CLASS[ground],
       ].join(' ')}
-      aria-labelledby="parents-heading"
     >
-      {asPage ? <CoralPageAccent /> : null}
-      <div className="relative z-10 mx-auto max-w-[1440px]">
-        <SectionNumber number={meta.number} label={meta.label} tone="coral" />
-        <Heading id="parents-heading" className="mt-4 max-w-[24ch] font-display text-h1 text-cobalt">
-          The questions that come up at the sink
-        </Heading>
-
-        <div className="mt-12 grid gap-5 md:grid-cols-6">
-          {PARENT_ARTICLES.map((article, index) => {
-            const onPanel = !carriesText(article.fill)
-            return (
-              <article
-                key={article.id}
-                className={[
-                  'flex flex-col overflow-hidden rounded-[2rem]',
-                  SPANS[index] ?? 'md:col-span-2',
-                ].join(' ')}
-                style={{ background: colourVar(article.fill) }}
-                data-surface={article.fill}
-              >
-                <a
-                  href={`/parents-corner/${article.id}`}
-                  className="block transition-transform duration-500 ease-entrance active:-translate-y-0.5"
-                >
-                  {/* Photograph first, question under it -- the client's own
-                      running order. The tile is flush to the card's top edge,
-                      so the tinted fill reads as the card's lower half rather
-                      than a border around a picture. */}
-                  <ArticleImage image={article.image} className="aspect-[16/10]" />
-
-                  <div className="p-7">
-                    <TextPanel surface={article.fill}>
-                      <p
-                        className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
-                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt-60') }}
-                      >
-                        {article.category}
-                      </p>
-                      {/* The client's question verbatim, not a rewritten label:
-                          it is what she asked for under each photograph, and it
-                          is the same string the article page carries as its h1. */}
-                      <ItemHeading
-                        className="mt-3 font-display text-[clamp(1.2rem,1.8vw,1.55rem)] font-semibold leading-snug"
-                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt') }}
-                      >
-                        {article.question}
-                      </ItemHeading>
-                      <p
-                        className="mt-3 max-w-measure font-sans text-[0.95rem] leading-relaxed"
-                        style={{ color: colourVar(onPanel ? 'white' : 'cobalt') }}
-                      >
-                        {article.summary}
-                      </p>
-                      <p
-                        className="mt-4 font-sans text-[0.85rem] font-semibold underline underline-offset-[3px]"
-                        style={{ color: colourVar(onPanel ? 'canary' : 'cobalt') }}
-                      >
-                        Read this
-                      </p>
-                    </TextPanel>
-                  </div>
-                </a>
-              </article>
-            )
-          })}
+      <div className="mx-auto max-w-[1320px]">
+        {children}
+        <div className={['grid gap-16 md:grid-cols-2 md:gap-x-10 lg:gap-x-16', children ? 'mt-14 md:mt-20' : ''].join(' ')}>
+          {posts.map((post, index) => (
+            <Post key={post.id} post={post} dark={ground === 'cobalt'} spread={spread} lower={index % 2 === 1} />
+          ))}
         </div>
       </div>
-    </section>
+    </div>
+  )
+}
+
+/**
+ * One post, the whole of it a link. On hover or focus the cover tips a little
+ * and the arrow steps forward -- transforms only.
+ */
+function Post({ post, dark, spread, lower }: { post: ParentArticle; dark: boolean; spread: boolean; lower: boolean }) {
+  return (
+    <article className={['relative', spread ? 'md:col-span-2' : '', lower ? 'md:mt-16' : ''].join(' ')}>
+      <a
+        href={`/parents-corner/${post.id}`}
+        className={['group block', spread ? 'md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16' : ''].join(' ')}
+      >
+        <PostCover post={post} />
+        <div className={spread ? 'mt-7 md:mt-0' : 'mt-7'}>
+          <SectionMarker label={post.category} on={dark ? 'dark' : 'light'} />
+          {/* The clinic's question, verbatim -- the article's own h1. */}
+          <h2
+            data-reveal
+            className={[
+              'mt-4 max-w-[22ch] font-display text-[clamp(1.65rem,6.6vw,2.35rem)] font-semibold leading-[1.08] tracking-[-0.015em]',
+              dark ? 'text-canary' : '',
+            ].join(' ')}
+          >
+            {post.question}
+          </h2>
+          <p
+            data-reveal="fast"
+            className={['mt-3 max-w-[42ch] font-sans text-[1.02rem] leading-[1.6] md:text-[1.1rem]', dark ? 'text-white/90' : ''].join(' ')}
+          >
+            {post.summary}
+          </p>
+          <span
+            className={['mt-3 inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold', dark ? 'text-canary' : ''].join(' ')}
+          >
+            <span className="underline decoration-2 underline-offset-[6px]">Read this</span>
+            <span className="block w-5 transition-transform duration-300 ease-entrance group-hover:translate-x-1 group-focus-visible:translate-x-1" aria-hidden="true">
+              <Doodle name="markArrow" tone={dark ? 'canary' : 'cobalt'} />
+            </span>
+          </span>
+        </div>
+      </a>
+    </article>
+  )
+}
+
+/**
+ * The client's photograph, plain. A post with no photograph yet (posts 5 and
+ * 6) gets its own drawing on a disc of its colour instead -- the treatment
+ * discs' treatment, each drawing in its disc's p24 partner -- rather than a
+ * tile announcing that a photograph is missing.
+ */
+function PostCover({ post }: { post: ParentArticle }) {
+  const tip = 'transition-transform duration-500 ease-entrance group-hover:-rotate-1 group-focus-visible:-rotate-1 group-active:scale-[0.98]'
+
+  if (post.image) {
+    return (
+      <div className={`overflow-hidden rounded-[1.5rem] ${tip}`}>
+        <ArticleImage image={post.image} className="aspect-[16/10]" />
+      </div>
+    )
+  }
+
+  // 62.5% of the width is the full height of a 16:10 frame, so the disc stands
+  // exactly as tall as the photographs beside it.
+  return (
+    <div className="flex aspect-[16/10] items-center justify-center" aria-hidden="true">
+      <span
+        className={`grid aspect-square w-[62.5%] place-items-center rounded-full ${tip}`}
+        style={{ background: colourVar(post.fill) }}
+      >
+        <Doodle
+          name={POST_ART[post.id] ?? 'doodleHeart'}
+          tone={post.fill === 'coral' ? 'canary' : 'cobalt'}
+          drawOnScroll
+          duration={1.2}
+          className="w-[52%]"
+        />
+      </span>
+    </div>
   )
 }

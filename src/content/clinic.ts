@@ -105,6 +105,6 @@ export const CLINIC_CONCEPTS = [
       doodle: 'doodleFace',
       doodleTone: 'canary',
     },
-    className: 'lg:col-span-12 aspect-[16/7]',
+    className: 'aspect-[4/3] md:col-span-2 md:aspect-[16/7] lg:col-span-12',
   },
 ] satisfies readonly ClinicConcept[]
