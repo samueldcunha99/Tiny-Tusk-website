@@ -219,8 +219,9 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
   silence the guard**), `clearSpace` (pads by the mark's own height), `drawable`,
   `title`. Exported `<Wordmark>` is **outlined artwork with a heart-dotted "i" —
   never re-set it in a typeface.**
-- **`<Doodle>`** — named brand doodle/mark. `drawOnScroll` draws once at 85%
-  viewport. `play` **replays** the gesture for hover/focus; doodles always rest
+- **`<Doodle>`** — named brand doodle/mark. `drawOnScroll` draws once as it
+  scrolls in (`onArrival`), and not at all if it is on screen as the page
+  wakes. `play` **replays** the gesture for hover/focus; doodles always rest
   **complete**, so never-hovered cards and touch devices still show finished art.
   `preserveAspectRatio="none"` to stretch (see `<Circled>`).
 - **`<Circled>`** — the guide's lasso around **one word** in a headline (p32).
@@ -258,6 +259,11 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
    **2.39:1**, cobalt **2.67:1**, white **2.99:1** — all fail even the 3:1
    large-text floor. Coral stays a full-strength field and graphic colour; copy
    over it goes on a cobalt panel via `<TextPanel>`. See `docs/contrast-audit.md`.
+   **One exception, the user's decision (2026-09-25, audit #86):** the home
+   hero is coral with a white heading and paragraph (2.98:1; Lighthouse flags
+   it, accessibility 96). Its logo lockup and scroll link stay cobalt, because
+   white vanished where the canary loop runs behind them. Do not copy it
+   elsewhere, and do not revert it without asking.
 2. **Only permitted pairings** (pp24–27, encoded in `src/design/pairings.ts`).
    They are **directional** — powder bg + cobalt elements is legal, the reverse
    is not. The `official` register (p26) governs booking, legal and clinical
@@ -326,8 +332,8 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
 Mobile first. `docs/audit-2026-07-29.md` items 40–69 record the audit and what
 changed; tag `checkpoint/pre-mobile-redesign-2026-09-23` is the state before it.
 
-- **A powder ground with colour plates**, in `sections/Home.tsx`: powder
-  (welcome) → canary (Dr. Nupur) → cobalt (how a visit goes) → powder (inside
+- **A powder ground with colour plates**, in `sections/Home.tsx`: coral
+  (welcome, the user's choice, §6.1) → canary (Dr. Nupur) → cobalt (how a visit goes) → powder (inside
   the clinic) → canary (services) → cobalt (parent voices) → powder (Parents'
   Corner, questions) → coral (brushing game) → cobalt (booking, footer). No
   paper grounds: the user asked for more colour. Apart from Parents' Corner →
@@ -344,20 +350,27 @@ changed; tag `checkpoint/pre-mobile-redesign-2026-09-23` is the state before it.
 - **Motion is two systems.** *Draw*: strokes, doodles, glyphs, CTA outlines
   (they draw in on arrival), and the journey's scroll-scrubbed canary thread.
   *Reveal*: `useReveal(ref)` in a section, plus `data-reveal` on a heading or
-  `data-reveal="fast"` on a paragraph — SplitText line masks, played once at
-  `REVEAL_START`, then reverted. Anything that must not be split carries
+  `data-reveal="fast"` on a paragraph — SplitText line masks, split as each
+  nears the screen and played once at the reveal line (`onArrival` in
+  lib/motion.ts), then reverted. Anything that must not be split carries
   `data-split-keep` (`<Circled>` already does). The hero builds its entrance
   paused and plays it through `onIntroDone`, so it waits for the preloader.
 - **One responsive component per section.** The mobile twins are gone;
   `asPage` switches a home-page introduction to the full standalone page.
-- **Standalone pages are composed the same way** (item 70). `/parents-corner`,
-  `/inside-clinic` and `/laughing-gas` are colour chapters joined by
-  `<SmileEdge>`, with no boxes, and each ends on `<BookingClose>`
+- **Every page is composed the same way** (items 70, 81–85): colour chapters
+  joined by `<SmileEdge>`, with no boxes, reaching the cobalt footer through
+  cobalt. A page that ends on a light ground closes on `<BookingClose>`
   (`sections/BookingClose.tsx`, the home page's cobalt close, which takes a
-  page's own heading and line) running on into the cobalt footer. Parents'
-  Corner keeps the client's order -- photograph, question, summary -- with the
-  photographs plain; a post with no photograph shows its drawing on a disc of
-  its `fill`.
+  page's own heading and line); `/book` and the 404 end on `<SmileIntoFooter>`
+  instead, whose short cobalt run keeps the smile off the footer's ribbon.
+  Endings are composed in `PAGES` in `Site.tsx`, except Booking's, which
+  depends on its sent state. Parents' Corner keeps the client's order --
+  photograph, question, summary -- with the photographs plain, cropped 16:10
+  from the bottom (every subject is a mouth, and two carry words and arrows
+  near their sides); a post with no photograph shows its drawing on a disc of
+  its `fill`. A post is a masthead in its colour (cobalt for coral and powder
+  posts), powder reading chapters with a canary one for any section that
+  carries a list, "Read next" as three speech bubbles, then the close.
 - **Client decisions to preserve:** the 44px phone nav mark
   (`allowBelowMinimum`), no roundel in the phone hero, "Welcome to / Tiny Tusk",
   the label "How a visit goes", the p3 `LogoStory` row, the ten-treatment swipe
@@ -412,11 +425,16 @@ changed; tag `checkpoint/pre-mobile-redesign-2026-09-23` is the state before it.
   reduced motion). **`<LogoStory active>`** lights the stage being read; the
   journey drives it from scroll, and on phones a slim sticky rail of the same
   glyphs sits under the nav while the beats are on screen.
-- **Route heads live in `content/routes.ts`.** `Site.tsx` reads them, and
-  `scripts/prerender.mjs` writes `dist/<route>/index.html` for every route with
-  its own title, description and social tags (the body is still
-  client-rendered). A new route goes in that table and in `PAGES` in
-  `Site.tsx`. `public/og-image.png` is the brand cover at 1200x630.
+- **Every page is prerendered, then hydrated** (item 73). Route heads live
+  in `content/routes.ts`; `scripts/prerender.mjs` renders `<App>` for every
+  route (`entry-server.tsx`, streaming, so the lazy site chunk resolves) into
+  `dist/<route>/index.html` with its own title, description, canonical and
+  social tags, and writes `404.html`, `sitemap.xml` and `llms.txt`. A new
+  route goes in that table and in `PAGES` in `Site.tsx`. Render nothing from
+  browser state: read the path with `currentPath()` (lib/location.ts),
+  switch responsive variants with CSS, and keep anything that differs per
+  visitor in an effect -- a mismatch makes React throw the server HTML away.
+  `public/og-image.png` is the brand cover at 1200x630.
 
 Traps from this pass:
 
@@ -442,3 +460,15 @@ Traps from this pass:
   and every scroll trigger below it drifts when the reveal reverts.
 - On this Windows machine the Bash tool can collapse backslashes even inside
   quoted heredocs. Write helper scripts with the file tool, not a heredoc.
+- **Internal links end with a slash** (`/book/`, item 75): each page is a
+  folder's index.html, and Netlify 301s the bare path. `vite preview` also
+  serves a prerendered page only at the slashed address -- without it you get
+  the home page's HTML and what looks like a hydration bug.
+- **Never hide what is already on screen** (item 78). Prerendered content is
+  painted before any script runs, so hiding it to animate it back in blinks.
+  Entrances go through `onArrival`, which leaves anything visible at wake
+  alone. Test entrances at the top level: an IntersectionObserver inside an
+  iframe measures against the top viewport, so nothing ever seems near.
+- **The intro is `html.tt-intro`**, set by the inline script in index.html
+  before the first paint; the cover is in every page but shows only under
+  it, and `introPending()` reads it.

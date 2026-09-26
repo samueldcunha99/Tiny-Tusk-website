@@ -12,6 +12,13 @@ export const CLINIC = {
 } as const
 
 /**
+ * The live address, used where a page must name itself in full: canonical
+ * links, social previews, the sitemap and llms.txt (scripts/prerender.mjs).
+ * `www.` redirects here. public/robots.txt names it too.
+ */
+export const SITE_URL = 'https://tinytuskdental.com'
+
+/**
  * Pre-opening gate. While true, EVERY route renders `<OpeningSoon />` and the
  * rest of the site -- nav, footer, preloader, all twelve sections -- does not
  * mount at all. Set to false on launch day and the full site returns exactly

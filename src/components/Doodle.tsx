@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { BrandArtView } from './BrandArtView'
-import { gsap, ScrollTrigger, EASE, REVEAL_START, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, EASE, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 export type DoodleName =
@@ -82,18 +82,9 @@ export function Doodle({
       return
     }
 
-    const lengths = paths.map((p) => primeDraw(p, false))
-    const draw = () =>
-      gsap.to(paths, {
-        strokeDashoffset: 0,
-        duration,
-        ease: EASE.entrance,
-        stagger,
-        overwrite: true,
-      })
-
     // Controlled mode: rest complete, replay the gesture when `play` is true.
     if (play !== undefined) {
+      const lengths = paths.map((p) => primeDraw(p, false))
       if (play) {
         gsap.fromTo(
           paths,
@@ -119,15 +110,23 @@ export function Doodle({
       return
     }
 
-    const st = ScrollTrigger.create({
-      trigger: svg,
-      start: REVEAL_START,
-      once: true,
-      onEnter: draw,
-    })
+    // Art already on screen as the page wakes stays drawn (`onArrival`).
+    const stop = onArrival(
+      svg,
+      () => paths.forEach((p) => primeDraw(p, false)),
+      () =>
+        gsap.to(paths, {
+          strokeDashoffset: 0,
+          duration,
+          ease: EASE.entrance,
+          stagger,
+          overwrite: true,
+        }),
+    )
     return () => {
-      st.kill()
+      stop()
       gsap.killTweensOf(paths)
+      paths.forEach((p) => primeDraw(p, true))
     }
   }, [art, drawOnScroll, duration, play, reduced, stagger])
 

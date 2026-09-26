@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { SectionMarker } from '@/components/SectionMarker'
-import { StylisedCTA } from '@/components/StylisedCTA'
 import { TextOnPath } from '@/components/TextOnPath'
 import { DR_NUPUR } from '@/content/team'
 import { useSectionMeta } from '@/content/sectionOrder'
@@ -127,13 +126,9 @@ export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
                   </li>
                 ))}
               </ul>
-              {/* Powder, not canary: a canary button would vanish into the ground. */}
-              <div className="-m-4 mt-8 p-4">
-                <StylisedCTA lead="Book" rest="a visit with Dr. Nupur" href="/book" fill="powder" />
-              </div>
             </>
           ) : (
-            <a href="/dr-nupur" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+            <a href="/dr-nupur/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
               <span className="underline decoration-2 underline-offset-[6px]">More about Dr. Nupur</span>
               <span className="block w-5" aria-hidden="true">
                 <Doodle name="markArrow" tone="cobalt" />

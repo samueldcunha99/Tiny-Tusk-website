@@ -22,7 +22,9 @@ export function SectionNumber({
       className={['flex items-center gap-3 font-sans text-xs uppercase', className]
         .filter(Boolean)
         .join(' ')}
-      style={{ color: colourVar(tone), letterSpacing: '0.18em', opacity: 0.85 }}
+      // Full strength: at 85% opacity cobalt on powder fell to 3.78:1, under
+      // the 4.5:1 this 12px label needs (full cobalt is 4.92:1).
+      style={{ color: colourVar(tone), letterSpacing: '0.18em' }}
     >
       <span aria-hidden="true" style={{ fontWeight: 600 }}>
         {number}

@@ -269,6 +269,29 @@ then in :root below:
     to { transform: translateX(-50%); }
   }
 
+  /* The first-visit cover (Preloader.tsx) is in every prerendered page but
+     shows only once the inline script in index.html has marked a first visit
+     with `html.tt-intro`. It arrives in the pose its timeline starts from --
+     the mark alone, the name lowered -- so nothing shows finished and then
+     resets. If the page's script never arrives, the cover steps aside after
+     8s rather than hide a readable page; the Preloader cancels this. */
+  html.tt-intro .tt-intro-cover {
+    display: flex;
+    animation: tt-cover-release 0.01s 8s forwards;
+  }
+
+  html.tt-intro .tt-intro-cover .tt-sweep {
+    --sweep: 0deg;
+  }
+
+  html.tt-intro .tt-intro-cover [data-rise] {
+    transform: translateY(110%);
+  }
+
+  @keyframes tt-cover-release {
+    to { visibility: hidden; }
+  }
+
   /* --------------------------------------------------------------------
      THE HOLDING SCREEN'S ARRIVAL (see sections/OpeningSoon.tsx)
 

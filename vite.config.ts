@@ -18,6 +18,9 @@ export default defineConfig(({ isSsrBuild }) => ({
   build: {
     target: 'es2020',
     cssCodeSplit: true,
+    // The prerender pass reads it to preload the lazy site chunk, then deletes
+    // it so it is not published.
+    manifest: !isSsrBuild,
     rollupOptions: {
       // The prerender pass externalises its dependencies, so splitting them
       // into vendor chunks is both pointless and a hard rollup error there.

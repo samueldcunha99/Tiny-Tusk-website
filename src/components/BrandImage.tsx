@@ -5,6 +5,9 @@ import type { BrandColour } from '@/design/pairings'
 
 export interface BrandImageProps {
   webp?: string | undefined
+  /** Smaller WebP copies with their widths, plus `sizes`, so the browser can pick. */
+  webpSrcSet?: string | undefined
+  sizes?: string | undefined
   png?: string | undefined
   /** A branded portrait field used until approved photography is supplied. */
   placeholder?: boolean | undefined
@@ -34,6 +37,8 @@ export interface BrandImageProps {
  */
 export function BrandImage({
   webp,
+  webpSrcSet,
+  sizes,
   png,
   placeholder = false,
   alt,
@@ -51,7 +56,7 @@ export function BrandImage({
     <figure className={['relative overflow-hidden rounded-[1.5rem] bg-powder', className].filter(Boolean).join(' ')}>
       {webp && png ? (
         <picture className="block h-full w-full">
-          <source srcSet={webp} type="image/webp" />
+          <source srcSet={webpSrcSet ?? webp} sizes={sizes} type="image/webp" />
           <img
             src={png}
             alt={alt}

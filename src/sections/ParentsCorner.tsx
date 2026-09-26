@@ -1,12 +1,12 @@
 import { Fragment, useRef, type ReactNode } from 'react'
 import { ArticleImage } from '@/components/ArticleImage'
 import { Circled } from '@/components/Circled'
-import { Doodle, type DoodleName } from '@/components/Doodle'
+import { Doodle } from '@/components/Doodle'
 import { EllipseTitle } from '@/components/EllipseTitle'
 import { SectionMarker } from '@/components/SectionMarker'
 import { SmileEdge } from '@/components/SmileEdge'
 import { colourVar } from '@/components/BrandArtView'
-import { PARENT_ARTICLES, type ParentArticle } from '@/content/parents'
+import { PARENT_ARTICLES, POST_ART, type ParentArticle } from '@/content/parents'
 import { useSectionMeta } from '@/content/sectionOrder'
 import { useReveal } from '@/lib/motion'
 import { BookingClose } from './BookingClose'
@@ -14,18 +14,16 @@ import { BookingClose } from './BookingClose'
 /** The home page shows the clinic's first four questions; all seven are one tap on. */
 const HOME_POSTS = PARENT_ARTICLES.slice(0, 4)
 
-/**
- * One brand illustration per post: the sticker on its home-page bubble, and
- * the cover on `/parents-corner` of a post that has no photograph yet.
- */
-const POST_ART: Record<string, DoodleName> = {
-  'baby-teeth-cavities': 'journeyDetection',
-  'first-dental-visit': 'doodleFace',
-  'thumb-sucking-and-pacifiers': 'doodleHeart',
-  'early-signs-of-decay': 'doodleToothbrush',
-  'inside-tiny-tusk': 'journeyLogo',
-  'choosing-a-pediatric-dentist': 'journeySmile',
-  'fluoride-varnish': 'doodleToothpaste',
+/** The way on to every post, under a row of bubbles. */
+export function AllQuestionsLink() {
+  return (
+    <a href="/parents-corner/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+      <span className="underline decoration-2 underline-offset-[6px]">All seven questions</span>
+      <span className="block w-5" aria-hidden="true">
+        <Doodle name="markArrow" tone="cobalt" />
+      </span>
+    </a>
+  )
 }
 
 /**
@@ -48,15 +46,6 @@ function ParentsStrip() {
   const meta = useSectionMeta('parents')
   useReveal(ref)
 
-  const allLink = (
-    <a href="/parents-corner" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
-      <span className="underline decoration-2 underline-offset-[6px]">All seven questions</span>
-      <span className="block w-5" aria-hidden="true">
-        <Doodle name="markArrow" tone="cobalt" />
-      </span>
-    </a>
-  )
-
   return (
     <section
       id="parents"
@@ -76,27 +65,45 @@ function ParentsStrip() {
             The questions that come up at the <Circled tone="cobalt">sink</Circled>
           </h2>
         </div>
-        <div className="hidden lg:block">{allLink}</div>
+        <div className="hidden lg:block">
+          <AllQuestionsLink />
+        </div>
       </div>
 
-      {/* The swipe row clips at its padding edge, so `pt-6` and `pb-10` hold
-          the stickers above and the wave below inside it. */}
-      <ul
-        aria-label="Parents' Corner posts"
-        className="tt-swipe relative mt-4 list-none gap-5 px-6 pb-8 pt-6 [scroll-padding-inline:1.5rem] md:mt-6 md:px-10 lg:mx-auto lg:grid lg:max-w-[1400px] lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-10"
-      >
-        {HOME_POSTS.map((post, index) => (
-          <li
-            key={post.id}
-            className={['w-[82%] md:w-[46%] lg:w-auto', index % 2 === 1 ? 'translate-y-6 lg:translate-y-10' : ''].join(' ')}
-          >
-            <QuestionBubble post={post} fill={index % 2 === 0 ? 'canary' : 'cobalt'} />
-          </li>
-        ))}
-      </ul>
+      <QuestionBubbles posts={HOME_POSTS} label="Parents' Corner posts" />
 
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 lg:hidden">{allLink}</div>
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 lg:hidden">
+        <AllQuestionsLink />
+      </div>
     </section>
+  )
+}
+
+/**
+ * The bubbles as a row, canary and cobalt in turn, every second one a step
+ * lower: a row that swipes on a phone, one line across on desktop. The home
+ * strip shows the first four; a post's "read next" shows three others.
+ */
+export function QuestionBubbles({ posts, label }: { posts: readonly ParentArticle[]; label: string }) {
+  return (
+    // The swipe row clips at its padding edge, so `pt-6` and `pb-10` hold the
+    // stickers above and the wave below inside it.
+    <ul
+      aria-label={label}
+      className={[
+        'tt-swipe relative mt-4 list-none gap-5 px-6 pb-8 pt-6 [scroll-padding-inline:1.5rem] md:mt-6 md:px-10 lg:mx-auto lg:grid lg:max-w-[1400px] lg:gap-6 lg:overflow-visible lg:pb-10',
+        posts.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4',
+      ].join(' ')}
+    >
+      {posts.map((post, index) => (
+        <li
+          key={post.id}
+          className={['w-[82%] md:w-[46%] lg:w-auto', index % 2 === 1 ? 'translate-y-6 lg:translate-y-10' : ''].join(' ')}
+        >
+          <QuestionBubble post={post} fill={index % 2 === 0 ? 'canary' : 'cobalt'} />
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -104,11 +111,11 @@ function ParentsStrip() {
  * One question in its bubble. The sticker draws itself in as the row arrives;
  * on hover or focus the bubble tips a little, a transform only.
  */
-function QuestionBubble({ post, fill }: { post: (typeof HOME_POSTS)[number]; fill: 'canary' | 'cobalt' }) {
+function QuestionBubble({ post, fill }: { post: ParentArticle; fill: 'canary' | 'cobalt' }) {
   const ink = fill === 'canary' ? 'text-cobalt' : 'text-canary'
   return (
     <a
-      href={`/parents-corner/${post.id}`}
+      href={`/parents-corner/${post.id}/`}
       className="relative block transition-transform duration-300 ease-entrance hover:-rotate-2 focus-visible:-rotate-2 active:scale-[0.97]"
     >
       <EllipseTitle fill={fill} className="grid min-h-[14.5rem] place-items-center px-11 py-10 text-center">
@@ -257,7 +264,7 @@ function Post({ post, dark, spread, lower }: { post: ParentArticle; dark: boolea
   return (
     <article className={['relative', spread ? 'md:col-span-2' : '', lower ? 'md:mt-16' : ''].join(' ')}>
       <a
-        href={`/parents-corner/${post.id}`}
+        href={`/parents-corner/${post.id}/`}
         className={['group block', spread ? 'md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16' : ''].join(' ')}
       >
         <PostCover post={post} />

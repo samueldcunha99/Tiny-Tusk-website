@@ -52,7 +52,7 @@ export function Home() {
   return (
     <SectionOrder ids={HOME_ORDER}>
       <Hero />
-      <SmileEdge from="powder" />
+      <SmileEdge from="coral" />
       <Team />
       <SmileEdge from="canary" />
       <Journey />

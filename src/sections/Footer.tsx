@@ -5,8 +5,8 @@ import { Wordmark } from '@/components/Logo'
 import { CLINIC, CLINIC_ADDRESS, CLINIC_PHONE, MAP_DIRECTIONS_HREF, SECTIONS } from '@/content/site'
 
 const SECTION_ROUTES: Record<string, string> = {
-  journey: '/journey', team: '/dr-nupur', services: '/services', clinic: '/inside-clinic',
-  'brush-timer': '/games', parents: '/parents-corner', voices: '/#voices', faq: '/faq', book: '/book',
+  journey: '/journey/', team: '/dr-nupur/', services: '/services/', clinic: '/inside-clinic/',
+  'brush-timer': '/games/', parents: '/parents-corner/', voices: '/#voices', faq: '/faq/', book: '/book/',
 }
 
 /**
@@ -27,13 +27,15 @@ export function Footer() {
       {/* Two identical halves: the track slides by exactly one half, so the
           loop never jumps. 90s keeps it to an unhurried ~25px a second.
           Decorative -- the roundel carries the tagline for assistive tech --
-          and it stands still under reduced motion. */}
+          and it stands still under reduced motion. White, not canary: canary
+          on the cobalt-80 band is 3.9:1, under the 4.5:1 its size needs;
+          white is 4.88:1. */}
       <div aria-hidden="true" className="overflow-hidden border-b border-white/15 bg-cobalt-80 py-3.5">
         <div className="tt-marquee-track flex w-max [animation-duration:90s]">
           {[0, 1].map((half) => (
             <div
               key={half}
-              className="flex flex-none gap-9 pr-9 font-display text-[1.05rem] uppercase tracking-[0.14em] text-canary [white-space:nowrap]"
+              className="flex flex-none gap-9 pr-9 font-display text-[1.05rem] uppercase tracking-[0.14em] text-white [white-space:nowrap]"
             >
               {[0, 1, 2].map((i) => (
                 <span key={i} className="flex gap-9">
@@ -82,7 +84,7 @@ export function Footer() {
             Email and opening hours will appear here once they have been confirmed by the clinic.
           </p>
           <div className="-m-4 p-4">
-            <StylisedCTA lead="Book" rest="a visit" href="/book" fill="canary" />
+            <StylisedCTA lead="Book" rest="a visit" href="/book/" fill="canary" />
           </div>
         </div>
 
@@ -119,12 +121,14 @@ export function Footer() {
               {section.label}
             </a>
           ))}
-          <a href="/laughing-gas" className="inline-flex min-h-11 items-center font-sans text-[0.92rem] font-semibold text-white">
+          <a href="/laughing-gas/" className="inline-flex min-h-11 items-center font-sans text-[0.92rem] font-semibold text-white">
             Laughing Gas
           </a>
         </nav>
         <div className="mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-white/20 pt-5 text-center font-sans text-[0.8rem] text-white/70">
-          <p>
+          {/* The year is the build's in the prerendered page and the visitor's
+              once hydrated; across a new year the two differ, harmlessly. */}
+          <p suppressHydrationWarning>
             © {year} {CLINIC.fullName}. All rights reserved.
           </p>
           <p>Concept visuals and photography pending client clearance.</p>

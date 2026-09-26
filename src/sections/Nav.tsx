@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Logo } from '@/components/Logo'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { gsap, EASE, STAGGER, usePrefersReducedMotion } from '@/lib/motion'
-import { useIsMobile } from '@/lib/viewport'
+import { currentPath as readPath } from '@/lib/location'
 import { CLINIC, CLINIC_PHONE } from '@/content/site'
 
 /**
@@ -10,14 +10,14 @@ import { CLINIC, CLINIC_PHONE } from '@/content/site'
  * list small makes the navigation useful rather than a contents page.
  */
 const LINKS = [
-  { href: '/journey', label: 'How a visit goes' },
-  { href: '/services', label: 'Services' },
-  { href: '/laughing-gas', label: 'Laughing Gas' },
-  { href: '/inside-clinic', label: 'Inside clinic' },
-  { href: '/dr-nupur', label: 'Meet Dr. Nupur' },
-  { href: '/games', label: 'Games for Kids' },
-  { href: '/parents-corner', label: "Parents' Corner" },
-  { href: '/faq', label: 'FAQs' },
+  { href: '/journey/', label: 'How a visit goes' },
+  { href: '/services/', label: 'Services' },
+  { href: '/laughing-gas/', label: 'Laughing Gas' },
+  { href: '/inside-clinic/', label: 'Inside clinic' },
+  { href: '/dr-nupur/', label: 'Meet Dr. Nupur' },
+  { href: '/games/', label: 'Games for Kids' },
+  { href: '/parents-corner/', label: "Parents' Corner" },
+  { href: '/faq/', label: 'FAQs' },
 ] as const
 
 export function Nav() {
@@ -25,14 +25,17 @@ export function Nav() {
   const [pageProgress, setPageProgress] = useState(0)
   const panelRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
-  const isMobile = useIsMobile()
-  const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
+  const currentPath = readPath()
   // `condensed`, `navVisible` and `needsTopNavSurface` all lived here to decide
   // which surface the bar took and whether it was on screen at all. A permanent
   // white rectangle answers every one of those questions the same way, so the
   // state, the media query and the /games and /brush-timer special case are gone.
-  const isCurrent = (href: string) =>
-    currentPath === href || (currentPath === '/brush-timer' && href === '/games')
+  // Links carry the trailing slash Netlify serves each page at (a bare path is
+  // a 301 away); the current path is read without it.
+  const isCurrent = (href: string) => {
+    const path = href.replace(/\/$/, '')
+    return currentPath === path || (currentPath === '/brush-timer' && path === '/games')
+  }
 
   // Scroll only drives the progress line now. The bar does not hide on the way
   // down, does not condense and does not swap surface -- it is one white
@@ -48,9 +51,14 @@ export function Nav() {
       )
     }
 
-    onScroll()
+    // A frame later, not at once: reading the page height mid-hydration makes
+    // the browser lay the whole page out on the spot.
+    const first = requestAnimationFrame(onScroll)
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      cancelAnimationFrame(first)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   // Lock the page and trap focus while the mobile panel is open.
@@ -114,14 +122,18 @@ export function Nav() {
           className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-0 md:px-10 md:py-2"
         >
         {/* p8: the mark's default placement is top-left. */}
-        <a id="nav-logo" href="/" className="flex items-center gap-3" aria-label={`${CLINIC.name} home`}>
-          <Logo
-            size={isMobile ? 44 : 64}
-            allowBelowMinimum={isMobile}
-            tone="cobalt"
-            title={`${CLINIC.name} logo`}
-          />
-          <span className="sr-only">{CLINIC.fullName}</span>
+        {/* Two marks, one per side of `md`, switched by CSS rather than by a
+            media query in script: the page arrives as prerendered HTML, and a
+            size chosen in script would load at 64px on a phone and then jump.
+            The link is named by its own text, so the marks are decorative. */}
+        <a id="nav-logo" href="/" className="flex items-center gap-3">
+          <span className="md:hidden">
+            <Logo size={44} allowBelowMinimum tone="cobalt" />
+          </span>
+          <span className="hidden md:block">
+            <Logo size={64} tone="cobalt" />
+          </span>
+          <span className="sr-only">{CLINIC.fullName}, home</span>
         </a>
 
         {/* The old `pr` here pulled the cluster in off the right edge, back
@@ -174,7 +186,7 @@ export function Nav() {
             onto its own row. Both sets live here and hide themselves. */}
         <div className="flex items-center justify-end gap-4">
           <a
-            href="/book"
+            href="/book/"
             aria-current={currentPath === '/book' ? 'page' : undefined}
             className={[
               'hidden whitespace-nowrap rounded-full bg-cobalt px-5 py-2.5 font-sans text-[0.95rem] text-white transition-opacity hover:opacity-90 min-[1360px]:inline-block',
@@ -327,7 +339,7 @@ export function Nav() {
               filled row do it instead. */}
           <li data-nav-item className="mx-1 mt-2 border-t border-white/70 pt-2.5">
             <a
-              href="/book"
+              href="/book/"
               aria-current={currentPath === '/book' ? 'page' : undefined}
               onClick={() => setOpen(false)}
               className={[

@@ -76,7 +76,9 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
   useReveal(ref)
 
   // Measure where the glyphs sit, and re-measure whenever the list reflows
-  // (font load, rotation, a resize) so the thread always meets them.
+  // (font load, rotation, a resize) so the thread always meets them. The
+  // observer's own first report is the first measurement: it comes after the
+  // browser has laid the page out, so reading positions then forces nothing.
   useIsoLayoutEffect(() => {
     const list = listRef.current
     if (!list) return
@@ -90,7 +92,6 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
       )
       setThread(threadPath(anchors))
     }
-    measure()
     const observer = new ResizeObserver(measure)
     observer.observe(list)
     return () => observer.disconnect()
@@ -264,7 +265,7 @@ export function Journey({ asPage = false }: { asPage?: boolean | undefined }) {
 
         {asPage ? (
           <div className="-m-4 p-4 lg:col-start-2">
-            <StylisedCTA lead="Book" rest="a first visit" href="/book" fill="canary" />
+            <StylisedCTA lead="Book" rest="a first visit" href="/book/" fill="canary" />
           </div>
         ) : null}
       </div>

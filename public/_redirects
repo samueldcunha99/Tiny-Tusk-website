@@ -1,1 +1,7 @@
-/*  /index.html  200
+# No catch-all. Every page is prerendered to its own HTML file
+# (scripts/prerender.mjs), and Netlify serves dist/404.html, the prerendered
+# not-found page, with a real 404 for any other path.
+#
+# The single-page-app rule that used to live here (/* /index.html 200) answered
+# robots.txt, llms.txt and every missing page with the home page's HTML and a
+# 200, which search engines and Lighthouse read as broken files.

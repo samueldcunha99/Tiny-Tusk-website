@@ -124,7 +124,7 @@ function Awaiting() {
           approve, and attribute them exactly as they prefer.
         </p>
         <div className="-m-4 mt-5 p-4">
-          <StylisedCTA lead="Be" rest="one of the first families" href="/book" fill="canary" />
+          <StylisedCTA lead="Be" rest="one of the first families" href="/book/" fill="canary" />
         </div>
       </div>
       <ul className="flex list-none flex-col gap-8">

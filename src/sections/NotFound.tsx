@@ -27,10 +27,13 @@ export function NotFound() {
         <div className="relative grid aspect-square w-[clamp(10rem,16vw,14rem)] place-items-center">
           <Roundel tone="cobalt" className="absolute inset-0 h-full w-full" />
         </div>
-        <h1 id="notfound-heading" className="mt-8 font-display text-h1 text-cobalt">
+        <h1
+          id="notfound-heading"
+          className="mt-8 text-balance font-display text-[clamp(2.4rem,10vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-cobalt"
+        >
           This page wandered off
         </h1>
-        <p className="mt-4 max-w-measure font-sans text-body text-cobalt">
+        <p className="mt-5 max-w-[40ch] font-sans text-[1.05rem] leading-[1.6] text-cobalt md:text-[1.15rem]">
           The link you followed does not lead anywhere on our site. Nothing is wrong with your
           appointment. This is just a page that no longer exists.
         </p>

@@ -32,6 +32,18 @@ export function InsideClinic({ asPage = false }: { asPage?: boolean | undefined 
   return <InsideClinicSection />
 }
 
+/**
+ * Each concept at 640, 1024 and its full 1536px (tools/responsive-images.py).
+ * The photographs are 3:2 and cropped to fill their tile, so a square or 4:5
+ * tile needs an image about 1.5 times as wide as the tile is tall -- the
+ * `sizes` below are those widths, measured from the layouts they serve.
+ */
+const conceptSrcSet = (stem: string) =>
+  `/images/${stem}-640.webp 640w, /images/${stem}-1024.webp 1024w, /images/${stem}.webp 1536w`
+const STRIP_SIZES = '(min-width: 1024px) 800px, (min-width: 768px) 62vw, 105vw'
+const GALLERY_SIZES = '(min-width: 1024px) 860px, (min-width: 768px) 49vw, 100vw'
+const GALLERY_WIDE_SIZES = '(min-width: 1024px) 1320px, (min-width: 768px) 90vw, 100vw'
+
 function InsideClinicSection() {
   const ref = useRef<HTMLElement>(null)
   const meta = useSectionMeta('clinic')
@@ -71,11 +83,13 @@ function InsideClinicSection() {
           <li key={concept.id} className={['w-[80%] md:w-[46%] lg:w-auto', index === 1 ? 'lg:mt-16' : ''].join(' ')}>
             <BrandImage
               webp={`/images/${concept.image.stem}.webp`}
+              webpSrcSet={conceptSrcSet(concept.image.stem)}
+              sizes={STRIP_SIZES}
               png={`/images/${concept.image.stem}.png`}
               alt={concept.image.alt}
               width={concept.image.width}
               height={concept.image.height}
-              title={{ ...concept.title, href: '/inside-clinic' }}
+              title={{ ...concept.title, href: '/inside-clinic/' }}
               className="aspect-square w-full lg:aspect-[4/5]"
             />
           </li>
@@ -108,7 +122,7 @@ function InsideClinicSection() {
             ))}
           </ul>
           <div className="mt-10">
-            <a href="/inside-clinic" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+            <a href="/inside-clinic/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
               <span className="underline decoration-2 underline-offset-[6px]">Step inside the clinic</span>
               <span className="block w-5" aria-hidden="true">
                 <Doodle name="markArrow" tone="cobalt" />
@@ -189,11 +203,13 @@ function InsideClinicPage() {
               <li key={concept.id} className={concept.className}>
                 <BrandImage
                   webp={`/images/${concept.image.stem}.webp`}
+                  webpSrcSet={conceptSrcSet(concept.image.stem)}
+                  sizes={index === 2 ? GALLERY_WIDE_SIZES : GALLERY_SIZES}
                   png={`/images/${concept.image.stem}.png`}
                   alt={concept.image.alt}
                   width={concept.image.width}
                   height={concept.image.height}
-                  title={{ ...concept.title, href: '/book' }}
+                  title={{ ...concept.title, href: '/book/' }}
                   eager={index === 0}
                   className="h-full w-full"
                 />
@@ -259,7 +275,7 @@ function InsideClinicPage() {
                 )
               })}
             </ul>
-            <a href="/laughing-gas" className="mt-10 inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+            <a href="/laughing-gas/" className="mt-10 inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
               <span className="underline decoration-2 underline-offset-[6px]">Laughing gas, explained</span>
               <span className="block w-5" aria-hidden="true">
                 <Doodle name="markArrow" tone="cobalt" />

@@ -7,8 +7,10 @@ import { OpeningSoon } from '@/sections/OpeningSoon'
  * it. Static imports here shipped all eighteen sections to every visitor while
  * only the holding screen rendered -- Lighthouse counted 227 KiB of it unused.
  */
-// The prerender entry leaves the root empty for this lazy, browser-routed site.
-// Hydrating renderToString's unfinished Suspense boundary caused React #419.
+// The prerender pass renders this with the streaming renderer, which waits for
+// the chunk, so every page's HTML holds the finished site to hydrate
+// (entry-server.tsx). The prerendered page names the chunk in a modulepreload,
+// so it downloads alongside the entry rather than after it.
 const Site = lazy(() => import('@/Site'))
 
 export default function App() {

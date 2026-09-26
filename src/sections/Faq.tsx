@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
 import { SectionMarker } from '@/components/SectionMarker'
-import { StylisedCTA } from '@/components/StylisedCTA'
 import { FAQS } from '@/content/faq'
 import { CLINIC_PHONE } from '@/content/site'
 import { useSectionMeta } from '@/content/sectionOrder'
@@ -29,7 +28,7 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
       aria-labelledby="faq-heading"
       className={[
         'tt-section relative overflow-hidden bg-powder px-6 text-cobalt md:px-10',
-        asPage ? 'pb-24 pt-24 md:pb-32 md:pt-36' : 'pb-16 pt-10 md:pb-20 md:pt-12',
+        asPage ? 'pb-20 pt-24 md:pb-28 md:pt-36' : 'pb-16 pt-10 md:pb-20 md:pt-12',
       ].join(' ')}
     >
       {/* p32 exactly: a canary toothpaste scaled up into a field on powder,
@@ -66,12 +65,6 @@ export function Faq({ asPage = false }: { asPage?: boolean | undefined }) {
 
         <div className="border-t-2 border-cobalt/20">
           <QuestionRows items={FAQS} ItemHeading={ItemHeading} />
-
-          {asPage ? (
-            <div className="-m-4 mt-10 p-4">
-              <StylisedCTA lead="Book" rest="a visit" href="/book" fill="powder" />
-            </div>
-          ) : null}
         </div>
       </div>
     </section>

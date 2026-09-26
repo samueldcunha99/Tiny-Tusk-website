@@ -15,6 +15,8 @@
  * A path that is not on disk yet degrades to the same tile rather than a
  * broken image, so this file can be correct before the files arrive.
  */
+import type { DoodleName } from '@/components/Doodle'
+
 export type ParentCategory = 'Guides' | 'Routines' | 'Visits' | 'Clinic' | 'Treatments'
 
 export interface ParentSection {
@@ -378,6 +380,20 @@ export const PARENT_ARTICLES: readonly ParentArticle[] = [
     closing: 'Ask us about varnish at your next visit, or book one and we will look at whether it is worth doing now.',
   },
 ] as const
+
+/**
+ * One brand illustration per post: the sticker on its question bubble, and the
+ * cover of a post that has no photograph yet.
+ */
+export const POST_ART: Record<string, DoodleName> = {
+  'baby-teeth-cavities': 'journeyDetection',
+  'first-dental-visit': 'doodleFace',
+  'thumb-sucking-and-pacifiers': 'doodleHeart',
+  'early-signs-of-decay': 'doodleToothbrush',
+  'inside-tiny-tusk': 'journeyLogo',
+  'choosing-a-pediatric-dentist': 'journeySmile',
+  'fluoride-varnish': 'doodleToothpaste',
+}
 
 /** Look an article up by its slug. `undefined` means the route should 404. */
 export function parentArticle(id: string): ParentArticle | undefined {

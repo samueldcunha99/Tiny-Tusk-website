@@ -29,9 +29,14 @@ import {
  *
  * It replaces a hand-set version -- the tagline typed flat in the body face
  * over a separate arc, and the mark flown to a measured nav position.
+ *
+ * Every prerendered page carries the cover, and the server and the browser
+ * render it alike, so hydration matches. It shows only under `html.tt-intro`,
+ * which the inline script in index.html sets before the first paint (see
+ * `introPending`), and it arrives already in its opening pose (index.css).
  */
 export function Preloader() {
-  const [visible, setVisible] = useState(introPending)
+  const [visible, setVisible] = useState(true)
   const rootRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
 
@@ -40,21 +45,35 @@ export function Preloader() {
     setVisible(false)
   }
 
-  // Layout effect: the sweep's start state must be set before the first paint,
-  // or the finished roundel flashes up and then vanishes.
   useIsoLayoutEffect(() => {
     if (!visible) return
     const root = rootRef.current
     if (!root) return
+    if (!introPending()) {
+      setVisible(false)
+      return
+    }
     if (reduced) {
       finish()
       return
     }
+    // The script has arrived, so the cover's no-script escape (index.css) is
+    // not needed.
+    root.style.animation = 'none'
     const ctx = gsap.context(() => {
       gsap
         .timeline({ onComplete: finish })
         .fromTo('[data-sweep]', { '--sweep': '0deg' }, { '--sweep': '360deg', duration: 1.1, ease: EASE.transform })
-        .from('[data-rise]', { yPercent: 110, duration: 0.7, ease: EASE.entrance, stagger: STAGGER }, 0.6)
+        // `fromTo`, not `from`: the name arrives already lowered. `y: 0` on
+        // both ends is load-bearing: GSAP reads that CSS lowering as a pixel
+        // `y` and would keep it under the `yPercent` it animates, so the name
+        // finished its rise still out of sight.
+        .fromTo(
+          '[data-rise]',
+          { y: 0, yPercent: 110 },
+          { y: 0, yPercent: 0, duration: 0.7, ease: EASE.entrance, stagger: STAGGER },
+          0.6,
+        )
         // Past -100% so the smile hanging under the cover clears the top too.
         .to(root, { yPercent: -120, duration: 0.75, ease: EASE.transform }, 1.9)
     }, root)
@@ -65,7 +84,7 @@ export function Preloader() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cobalt px-6"
+      className="tt-intro-cover fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-cobalt px-6"
       data-surface="cobalt"
     >
       <div data-sweep className="tt-sweep w-[clamp(12rem,56vw,17rem)]">

@@ -26,3 +26,17 @@ export function SmileEdge({ from }: { from: BrandColour }) {
     </div>
   )
 }
+
+/**
+ * The last handover on a page that ends on a light ground, into the cobalt
+ * footer. The footer opens on its tagline ribbon, so the smile dips into a
+ * short run of cobalt first instead of across the ribbon's words.
+ */
+export function SmileIntoFooter({ from }: { from: BrandColour }) {
+  return (
+    <>
+      <SmileEdge from={from} />
+      <div aria-hidden="true" className="h-[clamp(2.5rem,9vw,5.5rem)] bg-cobalt" />
+    </>
+  )
+}

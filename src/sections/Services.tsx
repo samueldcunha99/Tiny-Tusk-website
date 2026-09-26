@@ -1,23 +1,13 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { colourVar } from '@/components/BrandArtView'
 import { Doodle } from '@/components/Doodle'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionMarker } from '@/components/SectionMarker'
 import { ServiceIcon } from '@/components/ServiceIcon'
-import { StylisedCTA } from '@/components/StylisedCTA'
 import { TREATMENTS } from '@/content/treatments'
 import { TREATMENT_CATEGORIES, TREATMENT_HREF } from '@/content/treatmentCategories'
 import { useSectionMeta } from '@/content/sectionOrder'
-import {
-  EASE,
-  REVEAL_START,
-  STAGGER,
-  gsap,
-  primeDraw,
-  useIsoLayoutEffect,
-  usePrefersReducedMotion,
-  useReveal,
-} from '@/lib/motion'
+import { EASE, STAGGER, gsap, onArrival, primeDraw, usePrefersReducedMotion, useReveal } from '@/lib/motion'
 
 const LABEL_OF = new Map(TREATMENTS.map((t) => [t.slug, t.label]))
 
@@ -99,7 +89,7 @@ if (import.meta.env.DEV) {
   if (unknown.length) console.error('[services] home slug not in treatments.ts:', unknown)
 }
 
-const hrefFor = (slug: string) => TREATMENT_HREF[slug] ?? `/services#${CATEGORY_ID_OF.get(slug) ?? ''}`
+const hrefFor = (slug: string) => TREATMENT_HREF[slug] ?? `/services/#${CATEGORY_ID_OF.get(slug) ?? ''}`
 
 /**
  * What we look after -- the canary plate, the one canary chapter on the home
@@ -127,7 +117,7 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
       aria-labelledby="services-heading"
       className={[
         'tt-section relative overflow-hidden bg-canary text-cobalt',
-        asPage ? 'pb-24 pt-24 md:pb-32 md:pt-36' : 'pb-16 pt-20 md:pb-20 md:pt-28',
+        asPage ? 'pb-20 pt-24 md:pb-28 md:pt-36' : 'pb-16 pt-20 md:pb-20 md:pt-28',
       ].join(' ')}
     >
       {/* Low-contrast register on canary, p25: a white loop. */}
@@ -177,28 +167,36 @@ function ServiceStrip() {
   const listRef = useRef<HTMLUListElement>(null)
   const reduced = usePrefersReducedMotion()
 
-  useIsoLayoutEffect(() => {
+  useEffect(() => {
     const list = listRef.current
     if (!list || reduced) return
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: list, start: REVEAL_START, once: true } })
-      list.querySelectorAll<SVGCircleElement>('[data-disc]').forEach((disc, i) => {
-        primeDraw(disc, false)
-        tl.to(
-          disc,
-          {
-            strokeDashoffset: 0,
-            duration: 0.7,
-            ease: EASE.entrance,
-            // A dashed stroke leaves a hairline where its two ends meet, so a
-            // disc that has landed drops the dash and closes up.
-            onComplete: () => primeDraw(disc, true),
-          },
-          i * STAGGER,
-        )
-      })
-    }, list)
-    return () => ctx.revert()
+    const discs = Array.from(list.querySelectorAll<SVGCircleElement>('[data-disc]'))
+    const wipe = gsap.timeline({ paused: true })
+    const stop = onArrival(
+      list,
+      () =>
+        discs.forEach((disc, i) => {
+          primeDraw(disc, false)
+          wipe.to(
+            disc,
+            {
+              strokeDashoffset: 0,
+              duration: 0.7,
+              ease: EASE.entrance,
+              // A dashed stroke leaves a hairline where its two ends meet, so
+              // a disc that has landed drops the dash and closes up.
+              onComplete: () => primeDraw(disc, true),
+            },
+            i * STAGGER,
+          )
+        }),
+      () => wipe.play(),
+    )
+    return () => {
+      stop()
+      wipe.kill()
+      discs.forEach((disc) => primeDraw(disc, true))
+    }
   }, [reduced])
 
   return (
@@ -228,13 +226,13 @@ function ServiceStrip() {
       </ul>
 
       <div className="relative mx-auto mt-8 flex max-w-[1400px] flex-col items-start gap-1 px-6 md:mt-12 md:flex-row md:gap-10 md:px-10">
-        <a href="/services" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+        <a href="/services/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
           <span className="underline decoration-2 underline-offset-[6px]">All sixteen treatments</span>
           <span className="block w-5" aria-hidden="true">
             <Doodle name="markArrow" tone="cobalt" />
           </span>
         </a>
-        <a href="/laughing-gas" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
+        <a href="/laughing-gas/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
           <span className="underline decoration-2 underline-offset-[6px]">Laughing gas, explained</span>
           <span className="block w-5" aria-hidden="true">
             <Doodle name="markArrow" tone="cobalt" />
@@ -287,16 +285,6 @@ function ServiceIndex() {
             </ul>
           </section>
         ))}
-      </div>
-
-      <p className="mt-20 max-w-[20ch] font-display text-[clamp(2rem,8vw,3rem)] font-semibold leading-[1.05]">
-        Not sure which one you need?
-      </p>
-      <p className="mt-3 max-w-[40ch] font-sans text-[1.05rem] leading-[1.6]">
-        Tell us what you have noticed and we will work it out together.
-      </p>
-      <div className="-m-4 mt-4 p-4">
-        <StylisedCTA lead="Book" rest="a visit" href="/book" fill="powder" />
       </div>
     </div>
   )

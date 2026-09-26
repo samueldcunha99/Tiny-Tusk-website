@@ -47,7 +47,7 @@ export function MapEmbed({ className }: { className: string }) {
       <div
         ref={holder}
         aria-hidden="true"
-        className={`${className} flex items-center justify-center bg-cobalt-80 font-sans text-[0.8125rem] text-canary/80`}
+        className={`${className} flex items-center justify-center bg-cobalt-80 font-sans text-[0.8125rem] text-white`}
       >
         {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
       </div>

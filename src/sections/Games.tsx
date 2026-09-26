@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Doodle } from '@/components/Doodle'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
+import { SectionMarker } from '@/components/SectionMarker'
 import { SmileEdge } from '@/components/SmileEdge'
 import { GAMES_PAGE } from '@/content/games'
 import { useReveal } from '@/lib/motion'
@@ -32,7 +33,7 @@ export function Games() {
           className="pointer-events-none absolute -right-[38%] top-[10%] w-[100%] max-w-none md:-right-[8%] md:w-[36%]"
         />
         <div className="relative mx-auto max-w-[1200px]">
-          <p className="font-sans text-[0.78rem] font-semibold uppercase tracking-[0.22em]">{GAMES_PAGE.eyebrow}</p>
+          <SectionMarker label={GAMES_PAGE.eyebrow} />
           <h1 id="games-heading" data-reveal className="mt-5 font-display text-[clamp(3rem,13vw,6rem)] leading-[0.98] tracking-[-0.03em]">
             <MixedWeightLabel lead={GAMES_PAGE.title.lead} rest={GAMES_PAGE.title.rest} display />
           </h1>

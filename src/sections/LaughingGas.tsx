@@ -165,7 +165,7 @@ function Welcome() {
             whichever room your child is seen in, and it is never wheeled in as an exception.
           </p>
           <div className="-m-4 mt-4 flex flex-col items-start gap-1 p-4 sm:flex-row sm:items-center sm:gap-8">
-            <StylisedCTA lead="Book" rest="a calm visit" href="/book" fill="canary" />
+            <StylisedCTA lead="Book" rest="a calm visit" href="/book/" fill="canary" />
             <a href="#dossier" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
               <span className="underline decoration-2 underline-offset-[6px]">What it is, plainly</span>
               <span className="block w-5 rotate-90" aria-hidden="true">

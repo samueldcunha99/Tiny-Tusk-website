@@ -74,7 +74,7 @@ export function BookingClose({
           {line}
         </p>
         <div className="-m-4 mt-5 flex flex-col items-start gap-2 p-4 md:flex-row md:items-center md:gap-10">
-          <StylisedCTA lead="Request" rest="an appointment" href="/book" fill="canary" size="lg" />
+          <StylisedCTA lead="Request" rest="an appointment" href="/book/" fill="canary" size="lg" />
           <a
             href={CLINIC_PHONE.href}
             className="inline-flex min-h-11 items-center font-sans text-[1rem] font-semibold text-canary underline decoration-2 underline-offset-[6px]"

@@ -39,12 +39,16 @@ export function ArticleImage({
     )
   }
 
+  // Cropped from the bottom: every photograph's subject is a mouth, low in the
+  // frame, and a centred crop cut the thumb out of the thumb-sucking post.
+  // ponytail: one anchor for all; give `image` a focal point if a photo ever
+  // needs another.
   return (
     <img
       src={image.src}
       alt={image.alt}
       onError={() => setFailed(true)}
-      className={`w-full object-cover ${className}`}
+      className={`w-full object-cover object-bottom ${className}`}
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
     />

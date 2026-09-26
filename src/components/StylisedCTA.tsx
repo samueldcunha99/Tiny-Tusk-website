@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { colourVar } from './BrandArtView'
 import { MixedWeightLabel } from './MixedWeightLabel'
-import { gsap, ScrollTrigger, EASE, REVEAL_START, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, EASE, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 type Fill = 'canary' | 'powder' | 'coral'
@@ -92,19 +92,22 @@ export function StylisedCTA({
     if (!root || !outline || reduced) return
 
     // The outline sketches itself in once, as the button reaches the reveal
-    // line -- on a phone, with no hover, that is the gesture's only showing.
-    const length = primeDraw(outline, false)
-    const arrival = ScrollTrigger.create({
-      trigger: root,
-      start: REVEAL_START,
-      once: true,
-      onEnter: () => gsap.to(outline, { strokeDashoffset: 0, duration: 0.9, ease: EASE.entrance }),
-    })
+    // line -- on a phone, with no hover, that is the gesture's only showing. A
+    // button already on screen as the page wakes keeps its outline
+    // (`onArrival`).
+    const stopArrival = onArrival(
+      root,
+      () => primeDraw(outline, false),
+      () => gsap.to(outline, { strokeDashoffset: 0, duration: 0.9, ease: EASE.entrance }),
+    )
 
+    // Measured on the first hover rather than at load: taking a path's length
+    // makes the browser lay the page out.
     const redraw = () => {
+      const length = outline.getTotalLength()
       gsap.fromTo(
         outline,
-        { strokeDashoffset: length },
+        { strokeDasharray: length, strokeDashoffset: length },
         { strokeDashoffset: 0, duration: 0.55, ease: EASE.entrance, overwrite: true },
       )
     }
@@ -128,7 +131,7 @@ export function StylisedCTA({
     root.addEventListener('pointerleave', onLeave)
     root.addEventListener('focus', redraw)
     return () => {
-      arrival.kill()
+      stopArrival()
       root.removeEventListener('pointerenter', redraw)
       root.removeEventListener('pointermove', onMove)
       root.removeEventListener('pointerleave', onLeave)

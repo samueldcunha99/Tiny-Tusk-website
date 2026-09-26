@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- First page of the session, with motion allowed: show the intro cover
+         (Preloader.tsx) from the very first paint. The key must match INTRO_KEY
+         in src/lib/motion.ts. -->
+    <script>
+      try {
+        if (
+          sessionStorage.getItem('tiny-tusk-preloader-seen') !== 'yes' &&
+          !matchMedia('(prefers-reduced-motion: reduce)').matches
+        )
+          document.documentElement.classList.add('tt-intro')
+      } catch (e) {}
+    </script>
     <title>Tiny Tusk Pediatric Dental Clinic</title>
     <meta
       name="description"
@@ -29,7 +41,9 @@
     <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <link rel="preconnect" href="/" />
+    <!-- All three faces set text in the first screen ("Welcome to" is the
+         condensed 400), so all three are fetched with the page rather than
+         found later in the stylesheet. -->
     <link
       rel="preload"
       href="/fonts/montserrat-100-900.woff2"
@@ -40,6 +54,13 @@
     <link
       rel="preload"
       href="/fonts/encode-sans-condensed-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/encode-sans-condensed-400.woff2"
       as="font"
       type="font/woff2"
       crossorigin

@@ -81,7 +81,7 @@ export const CATEGORY_OF: Record<string, string> = Object.fromEntries(
 
 /** Treatments that have earned a page of their own. */
 export const TREATMENT_HREF: Record<string, string> = {
-  'laughing-gas': '/laughing-gas',
+  'laughing-gas': '/laughing-gas/',
 }
 
 /**

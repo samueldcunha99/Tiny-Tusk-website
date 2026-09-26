@@ -15,9 +15,12 @@ import { parentArticle } from '@/content/parents'
 import { NOT_FOUND_HEAD, ROUTE_HEADS, articleHead, type StaticPath } from '@/content/routes'
 import { Faq } from '@/sections/Faq'
 import { Booking } from '@/sections/Booking'
+import { BookingClose } from '@/sections/BookingClose'
+import { SmileEdge, SmileIntoFooter } from '@/components/SmileEdge'
 import { Footer } from '@/sections/Footer'
 import { NotFound } from '@/sections/NotFound'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+import { currentPath } from '@/lib/location'
 
 /**
  * The full site, behind the pre-opening gate in `App.tsx`.
@@ -47,11 +50,35 @@ function PageRoute({
   )
 }
 
-/** What each static path renders. Titles and descriptions live in `content/routes.ts`. */
+/**
+ * What each static path renders. Titles and descriptions live in `content/routes.ts`.
+ *
+ * A page that ends on a light ground closes on the home page's cobalt booking
+ * chapter, so every route runs into the cobalt footer the same way.
+ */
 const PAGES: Record<StaticPath, () => ReactNode> = {
   '/': () => <Home />,
-  '/dr-nupur': () => <Team asPage />,
-  '/services': () => <Services asPage />,
+  '/dr-nupur': () => (
+    <>
+      <Team asPage />
+      <SmileEdge from="canary" />
+      <BookingClose />
+    </>
+  ),
+  '/services': () => (
+    <>
+      <Services asPage />
+      <SmileEdge from="canary" />
+      <BookingClose
+        heading={
+          <>
+            Not sure which one <span className="text-canary">you need?</span>
+          </>
+        }
+        line="Tell us what you have noticed and we will work it out together."
+      />
+    </>
+  ),
   '/laughing-gas': () => <LaughingGas />,
   '/journey': () => <Journey asPage />,
   '/inside-clinic': () => <InsideClinic asPage />,
@@ -59,7 +86,13 @@ const PAGES: Record<StaticPath, () => ReactNode> = {
   // A non-indexed compatibility route for the old brush-timer link.
   '/brush-timer': () => <Games />,
   '/parents-corner': () => <ParentsCorner asPage />,
-  '/faq': () => <Faq asPage />,
+  '/faq': () => (
+    <>
+      <Faq asPage />
+      <SmileEdge from="powder" />
+      <BookingClose />
+    </>
+  ),
   '/book': () => <Booking asPage />,
 }
 
@@ -67,7 +100,7 @@ const PAGES: Record<StaticPath, () => ReactNode> = {
 const isStaticPath = (path: string): path is StaticPath => path in ROUTE_HEADS
 
 function CurrentRoute() {
-  const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+  const pathname = currentPath()
 
   // One blog post. Ahead of the static paths because it is the only route with
   // a variable segment; an unknown slug falls through to the 404 below.
@@ -89,6 +122,7 @@ function CurrentRoute() {
   return (
     <PageRoute {...NOT_FOUND_HEAD}>
       <NotFound />
+      <SmileIntoFooter from="powder" />
     </PageRoute>
   )
 }
