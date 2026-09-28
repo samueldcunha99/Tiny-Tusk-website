@@ -11,6 +11,7 @@ import type { Config } from 'tailwindcss'
  */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  safelist: ['tt-on-cobalt', 'tt-on-powder', 'tt-on-coral'],
   theme: {
     extend: {
       colors: {

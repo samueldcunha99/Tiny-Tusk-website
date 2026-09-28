@@ -32,7 +32,6 @@ const GROUND_CLASS: Record<Ground, string> = {
 const MASTHEAD: Record<ParentArticle['fill'], Ground> = {
   canary: 'canary',
   powder: 'cobalt',
-  coral: 'cobalt',
 }
 
 interface Numbered {
@@ -149,7 +148,7 @@ function Masthead({ article, ground }: { article: ParentArticle; ground: Ground 
             >
               <Doodle
                 name={POST_ART[article.id] ?? 'doodleHeart'}
-                tone={article.fill === 'coral' ? 'canary' : 'cobalt'}
+                tone="cobalt"
                 drawOnScroll
                 tap
                 duration={1.2}

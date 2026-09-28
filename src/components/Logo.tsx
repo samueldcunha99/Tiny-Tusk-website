@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useRef } from 'react'
 import { LOGO, WORDMARK } from '@/assets/brand/paths'
+import { sheetHref, useArtSheet } from './ArtSheet'
 import { colourVar } from './BrandArtView'
 import type { BrandColour } from '@/design/pairings'
 
@@ -60,6 +61,7 @@ export const Logo = forwardRef<SVGSVGElement, LogoProps>(function Logo(
   },
   ref,
 ) {
+  const sheet = useArtSheet()
   const warned = useRef(false)
   useEffect(() => {
     if (!import.meta.env.DEV || warned.current) return
@@ -96,8 +98,16 @@ export const Logo = forwardRef<SVGSVGElement, LogoProps>(function Logo(
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d={LOGO.body} {...(drawable ? { 'data-draw': '' } : {})} />
-        <path d={LOGO.trunk} {...(drawable ? { 'data-draw': '' } : {})} />
+        {(
+          [
+            ['body', LOGO.body],
+            ['trunk', LOGO.trunk],
+          ] as const
+        ).map(([part, d]) => {
+          const href = sheetHref(sheet, `tt-logo-${part}`, d)
+          const draw = drawable ? { 'data-draw': '' } : {}
+          return href ? <use key={part} href={href} {...draw} /> : <path key={part} d={d} {...draw} />
+        })}
       </g>
       <circle cx={LOGO.eye.cx} cy={LOGO.eye.cy} r={LOGO.eye.r} fill={paint} data-logo-eye />
     </svg>
@@ -164,6 +174,7 @@ export function Wordmark({
   title?: string
 }) {
   const [, , w, h] = WORDMARK.viewBox.split(/\s+/).map(Number) as [number, number, number, number]
+  const sheet = useArtSheet()
   return (
     <svg
       viewBox={WORDMARK.viewBox}
@@ -178,9 +189,11 @@ export function Wordmark({
     >
       {title ? <title>{title}</title> : null}
       <g fill={colourVar(tone)} fillRule="nonzero">
-        {WORDMARK.paths.map((d, i) => (
-          <path key={i} d={d} />
-        ))}
+        {WORDMARK.paths.map((d, i) => {
+          // Drawn once per page on the art sheet (ArtSheet.tsx).
+          const href = sheetHref(sheet, `tt-wordmark-${i}`, d)
+          return href ? <use key={i} href={href} /> : <path key={i} d={d} />
+        })}
       </g>
     </svg>
   )

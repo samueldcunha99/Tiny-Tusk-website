@@ -1,10 +1,5 @@
-import {
-  ROUNDEL_MARK,
-  ROUNDEL_SMILE,
-  ROUNDEL_TABS,
-  ROUNDEL_TAGLINE,
-  ROUNDEL_VIEWBOX,
-} from '@/assets/roundelPaths'
+import { ROUNDEL_VIEWBOX } from '@/assets/roundelPaths'
+import { ROUNDEL_PARTS, sheetHref, useArtSheet } from './ArtSheet'
 import { colourVar } from './BrandArtView'
 import type { BrandColour } from '@/design/pairings'
 
@@ -27,6 +22,9 @@ export interface RoundelProps {
  * surface it sits on.
  */
 export function Roundel({ tone = 'cobalt', title, className }: RoundelProps) {
+  // The page can show it three times (intro, hero, footer); its heavy paths
+  // are drawn once on the art sheet. They take the fill set here.
+  const sheet = useArtSheet()
   return (
     <svg
       viewBox={ROUNDEL_VIEWBOX}
@@ -37,10 +35,10 @@ export function Roundel({ tone = 'cobalt', title, className }: RoundelProps) {
       focusable="false"
     >
       {title ? <title>{title}</title> : null}
-      <path d={ROUNDEL_TAGLINE} />
-      {[...ROUNDEL_SMILE, ...ROUNDEL_TABS, ...ROUNDEL_MARK].map((d) => (
-        <path key={d.slice(0, 24)} d={d} />
-      ))}
+      {ROUNDEL_PARTS.map((d, i) => {
+        const href = sheetHref(sheet, `tt-roundel-${i}`, d)
+        return href ? <use key={i} href={href} /> : <path key={i} d={d} />
+      })}
     </svg>
   )
 }

@@ -1,3 +1,4 @@
+import { GooglePreferredSourceButton } from '@/components/GooglePreferredSourceButton'
 import { MapEmbed } from '@/components/MapEmbed'
 import { Roundel } from '@/components/Roundel'
 import { StylisedCTA } from '@/components/StylisedCTA'
@@ -59,6 +60,9 @@ export function Footer() {
           <p className="mt-2 font-sans text-[0.8rem] font-semibold uppercase tracking-[0.2em] text-white">
             {CLINIC.tag}
           </p>
+          <div className="mt-6">
+            <GooglePreferredSourceButton theme="dark" />
+          </div>
         </div>
 
         <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">

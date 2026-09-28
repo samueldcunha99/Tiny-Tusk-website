@@ -14,7 +14,7 @@ export interface BrandImageProps {
   alt: string
   width: number
   height: number
-  title?: { lead: string; rest: string; fill: 'canary' | 'powder' | 'coral'; href: string } | undefined
+  title?: { lead: string; rest: string; fill: 'canary' | 'powder'; href: string } | undefined
   showCTA?: boolean | undefined
   /**
    * The p31 overlay set: mark watermark, a drawn doodle, and the coral motion

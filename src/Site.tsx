@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ArtSheet } from '@/components/ArtSheet'
 import { RouteMeta } from '@/components/RouteMeta'
 import { Nav } from '@/sections/Nav'
 import { Home } from '@/sections/Home'
@@ -128,8 +129,9 @@ function CurrentRoute() {
 }
 
 export default function Site() {
+  // The art sheet prints each heavy drawing once, after the page (ArtSheet.tsx).
   return (
-    <>
+    <ArtSheet>
       <Preloader />
       <a className="tt-skip-link" href="#main">
         Skip to content
@@ -142,6 +144,6 @@ export default function Site() {
       {/* The client supplied this number for exactly this button. The phone
           line is in the nav bar ("Call us"), so it needs no floating twin. */}
       <WhatsAppButton variant="floating" />
-    </>
+    </ArtSheet>
   )
 }

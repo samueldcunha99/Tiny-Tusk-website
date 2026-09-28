@@ -1,34 +1,26 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { ART } from '@/assets/brand/paths'
+import { ART, type BrandPart } from '@/assets/brand/paths'
+import { sheetHref, useArtSheet } from './ArtSheet'
 import { colourVar } from './BrandArtView'
 import { MixedWeightLabel } from './MixedWeightLabel'
-import { gsap, EASE, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, EASE, drawLength, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
-type Fill = 'canary' | 'powder' | 'coral'
+type Fill = 'canary' | 'powder'
 
 const ART_FOR: Record<Fill, keyof typeof ART> = {
   canary: 'ctaCanary',
   powder: 'ctaPowder',
-  coral: 'ctaCoral',
 }
 
 /**
  * Label colour per fill.
- *
- * The guide permits all three fills (p33), but nothing is legible on coral --
- * white manages only 2.99:1. So the coral CTA keeps its coral fill and gains a
- * cobalt label plate; see `NEEDS_PLATE`. Canary and powder are fine as-is
- * (cobalt reads 6.37:1 and 4.92:1 respectively).
+ * Canary and powder are both high-contrast with cobalt text (6.37:1 and 4.92:1).
  */
 const LABEL_ON: Record<Fill, BrandColour> = {
   canary: 'cobalt',
   powder: 'cobalt',
-  coral: 'canary',
 }
-
-/** Fills that cannot carry a label directly and need a cobalt plate behind it. */
-const NEEDS_PLATE: Record<Fill, boolean> = { canary: false, powder: false, coral: true }
 
 /**
  * `lg` is for a CTA that closes a column or a section rather than sitting in a
@@ -82,13 +74,14 @@ export function StylisedCTA({
   className,
 }: StylisedCTAProps) {
   const rootRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null)
-  const outlineRef = useRef<SVGPathElement>(null)
   const reduced = usePrefersReducedMotion()
+  const sheet = useArtSheet()
   const art = ART[ART_FOR[fill]]
 
   useEffect(() => {
     const root = rootRef.current
-    const outline = outlineRef.current
+    // A `<path>`, or a `<use>` of one on the art sheet.
+    const outline = root?.querySelector<SVGElement>('[data-draw]')
     if (!root || !outline || reduced) return
 
     // The outline sketches itself in once, as the button reaches the reveal
@@ -104,7 +97,7 @@ export function StylisedCTA({
     // Measured on the first hover rather than at load: taking a path's length
     // makes the browser lay the page out.
     const redraw = () => {
-      const length = outline.getTotalLength()
+      const length = drawLength(outline)
       gsap.fromTo(
         outline,
         { strokeDasharray: length, strokeDashoffset: length },
@@ -141,8 +134,14 @@ export function StylisedCTA({
     }
   }, [reduced])
 
-  const fillPart = art.parts.find((p) => p.kind === 'fill')
-  const outlinePart = art.parts.find((p) => p.kind === 'stroke')
+  const parts: readonly BrandPart[] = art.parts
+  const fillPart = parts.find((p) => p.kind === 'fill')
+  const outlinePart = parts.find((p) => p.kind === 'stroke')
+  // A page carries ten of these; the ellipse and outline are drawn once on the
+  // art sheet and `<use>`d, named by part index as BrandArtView names parts.
+  const partId = (part: BrandPart) => `tt-${ART_FOR[fill]}-${parts.indexOf(part)}`
+  const fillHref = fillPart ? sheetHref(sheet, partId(fillPart), fillPart.d) : null
+  const outlineHref = outlinePart ? sheetHref(sheet, partId(outlinePart), outlinePart.d) : null
 
   const inner = (
     <>
@@ -153,31 +152,41 @@ export function StylisedCTA({
         focusable="false"
         className="absolute inset-0 h-full w-full"
       >
-        {fillPart ? <path d={fillPart.d} fill={colourVar(fill)} /> : null}
+        {fillPart ? (
+          fillHref ? (
+            <use href={fillHref} fill={colourVar(fill)} />
+          ) : (
+            <path d={fillPart.d} fill={colourVar(fill)} />
+          )
+        ) : null}
         {outlinePart && outlinePart.kind === 'stroke' ? (
-          <path
-            ref={outlineRef}
-            d={outlinePart.d}
-            fill="none"
-            stroke={colourVar('cobalt')}
-            strokeWidth={outlinePart.width}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            data-draw
-          />
+          outlineHref ? (
+            <use
+              href={outlineHref}
+              fill="none"
+              stroke={colourVar('cobalt')}
+              strokeWidth={outlinePart.width}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              data-draw
+            />
+          ) : (
+            <path
+              d={outlinePart.d}
+              fill="none"
+              stroke={colourVar('cobalt')}
+              strokeWidth={outlinePart.width}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              data-draw
+            />
+          )
         ) : null}
       </svg>
       <MixedWeightLabel
         lead={lead}
         rest={rest}
-        className={[
-          'relative z-10',
-          LABEL_SIZE[size],
-          NEEDS_PLATE[fill] ? 'rounded-full px-5 py-2' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        {...(NEEDS_PLATE[fill] ? { style: { background: colourVar('cobalt') } } : {})}
+        className={['relative z-10', LABEL_SIZE[size]].join(' ')}
       />
     </>
   )

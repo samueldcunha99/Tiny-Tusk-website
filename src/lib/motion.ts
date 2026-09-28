@@ -47,16 +47,28 @@ export function usePrefersReducedMotion(): boolean {
  * Clearing measures nothing (and returns 0): `getTotalLength` makes the
  * browser lay the page out first, which is only worth paying to hide a stroke.
  */
-export function primeDraw(path: SVGGeometryElement, reduced: boolean): number {
+export function primeDraw(path: SVGElement, reduced: boolean): number {
   if (reduced) {
     path.style.strokeDasharray = ''
     path.style.strokeDashoffset = ''
     return 0
   }
-  const length = path.getTotalLength()
+  const length = drawLength(path)
   path.style.strokeDasharray = `${length}`
   path.style.strokeDashoffset = `${length}`
   return length
+}
+
+/**
+ * The length a stroke draws along. A `<use>` of a path on the art sheet
+ * (components/ArtSheet.tsx) measures the sheet's path, and its dash properties
+ * pass down to the copy it draws.
+ */
+export function drawLength(el: Element): number {
+  if (el instanceof SVGGeometryElement) return el.getTotalLength()
+  const id = el.getAttribute('href')?.slice(1)
+  const target = id ? document.getElementById(id) : null
+  return target instanceof SVGGeometryElement ? target.getTotalLength() : 0
 }
 
 /**

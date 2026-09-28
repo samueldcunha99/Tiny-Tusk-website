@@ -46,7 +46,7 @@ interface ClinicConcept {
   title: {
     lead: string
     rest: string
-    fill: 'canary' | 'powder' | 'coral'
+    fill: 'canary' | 'powder'
   }
   image: {
     stem: string
@@ -95,7 +95,7 @@ export const CLINIC_CONCEPTS = [
   },
   {
     id: 'family-corner',
-    title: { lead: 'Learn', rest: 'together', fill: 'coral' },
+    title: { lead: 'Learn', rest: 'together', fill: 'canary' },
     image: {
       stem: 'clinic-family-corner',
       alt: 'Concept image of a family brushing-learning corner inside a pediatric clinic',

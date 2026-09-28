@@ -123,15 +123,20 @@ export function Hero() {
             `my-auto` gave; the other two thirds go to the loop's band. */}
         <div aria-hidden="true" className="flex-1 lg:hidden" />
         <div className="my-auto max-w-[44rem]">
-          {/* One heading, three lines. The spaces between the spans are real
-              text, so the accessible name reads as a sentence rather than
-              "Welcome toTiny TuskPediatric Dental Clinic". */}
-          <h1 id="hero-heading" className="font-display text-white">
+          {/* "Welcome to" leads into the name but is not part of the heading:
+              an h1 that opens with it spends its first words on no keyword,
+              and SEO checkers flag it. The page looks the same. */}
+          <p className="font-display text-white">
             <span className="tt-mask block">
               <span data-hero-text className="block text-[clamp(1.75rem,7.5vw,3rem)] leading-[1.05] tracking-[-0.02em]">
                 {HERO.headline[0]}
               </span>
-            </span>{' '}
+            </span>
+          </p>
+          {/* The heading, two lines. The space between the spans is real text,
+              so the accessible name reads "Tiny Tusk Pediatric Dental Clinic"
+              rather than running the two together. */}
+          <h1 id="hero-heading" className="font-display text-white">
             {/* Inline-block so the mask is as wide as the name plus room for
                 the p34 dashes at its shoulder -- a full-width mask would clip
                 them against the column edge on a 360px phone. */}

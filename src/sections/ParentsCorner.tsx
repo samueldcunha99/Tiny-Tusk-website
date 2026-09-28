@@ -130,7 +130,7 @@ function QuestionBubble({ post, fill }: { post: ParentArticle; fill: 'canary' | 
       </EllipseTitle>
       <Doodle
         name={POST_ART[post.id] ?? 'doodleHeart'}
-        tone="coral"
+        tone={fill === 'cobalt' ? 'canary' : 'coral'}
         drawOnScroll
         duration={1.2}
         className="pointer-events-none absolute -top-5 left-1 w-14 -rotate-12 md:w-16"
@@ -327,7 +327,7 @@ function PostCover({ post }: { post: ParentArticle }) {
       >
         <Doodle
           name={POST_ART[post.id] ?? 'doodleHeart'}
-          tone={post.fill === 'coral' ? 'canary' : 'cobalt'}
+          tone="cobalt"
           drawOnScroll
           duration={1.2}
           className="w-[52%]"

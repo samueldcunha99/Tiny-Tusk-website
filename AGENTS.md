@@ -248,6 +248,12 @@ completion alone**. `STAGGER = 0.08`. Do not add easings.
   Coral is also used as the active-nav underline. Do not add either treatment
   to text surfaces.
 - **`<BrandArtView>`** renders any `ART[name]`; exports `colourVar()`.
+- **`<ArtSheet>`** (audit #90) prints each heavy path once per page, and art
+  components `<use>` it: take `sheetHref()` for any new heavy drawing rather
+  than printing its `d` again. First-screen art (roundel, wordmark, mark,
+  button, arrow, dashes, loop) is a fixed set at the top of the page; the rest
+  is collected and printed after it. A `<use>` has no `getTotalLength` or
+  `isPointInStroke`: measure with `drawLength()` from `lib/motion.ts`.
   **`<MixedWeightLabel>`**, **`<SectionNumber>`** as described above.
 - **`sectionMeta(id)` in `content/site.ts`** — always look sections up by id.
   Index-based lookups silently mislabelled sections and crashed `Booking` when

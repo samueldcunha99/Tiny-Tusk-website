@@ -1,6 +1,10 @@
 import { forwardRef, useId } from 'react'
-import type { BrandArt, BrandPart } from '@/assets/brand/paths'
+import { ART, type BrandArt, type BrandPart } from '@/assets/brand/paths'
 import type { BrandColour } from '@/design/pairings'
+import { sheetHref, useArtSheet } from './ArtSheet'
+
+/** artwork -> its name in `ART`, which names its paths on the art sheet. */
+const ART_NAME = new Map<BrandArt, string>(Object.entries(ART).map(([name, art]) => [art, name]))
 
 const CSS_COLOUR: Record<BrandColour, string> = {
   cobalt: 'var(--tt-cobalt)',
@@ -48,6 +52,11 @@ export const BrandArtView = forwardRef<SVGSVGElement, BrandArtViewProps>(functio
   ref,
 ) {
   const uid = useId().replace(/:/g, '')
+  const sheet = useArtSheet()
+  const name = ART_NAME.get(art)
+  // A heavy path is drawn once per page on the art sheet and `<use>`d here.
+  const shared = (key: string, d: string) => (name ? sheetHref(sheet, `tt-${name}-${key}`, d) : null)
+  const draw = drawable ? { 'data-draw': '' } : {}
 
   const paint = (part: BrandPart): string => colourVar(tone ?? part.colour)
 
@@ -65,25 +74,32 @@ export const BrandArtView = forwardRef<SVGSVGElement, BrandArtViewProps>(functio
       {title ? <title>{title}</title> : null}
       {art.parts.map((part, i) => {
         if (part.kind === 'stroke') {
-          return (
-            <path
-              key={i}
-              d={part.d}
-              fill="none"
-              stroke={paint(part)}
-              strokeWidth={part.width}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              {...(drawable ? { 'data-draw': '' } : {})}
-            />
+          const href = shared(`${i}`, part.d)
+          const stroke = {
+            fill: 'none',
+            stroke: paint(part),
+            strokeWidth: part.width,
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+          } as const
+          return href ? (
+            <use key={i} href={href} {...stroke} {...draw} />
+          ) : (
+            <path key={i} d={part.d} {...stroke} {...draw} />
           )
         }
         if (part.kind === 'fill') {
-          return <path key={i} d={part.d} fill={paint(part)} fillRule="nonzero" />
+          const href = shared(`${i}`, part.d)
+          return href ? (
+            <use key={i} href={href} fill={paint(part)} fillRule="nonzero" />
+          ) : (
+            <path key={i} d={part.d} fill={paint(part)} fillRule="nonzero" />
+          )
         }
         // maskedFill -- exact artwork revealed by an animatable skeleton stroke
         const maskId = `mask-${uid}-${i}`
         const [x, y, w, h] = art.viewBox.split(/\s+/).map(Number) as [number, number, number, number]
+        const fillHref = shared(`${i}`, part.d)
         return (
           <g key={i}>
             <defs>
@@ -98,13 +114,18 @@ export const BrandArtView = forwardRef<SVGSVGElement, BrandArtViewProps>(functio
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {part.mask.map((d, k) => (
-                    <path key={k} d={d} {...(drawable ? { 'data-draw': '' } : {})} />
-                  ))}
+                  {part.mask.map((d, k) => {
+                    const href = shared(`${i}-m${k}`, d)
+                    return href ? <use key={k} href={href} {...draw} /> : <path key={k} d={d} {...draw} />
+                  })}
                 </g>
               </mask>
             </defs>
-            <path d={part.d} fill={paint(part)} fillRule="nonzero" mask={`url(#${maskId})`} />
+            {fillHref ? (
+              <use href={fillHref} fill={paint(part)} fillRule="nonzero" mask={`url(#${maskId})`} />
+            ) : (
+              <path d={part.d} fill={paint(part)} fillRule="nonzero" mask={`url(#${maskId})`} />
+            )}
           </g>
         )
       })}

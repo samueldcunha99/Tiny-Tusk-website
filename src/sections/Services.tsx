@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { colourVar } from '@/components/BrandArtView'
 import { Doodle } from '@/components/Doodle'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionMarker } from '@/components/SectionMarker'
 import { ServiceIcon } from '@/components/ServiceIcon'
 import { TREATMENTS } from '@/content/treatments'
-import { TREATMENT_CATEGORIES, TREATMENT_HREF } from '@/content/treatmentCategories'
+import { CATEGORY_OF, TREATMENT_CATEGORIES, TREATMENT_HREF } from '@/content/treatmentCategories'
 import { useSectionMeta } from '@/content/sectionOrder'
 import { EASE, STAGGER, gsap, onArrival, primeDraw, usePrefersReducedMotion, useReveal } from '@/lib/motion'
 
@@ -28,7 +28,17 @@ const PAGE_ORDER_OF = new Map(TREATMENT_CATEGORIES.flatMap((c) => c.slugs).map((
  */
 const DISCS = ['cobalt', 'powder', 'coral'] as const
 type Disc = (typeof DISCS)[number]
-const discAt = (i: number): Disc => DISCS[i % DISCS.length] ?? 'cobalt'
+
+const DISC_OVERRIDE: Partial<Record<string, Disc>> = {
+  braces: 'powder',
+  invisalign: 'cobalt',
+  'smile-makeovers': 'coral',
+}
+
+const discAt = (i: number, slug?: string): Disc => {
+  if (slug && DISC_OVERRIDE[slug]) return DISC_OVERRIDE[slug]!
+  return DISCS[i % DISCS.length] ?? 'cobalt'
+}
 
 function TreatmentDisc({
   slug,
@@ -215,7 +225,7 @@ function ServiceStrip() {
             >
               <TreatmentDisc
                 slug={slug}
-                disc={discAt(index)}
+                disc={discAt(index, slug)}
                 className="h-[5.5rem] w-[5.5rem] md:h-28 md:w-28"
                 iconClassName="h-14 w-14 md:h-[4.5rem] md:w-[4.5rem]"
               />
@@ -243,48 +253,192 @@ function ServiceStrip() {
   )
 }
 
-/** Every treatment, under the six headings in `treatmentCategories.ts`. */
+/**
+ * Every treatment on `/services/`.
+ *
+ * Provides category filter tabs so parents can browse by clinical focus
+ * or see all sixteen treatments in a balanced, dense, unbroken 4x4 grid.
+ * Zero empty gaps, zero lopsided voids.
+ */
 function ServiceIndex() {
+  const [activeCategory, setActiveCategory] = useState<string>('all')
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace('#', '')
+      if (hash && (TREATMENT_CATEGORIES.some((c) => c.id === hash) || hash === 'all')) {
+        setActiveCategory(hash)
+      } else if (!hash) {
+        setActiveCategory('all')
+      }
+    }
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  const selectCategory = (id: string) => {
+    setActiveCategory(id)
+    if (id === 'all') {
+      history.replaceState(null, '', '/services/')
+    } else {
+      history.replaceState(null, '', `/services/#${id}`)
+    }
+  }
+
+  const selectedCategoryObj = TREATMENT_CATEGORIES.find((c) => c.id === activeCategory)
+  const displayedSlugs = selectedCategoryObj
+    ? selectedCategoryObj.slugs
+    : TREATMENT_CATEGORIES.flatMap((c) => c.slugs)
+
   return (
-    <div className="relative mx-auto mt-14 max-w-[1400px] px-6 md:mt-20 md:px-10">
-      <div className="grid gap-x-16 gap-y-14 md:grid-cols-2">
-        {TREATMENT_CATEGORIES.map((category) => (
-          <section key={category.id} id={category.id} aria-labelledby={`${category.id}-heading`} className="scroll-mt-24">
-            <h2 id={`${category.id}-heading`} className="font-display text-[clamp(1.75rem,6.5vw,2.25rem)] leading-[1.05]">
-              <MixedWeightLabel display lead={category.title.lead} rest={category.title.rest} />
-            </h2>
-            <ul className="mt-5 flex list-none flex-col gap-4">
-              {category.slugs.map((slug) => {
-                const href = TREATMENT_HREF[slug]
-                const row = (
-                  <>
-                    <TreatmentDisc
-                      slug={slug}
-                      disc={discAt(PAGE_ORDER_OF.get(slug) ?? 0)}
-                      className="h-14 w-14"
-                      iconClassName="h-9 w-9"
-                    />
-                    <span className="font-sans text-[1.05rem] leading-snug">{LABEL_OF.get(slug)}</span>
-                  </>
-                )
-                return (
-                  <li key={slug}>
-                    {href ? (
-                      <a href={href} className="tt-treatment-tile flex min-h-12 items-center gap-4">
-                        {row}
-                        <span className="block w-5 shrink-0" aria-hidden="true">
-                          <Doodle name="markArrow" tone="cobalt" />
-                        </span>
-                      </a>
-                    ) : (
-                      <div className="flex min-h-12 items-center gap-4">{row}</div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ))}
+    <div className="relative mx-auto mt-8 max-w-[1320px] px-6 md:mt-10 md:px-10">
+      {/* Anchor targets so deep links (/services/#first-visit etc) resolve smoothly */}
+      {TREATMENT_CATEGORIES.map((cat) => (
+        <span key={cat.id} id={cat.id} className="scroll-mt-32 sr-only" />
+      ))}
+
+      {/* Category filter tabs */}
+      <div
+        role="tablist"
+        aria-label="Treatment categories"
+        className="flex flex-wrap items-center justify-center gap-2 md:gap-2.5"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeCategory === 'all'}
+          onClick={() => selectCategory('all')}
+          className={[
+            'inline-flex items-center rounded-full px-4 py-2 font-sans text-[0.88rem] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt',
+            activeCategory === 'all'
+              ? 'bg-cobalt text-canary shadow-sm'
+              : 'bg-cobalt/10 text-cobalt hover:bg-cobalt/20 active:scale-95',
+          ].join(' ')}
+        >
+          All treatments (16)
+        </button>
+        {TREATMENT_CATEGORIES.map((cat) => {
+          const isSelected = activeCategory === cat.id
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              role="tab"
+              aria-selected={isSelected}
+              onClick={() => selectCategory(cat.id)}
+              className={[
+                'inline-flex items-center rounded-full px-3.5 py-1.5 font-sans text-[0.88rem] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt',
+                isSelected
+                  ? 'bg-cobalt text-canary shadow-sm'
+                  : 'bg-cobalt/10 text-cobalt hover:bg-cobalt/20 active:scale-95',
+              ].join(' ')}
+            >
+              <span>{cat.title.lead} {cat.title.rest}</span>
+              <span className={['ml-1.5 text-[0.75rem]', isSelected ? 'text-canary/80' : 'text-cobalt/60'].join(' ')}>
+                ({cat.slugs.length})
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Active category banner if filtered */}
+      {selectedCategoryObj && (
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center">
+          <h2 className="font-display text-[clamp(1.75rem,5vw,2.4rem)] font-semibold leading-tight text-cobalt">
+            <MixedWeightLabel display lead={selectedCategoryObj.title.lead} rest={selectedCategoryObj.title.rest} />
+          </h2>
+          <button
+            type="button"
+            onClick={() => selectCategory('all')}
+            className="inline-flex items-center gap-1.5 font-sans text-[0.88rem] font-semibold text-cobalt underline decoration-2 underline-offset-4 hover:opacity-80"
+          >
+            <span>← View all sixteen treatments</span>
+          </button>
+        </div>
+      )}
+
+      {/* Balanced treatment grid */}
+      <ul
+        aria-label="Treatments list"
+        className={[
+          'list-none gap-5 md:gap-8',
+          activeCategory === 'all'
+            ? 'mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:mt-10'
+            : 'mt-8 flex flex-wrap justify-center md:mt-10',
+        ].join(' ')}
+      >
+        {displayedSlugs.map((slug) => {
+          const href = TREATMENT_HREF[slug]
+          const disc = discAt(PAGE_ORDER_OF.get(slug) ?? 0, slug)
+          const label = LABEL_OF.get(slug)
+          const categoryName = CATEGORY_OF[slug]
+
+          const cardInner = (
+            <>
+              <div className="flex flex-col items-center gap-2.5">
+                {activeCategory === 'all' && categoryName ? (
+                  <span className="text-[0.68rem] font-sans font-bold uppercase tracking-wider text-cobalt/60">
+                    {categoryName}
+                  </span>
+                ) : null}
+                <TreatmentDisc
+                  slug={slug}
+                  disc={disc}
+                  className="h-24 w-24 md:h-28 md:w-28 transition-transform duration-300 group-hover:scale-105"
+                  iconClassName="h-12 w-12 md:h-14 md:w-14"
+                />
+                <span className="font-display text-[1.02rem] md:text-[1.12rem] font-semibold leading-[1.2] text-cobalt">
+                  {label}
+                </span>
+              </div>
+              {href ? (
+                <span className="mt-2 inline-flex items-center gap-1.5 text-[0.82rem] font-sans font-semibold text-cobalt underline decoration-2 underline-offset-4 group-hover:text-cobalt">
+                  <span>Details</span>
+                  <span className="block w-3.5" aria-hidden="true">
+                    <Doodle name="markArrow" tone="cobalt" />
+                  </span>
+                </span>
+              ) : null}
+            </>
+          )
+
+          return (
+            <li
+              key={slug}
+              className={activeCategory === 'all' ? 'flex' : 'w-48 sm:w-56 md:w-64 flex'}
+            >
+              {href ? (
+                <a
+                  href={href}
+                  className="tt-treatment-tile group flex w-full flex-col items-center justify-between gap-3 rounded-2xl p-4 text-center transition-transform duration-200 hover:-translate-y-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cobalt"
+                >
+                  {cardInner}
+                </a>
+              ) : (
+                <div
+                  className="tt-treatment-tile flex w-full flex-col items-center justify-between gap-3 rounded-2xl p-4 text-center transition-transform duration-200 hover:-translate-y-1.5"
+                >
+                  {cardInner}
+                </div>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+
+      {/* Laughing Gas Sedation feature link */}
+      <div className="mt-12 flex flex-col items-center justify-center gap-3 border-t border-cobalt/15 pt-8 text-center md:mt-16">
+        <a
+          href="/laughing-gas/"
+          className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold text-cobalt hover:opacity-90 md:text-[1.05rem]"
+        >
+          <span className="underline decoration-2 underline-offset-[6px]">Curious about sedation? Read: Laughing gas, explained</span>
+          <span className="block w-5" aria-hidden="true">
+            <Doodle name="markArrow" tone="cobalt" />
+          </span>
+        </a>
       </div>
     </div>
   )

@@ -12,6 +12,10 @@
 
       .invisalign-3 {
         fill: var(--tt-powder);
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 1px;
       }
     </style>
   </defs>

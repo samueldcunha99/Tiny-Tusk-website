@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { ART } from '@/assets/brand/paths'
 import { BrandArtView } from './BrandArtView'
-import { gsap, EASE, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
+import { gsap, EASE, drawLength, onArrival, primeDraw, usePrefersReducedMotion } from '@/lib/motion'
 import type { BrandColour } from '@/design/pairings'
 
 export type DoodleName =
@@ -74,7 +74,8 @@ export function Doodle({
   useEffect(() => {
     const svg = ref.current
     if (!svg || !art) return
-    const paths = Array.from(svg.querySelectorAll<SVGPathElement>('[data-draw]'))
+    // Paths, or `<use>`s of paths on the art sheet (ArtSheet.tsx).
+    const paths = Array.from(svg.querySelectorAll<SVGElement>('[data-draw]'))
     if (!paths.length) return
 
     if (reduced) {
@@ -133,10 +134,10 @@ export function Doodle({
   useEffect(() => {
     const svg = ref.current
     if (!svg || !tap || reduced) return
-    const paths = Array.from(svg.querySelectorAll<SVGPathElement>('[data-draw]'))
+    const paths = Array.from(svg.querySelectorAll<SVGElement>('[data-draw]'))
     if (!paths.length) return
     const replay = () => {
-      const lengths = paths.map((p) => p.getTotalLength())
+      const lengths = paths.map(drawLength)
       gsap.set(paths, { strokeDasharray: (i: number) => lengths[i] ?? 0 })
       gsap.fromTo(
         paths,

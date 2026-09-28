@@ -32,7 +32,7 @@ export interface ParentArticle {
   /** The client's question, verbatim. The card headline and the article h1. */
   question: string
   summary: string
-  fill: 'canary' | 'powder' | 'coral'
+  fill: 'canary' | 'powder'
   image: { src: string; alt: string } | null
   intro: string
   sections: readonly ParentSection[]
@@ -143,7 +143,7 @@ export const PARENT_ARTICLES: readonly ParentArticle[] = [
     category: 'Routines',
     question: 'Thumb sucking and pacifier use: when to worry',
     summary: 'Normal for a while, worth watching after a point. Where that line actually sits.',
-    fill: 'coral',
+    fill: 'canary',
     image: {
       src: '/images/blog/thumb-sucking-and-pacifiers.jpg',
       alt: 'A young child sucking their thumb.',
@@ -285,7 +285,7 @@ export const PARENT_ARTICLES: readonly ParentArticle[] = [
     category: 'Guides',
     question: 'Choosing a pediatric dentist in Kharghar or Navi Mumbai: what to look for',
     summary: 'A short, honest checklist for a decision most parents only make once.',
-    fill: 'coral',
+    fill: 'canary',
     // TODO: clinic photographs, as above.
     image: null,
     intro:
