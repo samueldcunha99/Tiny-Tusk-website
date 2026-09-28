@@ -50,6 +50,7 @@ export function OpeningSoon() {
   const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
+    document.documentElement.classList.remove('tt-intro')
     if (reduced) return
     const root = mainRef.current
     if (!root) return
