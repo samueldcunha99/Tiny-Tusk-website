@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
-import { LoopField } from '@/components/LoopField'
 import { MapEmbed } from '@/components/MapEmbed'
 import { RouteMeta } from '@/components/RouteMeta'
+import { SmileIntoFooter } from '@/components/SmileEdge'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import {
@@ -21,29 +21,10 @@ import { gsap, usePrefersReducedMotion } from '@/lib/motion'
  * The pre-opening holding screen, shown in place of the whole site while
  * `OPENING_SOON` is true (see `content/site.ts`).
  *
- * PLAYFUL REGISTER. The earlier version of this screen sat in the guide's
- * "official" cobalt-on-cobalt pairing (p26). This one moves to the playful end
- * of the same page: a powder surface carrying high-contrast canary loops
- * (pp. 28-29), cobalt type on powder (4.9:1), coral used as a supporting
- * element only, and the cobalt panel reserved for the address so the map still
- * reads as the practical part of the page.
- *
- * Colour rules kept intact:
- *  - coral never carries text and is never a text colour; it appears as the
- *    lasso around "soon", the accent rule beside the body copy, the pulsing
- *    dot in the status pill and two doodles.
- *  - canary carries no small text; it is the loop field, the map border and
- *    the display-sized strapline on cobalt.
- *  - the strapline marquee is canary on cobalt (display size, 6.4:1).
- *
- * Motion. The two permitted systems are unchanged: the single-stroke draw-on
- * shared by the logo, doodles and lasso, and the LoopField parallax. Added on
- * top is one pointer-follow field for the doodles plus a squash-and-stretch
- * spring on tap — both are the same cartoon vocabulary as `tt-bounce-in`, both
- * are skipped entirely under reduced motion, and neither reveals content.
- *
- * Deliberately does NOT mount the preloader: it animates its mark onto the
- * nav logo's measured position, and there is no nav here to land on.
+ * PLAYFUL REGISTER. A powder surface carrying high-contrast canary loops
+ * (pp. 28-29) framed gracefully around the content rather than cutting
+ * through the mark or text. Cobalt type on powder (4.9:1), coral used as a
+ * supporting accent, and the cobalt panel reserved for the address.
  */
 export function OpeningSoon() {
   const mainRef = useRef<HTMLElement>(null)
@@ -117,14 +98,31 @@ export function OpeningSoon() {
         data-surface="powder"
         className="relative flex min-h-svh flex-col overflow-hidden bg-powder"
       >
-        {/* The guide's high-contrast register: canary loops on powder (p28).
-            Held at 55% so cobalt body copy stays well clear of the strokes. */}
-        <LoopField
-          surface="powder"
-          contrast="high"
-          count={3}
-          depth={0.35}
-          className="opacity-[0.55]"
+        {/* The brand loop / ribbon (pp. 28-29): positioned with intention so it
+            never cuts across the logo, the headline, or the address card. */}
+        {/* Desktop upper-right loop */}
+        <Doodle
+          name="loopStroke"
+          tone="canary"
+          drawOnScroll
+          duration={2}
+          className="pointer-events-none absolute -right-[16%] -top-[8%] hidden w-[48%] max-w-none opacity-45 lg:block xl:-right-[10%]"
+        />
+        {/* Desktop lower-left loop: placed low and wide so it stays clear of the CTA */}
+        <Doodle
+          name="loopStroke"
+          tone="canary"
+          drawOnScroll
+          duration={2}
+          className="pointer-events-none absolute -left-[28%] -bottom-[14%] hidden w-[52%] max-w-none opacity-35 lg:block xl:-left-[22%]"
+        />
+        {/* Mobile loop: placed down near the address card away from logo, headline, and CTA */}
+        <Doodle
+          name="loopStroke"
+          tone="canary"
+          drawOnScroll
+          duration={2}
+          className="pointer-events-none absolute -right-[32%] top-[56%] block w-[88%] max-w-none opacity-35 lg:hidden"
         />
 
         <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-5 pt-8 md:px-10 lg:px-12">
@@ -151,11 +149,11 @@ export function OpeningSoon() {
           {/* ---- the message, and where to find us ---- */}
           <div className="mt-5 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
             <div className="tt-hop flex flex-col items-center text-center lg:items-start lg:text-left" style={{ animationDelay: '0.5s' }}>
-              <h1 className="font-display text-[clamp(2.75rem,5vw,4.75rem)] leading-[1.05] tracking-[-0.025em] text-cobalt [text-wrap:pretty]">
-                {OPENING_COPY.headlineLead}{' '}
-                <span className="inline-flex items-center gap-2.5">
+              <h1 className="font-display text-[clamp(1.95rem,6.2vw,4.25rem)] leading-[1.08] tracking-[-0.025em] text-cobalt">
+                <span className="block">Our doors are opening</span>
+                <span className="mt-1 inline-flex items-center gap-2">
                   <Circled tone="coral">{OPENING_COPY.headlineLasso}</Circled>
-                  <span className="tt-floating-doodle -mt-2 inline-block w-[44px] sm:w-[54px] md:w-[62px] shrink-0 align-middle" data-depth="26">
+                  <span className="tt-floating-doodle -mt-1 inline-block w-[36px] sm:w-[44px] md:w-[52px] shrink-0 align-middle" data-depth="26">
                     <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-12deg]" />
                   </span>
                 </span>
@@ -186,9 +184,9 @@ export function OpeningSoon() {
               {/* Full-strength cobalt, not a tint: cobalt on powder is 4.92:1,
                   and every opacity step falls under AA (/90 is only 4.13:1).
                   See docs/contrast-audit.md. */}
-              <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-cobalt">
-                <Doodle name="markArrow" tone="coral" className="w-[34px] shrink-0 rotate-[-8deg]" />
-                Nudge the doodles and they wobble
+              <p className="mt-5 flex items-center justify-center lg:justify-start gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-cobalt">
+                <Doodle name="markArrow" tone="coral" className="w-[30px] shrink-0 rotate-[-8deg]" />
+                <span>Nudge the doodles and they wobble</span>
               </p>
             </div>
 
@@ -206,19 +204,18 @@ export function OpeningSoon() {
                 <h2 className="font-display text-h2 text-canary">Finding {CLINIC.name}</h2>
 
                 <address className="mt-4 font-sans text-[0.9375rem] not-italic leading-relaxed text-white">
-                  <p className="font-semibold">{CLINIC_ADDRESS.society}</p>
-                  <p className="text-white/90">{CLINIC_ADDRESS.unit}</p>
+                  <p className="font-semibold">{CLINIC_ADDRESS.unit}</p>
                   <p className="text-white/90">
                     {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
                   </p>
                   <p className="text-white/90">
                     {CLINIC_ADDRESS.city}, {CLINIC_ADDRESS.region} {CLINIC_ADDRESS.postcode}
                   </p>
-                  <p className="mt-3 flex gap-2 text-sm text-white/75 justify-center lg:justify-start">
+                  <p className="mt-3 flex gap-2 text-xs sm:text-sm text-white/75 justify-center lg:justify-start">
                     <span aria-hidden="true" className="text-coral">
                       ✳
                     </span>
-                    {CLINIC_ADDRESS.landmark}
+                    <span>{CLINIC_ADDRESS.landmark}</span>
                   </p>
                 </address>
 
@@ -254,26 +251,25 @@ export function OpeningSoon() {
           </div>
         </div>
 
-        {/* A ribbon of the primary palette, decorative only. */}
-        <div aria-hidden="true" className="relative z-10 flex h-3.5">
-          <span className="flex-[2] bg-coral" />
-          <span className="flex-1 bg-canary" />
-          <span className="flex-[3] bg-cobalt-60" />
-          <span className="flex-1 bg-coral" />
-        </div>
+        {/* The signature brand smile transition into the cobalt running marquee ribbon */}
+        <SmileIntoFooter from="powder" />
 
-        {/* ---- the strapline, running ---- */}
-        <div className="relative z-10 overflow-hidden bg-cobalt py-5">
-          <div className="tt-marquee-track flex w-max">
+        {/* ---- the strapline marquee ribbon ---- */}
+        <div className="relative z-10 overflow-hidden bg-cobalt py-4">
+          <div className="tt-marquee-track flex w-max [animation-duration:90s]">
             {[0, 1].map((copy) => (
               <div
                 key={copy}
                 aria-hidden={copy === 1 ? true : undefined}
-                className="flex flex-none items-center gap-10 pr-10 font-display text-[2rem] leading-none tracking-[0.02em] text-canary [white-space:nowrap]"
+                className="flex flex-none items-center gap-10 pr-10 font-display text-[1.35rem] uppercase tracking-[0.12em] text-canary [white-space:nowrap] md:text-[1.75rem]"
               >
                 {[0, 1, 2].map((i) => (
                   <span key={i} className="flex items-center gap-10">
-                    {CLINIC.tagline}
+                    <span>{CLINIC.tagline}</span>
+                    <span aria-hidden="true" className="text-coral">
+                      ✳
+                    </span>
+                    <span>{CLINIC.fullName}</span>
                     <span aria-hidden="true" className="text-coral">
                       ✳
                     </span>

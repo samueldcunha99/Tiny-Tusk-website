@@ -47,48 +47,37 @@ export const OPENING_COPY = {
 
 /**
  * The clinic's real address. CLIENT-VERIFIED — supplied by the client on
- * 2026-08-01, so unlike `MOCK_CONTACT` below this renders in production and
- * goes into structured data. Do not strip it during a sweep for unverified
- * facts, and do not add a `lat`/`lng`: exact coordinates were not supplied,
- * and the map resolves the address by text rather than guessing a pin.
+ * 2026-08-01 and confirmed via the official Google Maps business listing
+ * on 2026-09-28. Renders in production and structured data.
  */
 export const CLINIC_ADDRESS = {
   unit: 'Shop No. 21, Ground Floor, Plot No. 3',
-  society: 'Mahaavir Heritage Co-Operative Housing Society Ltd',
+  society: 'Mahaavir Heritage',
   sector: 'Sector 35G',
   landmark: 'Next to Empyrean School, near Tata Memorial Cancer Hospital',
   locality: 'Kharghar',
-  city: 'Navi Mumbai',
+  city: 'Panvel',
   region: 'Maharashtra',
   postcode: '410210',
   country: 'IN',
 } as const
 
-/** One-line form, for map queries and structured data. */
-export const CLINIC_ADDRESS_LINE = [
-  CLINIC_ADDRESS.unit,
-  CLINIC_ADDRESS.society,
-  CLINIC_ADDRESS.sector,
-  CLINIC_ADDRESS.locality,
-  `${CLINIC_ADDRESS.city} ${CLINIC_ADDRESS.postcode}`,
-  CLINIC_ADDRESS.region,
-].join(', ')
+/** One-line form matching the official Google Maps listing and structured data. */
+export const CLINIC_ADDRESS_LINE =
+  'Shop No. 21, Ground Floor, Plot No. 3, next to Empyrean School, near Tata Memorial Cancer Hospital, Sector 35G, Kharghar, Panvel, Maharashtra 410210'
 
 /**
- * Deliberately shorter than `CLINIC_ADDRESS_LINE`. Geocoding the full line --
- * shop number, plot and landmarks included -- makes Google fall back to a
- * scattered area search with no pin. Society + sector + locality + postcode
- * resolves to the single correct place; verified in a browser against both
- * landmarks the client gave (Empyrean School adjacent, ACTREC-Tata to the
- * south-west). Re-check the pin if you edit this string.
+ * Official verified Google Maps listing URL.
+ * Links directly to Tiny Tusk Pediatric & Family Dental Clinic.
  */
-const MAP_QUERY = encodeURIComponent(
-  `${CLINIC_ADDRESS.society}, ${CLINIC_ADDRESS.sector}, ${CLINIC_ADDRESS.locality}, ${CLINIC_ADDRESS.city} ${CLINIC_ADDRESS.postcode}`,
-)
-/** Keyless Google embed — no API key, no billing account, no new dependency. */
-export const MAP_EMBED_SRC = `https://maps.google.com/maps?q=${MAP_QUERY}&output=embed`
-/** Opens the same place in the visitor's own Maps app for directions. */
-export const MAP_DIRECTIONS_HREF = `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`
+export const GOOGLE_MAPS_URL =
+  'https://www.google.com/maps?q=Shop+No.+21,+Ground+Floor,+Tiny+Tusk+Pediatric+%26+Family+Dental+Clinic,+Plot+No.+3,+next+to+Empyrean+School,+near+Tata+Memorial+Cancer+Hospital,+Sector+35G,+Kharghar,+Panvel,+Maharashtra+410210&ftid=0x3be7c138e17a7d81:0x25522769001ea343'
+
+/** Keyless Google embed — directly loads the verified clinic pin. */
+export const MAP_EMBED_SRC = `${GOOGLE_MAPS_URL}&output=embed`
+
+/** Opens the verified clinic place in Google Maps for directions and reviews. */
+export const MAP_DIRECTIONS_HREF = GOOGLE_MAPS_URL
 
 /**
  * The clinic's real phone number. CLIENT-VERIFIED — supplied by the client on

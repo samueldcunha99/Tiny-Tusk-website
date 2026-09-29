@@ -14,9 +14,16 @@ import { OpeningSoon } from '@/sections/OpeningSoon'
 const Site = lazy(() => import('@/Site'))
 
 export default function App() {
-  // Pre-opening gate: every URL renders the holding screen and nothing else
-  // mounts. One constant in `content/site.ts` turns the whole site back on.
-  if (OPENING_SOON) return <OpeningSoon />
+  const isPreviewComingSoon =
+    typeof window !== 'undefined' &&
+    (window.location.search.includes('coming-soon') || window.location.pathname === '/coming-soon')
+
+  // Pre-opening gate: every production URL renders the holding screen and
+  // nothing else mounts. Development mode on localhost bypasses this unless
+  // requested via ?coming-soon.
+  if (OPENING_SOON && (!import.meta.env.DEV || isPreviewComingSoon)) {
+    return <OpeningSoon />
+  }
 
   return (
     <Suspense fallback={null}>
