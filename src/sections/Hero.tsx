@@ -128,7 +128,7 @@ export function Hero() {
               and SEO checkers flag it. The page looks the same. */}
           <p className="font-display text-white">
             <span className="tt-mask block">
-              <span data-hero-text className="block text-[clamp(1.75rem,7.5vw,3rem)] leading-[1.05] tracking-[-0.02em]">
+              <span data-hero-text className="block text-[clamp(1.35rem,6.2vw,2.25rem)] sm:text-[clamp(1.75rem,7.5vw,3rem)] leading-[1.05] tracking-[-0.02em]">
                 {HERO.headline[0]}
               </span>
             </span>
@@ -138,9 +138,9 @@ export function Hero() {
               rather than running the two together. */}
           <h1 id="hero-heading" className="font-display text-white">
             {/* Inline-block so the mask is as wide as the name plus room for
-                the p34 dashes at its shoulder -- a full-width mask would clip
-                them against the column edge on a 360px phone. */}
-            <span className="tt-mask relative -mt-[0.2em] inline-block whitespace-nowrap pr-[0.5em] pt-[0.2em] align-top text-[clamp(4rem,21vw,10.5rem)] font-semibold leading-[0.92] tracking-[-0.035em]">
+                the p34 dashes at its shoulder -- sized so "Tusk" has comfortable breathing
+                room from screen borders on mobile. */}
+            <span className="tt-mask relative -mt-[0.2em] inline-block whitespace-nowrap pr-[0.4em] pt-[0.2em] align-top text-[clamp(2.75rem,14.5vw,4.5rem)] sm:text-[clamp(4.5rem,16vw,10.5rem)] sm:pr-[0.5em] font-semibold leading-[0.92] tracking-[-0.035em]">
               <span data-hero-text className="block">
                 {HERO.headline[1]}
               </span>
@@ -154,7 +154,7 @@ export function Hero() {
             </span>{' '}
             {/* `mt-2` clears the descender of the "y" in Tiny. */}
             <span className="tt-mask mt-2 block">
-              <span data-hero-text className="block text-[clamp(1.75rem,7.5vw,3rem)] leading-[1.1] tracking-[-0.02em]">
+              <span data-hero-text className="block text-[clamp(1.25rem,5.8vw,2.25rem)] sm:text-[clamp(1.75rem,7.5vw,3rem)] leading-[1.1] tracking-[-0.02em]">
                 {HERO.headlineTail}
               </span>
             </span>
