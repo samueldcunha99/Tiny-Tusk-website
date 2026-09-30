@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { colourVar } from '@/components/BrandArtView'
 import { Doodle } from '@/components/Doodle'
 import { MixedWeightLabel } from '@/components/MixedWeightLabel'
 import { SectionMarker } from '@/components/SectionMarker'
@@ -7,7 +6,7 @@ import { ServiceIcon } from '@/components/ServiceIcon'
 import { TREATMENTS } from '@/content/treatments'
 import { CATEGORY_OF, TREATMENT_CATEGORIES, TREATMENT_HREF } from '@/content/treatmentCategories'
 import { useSectionMeta } from '@/content/sectionOrder'
-import { EASE, STAGGER, gsap, onArrival, primeDraw, usePrefersReducedMotion, useReveal } from '@/lib/motion'
+import { useReveal } from '@/lib/motion'
 
 const LABEL_OF = new Map(TREATMENTS.map((t) => [t.slug, t.label]))
 
@@ -16,56 +15,22 @@ const CATEGORY_ID_OF = new Map(
   TREATMENT_CATEGORIES.flatMap((c) => c.slugs.map((slug) => [slug, c.id] as const)),
 )
 
-/** slug -> its position in the `/services` reading order, for the disc cycle. */
-const PAGE_ORDER_OF = new Map(TREATMENT_CATEGORIES.flatMap((c) => c.slugs).map((slug, i) => [slug, i]))
-
-/**
- * Every drawing sits on a disc of one of the palette's other three colours, so
- * the canary chapter carries the whole palette -- round, never a box. The
- * cycle keeps neighbours apart: in the two-row strip, filled column by column,
- * no two equal discs touch side by side or one above the other. Each drawing
- * takes its disc's p24 partner: canary on cobalt and coral, cobalt on powder.
- */
-const DISCS = ['cobalt', 'powder', 'coral'] as const
-type Disc = (typeof DISCS)[number]
-
-const DISC_OVERRIDE: Partial<Record<string, Disc>> = {
-  braces: 'powder',
-  invisalign: 'cobalt',
-  'smile-makeovers': 'coral',
-}
-
-const discAt = (i: number, slug?: string): Disc => {
-  if (slug && DISC_OVERRIDE[slug]) return DISC_OVERRIDE[slug]!
-  return DISCS[i % DISCS.length] ?? 'cobalt'
-}
-
-function TreatmentDisc({
+function TreatmentGraphic({
   slug,
-  disc,
   className,
   iconClassName,
 }: {
   slug: string
-  disc: Disc
-  className: string
-  iconClassName: string
+  className?: string | undefined
+  iconClassName?: string | undefined
 }) {
   return (
-    <span className={`relative grid shrink-0 place-items-center ${className}`}>
-      {/* One fat stroke rather than a fill, so the strip can draw it in. */}
-      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false" className="absolute inset-0 h-full w-full -rotate-90">
-        <circle data-disc data-draw cx="50" cy="50" r="25" fill="none" stroke={colourVar(disc)} strokeWidth="50" />
-      </svg>
-      {/* `tt-disc-icon` and `tt-on-*` set the line weight and keep the
-          drawing's own accents visible on its disc (index.css). */}
+    <span className={`relative grid shrink-0 place-items-center ${className ?? ''}`}>
       <ServiceIcon
         slug={slug}
         className={[
-          'tt-disc-icon relative',
-          iconClassName,
-          disc === 'powder' ? 'text-cobalt' : 'text-canary',
-          `tt-on-${disc}`,
+          'tt-service-icon relative text-cobalt transition-transform duration-300 group-hover:scale-110',
+          iconClassName ?? 'h-14 w-14 md:h-16 md:w-16',
         ].join(' ')}
       />
     </span>
@@ -73,14 +38,13 @@ function TreatmentDisc({
 }
 
 /**
- * The ten the home page shows -- the client's own cut (audit item 38): the
- * first nine in clinic order, plus Laughing Gas, lifted out of order because
- * it is the one treatment with a page of its own. The other six are one tap
- * away on `/services`. A display cut, not a content edit: `treatments.ts`
- * stays the full list in the clinic's own words.
+ * The twelve the home page shows: including Tongue & Lip Tie Release,
+ * Laughing Gas, and key clinical treatments. The full seventeen treatments
+ * are one tap away on `/services`.
  */
 const HOME_SLUGS: readonly string[] = [
   'infant-oral-care',
+  'tongue-lip-tie',
   'cleaning',
   'fluoride-sealants',
   'fillings',
@@ -89,6 +53,7 @@ const HOME_SLUGS: readonly string[] = [
   'extraction-space-maintainer',
   'emergency-trauma',
   'braces',
+  'invisalign',
   'laughing-gas',
 ]
 
@@ -153,7 +118,7 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
           </Heading>
         </div>
         <p data-reveal="fast" className="max-w-[40ch] font-sans text-[1.05rem] leading-[1.6] md:text-[1.15rem] lg:pb-2">
-          From a baby&rsquo;s very first tooth to growing confident smiles: sixteen treatments, each
+          From a baby&rsquo;s very first tooth to growing confident smiles: seventeen treatments, each
           one explained to your child before it begins.
         </p>
       </div>
@@ -164,72 +129,29 @@ export function Services({ asPage = false }: { asPage?: boolean | undefined }) {
 }
 
 /**
- * Ten treatments in two rows, filled column by column so they swipe a column
- * at a time. `minmax(8rem, 1fr)`: on a wide phone the five columns share the
- * width instead of leaving a band of empty canary; on a narrow one they
- * overflow and swipe.
- *
- * The discs wipe in clockwise, one after another, as the strip arrives -- the
- * brushing timer's ring, drawn. They rest complete, and are never primed under
- * reduced motion.
+ * Twelve treatments in two rows, swiping smoothly on mobile and balanced on desktop.
+ * Each graphic is rendered in uniform cobalt with subtle playful hover interactions.
  */
 function ServiceStrip() {
-  const listRef = useRef<HTMLUListElement>(null)
-  const reduced = usePrefersReducedMotion()
-
-  useEffect(() => {
-    const list = listRef.current
-    if (!list || reduced) return
-    const discs = Array.from(list.querySelectorAll<SVGCircleElement>('[data-disc]'))
-    const wipe = gsap.timeline({ paused: true })
-    const stop = onArrival(
-      list,
-      () =>
-        discs.forEach((disc, i) => {
-          primeDraw(disc, false)
-          wipe.to(
-            disc,
-            {
-              strokeDashoffset: 0,
-              duration: 0.7,
-              ease: EASE.entrance,
-              // A dashed stroke leaves a hairline where its two ends meet, so
-              // a disc that has landed drops the dash and closes up.
-              onComplete: () => primeDraw(disc, true),
-            },
-            i * STAGGER,
-          )
-        }),
-      () => wipe.play(),
-    )
-    return () => {
-      stop()
-      wipe.kill()
-      discs.forEach((disc) => primeDraw(disc, true))
-    }
-  }, [reduced])
-
   return (
     <>
       {/* `relative` so the strip paints above the section's loop artwork. */}
       <ul
-        ref={listRef}
         aria-label="Treatments"
-        className="tt-swipe relative mx-auto mt-10 grid max-w-[1400px] auto-cols-[minmax(8rem,1fr)] grid-flow-col grid-rows-2 list-none gap-x-2 gap-y-6 px-6 pb-2 [scroll-padding-inline:1.5rem] md:mt-14 md:px-10"
+        className="tt-swipe relative mx-auto mt-10 grid max-w-[1400px] auto-cols-[minmax(8.5rem,1fr)] grid-flow-col grid-rows-2 list-none gap-x-3 gap-y-6 px-6 pb-2 [scroll-padding-inline:1.5rem] md:mt-14 md:px-10"
       >
-        {HOME_SLUGS.map((slug, index) => (
+        {HOME_SLUGS.map((slug) => (
           <li key={slug}>
             <a
               href={hrefFor(slug)}
-              className="tt-treatment-tile flex h-full flex-col items-center gap-3 px-1 text-center transition-transform duration-200 active:scale-95"
+              className="tt-treatment-tile group flex h-full flex-col items-center gap-3 px-1 text-center transition-transform duration-200 active:scale-95"
             >
-              <TreatmentDisc
+              <TreatmentGraphic
                 slug={slug}
-                disc={discAt(index, slug)}
-                className="h-[5.5rem] w-[5.5rem] md:h-28 md:w-28"
-                iconClassName="h-14 w-14 md:h-[4.5rem] md:w-[4.5rem]"
+                className="h-16 w-16 md:h-20 md:w-20"
+                iconClassName="h-14 w-14 md:h-16 md:w-16"
               />
-              <span className="font-display text-[1.02rem] leading-[1.15]">{LABEL_OF.get(slug)}</span>
+              <span className="font-display text-[1.02rem] font-semibold leading-[1.15] text-cobalt">{LABEL_OF.get(slug)}</span>
             </a>
           </li>
         ))}
@@ -237,7 +159,7 @@ function ServiceStrip() {
 
       <div className="relative mx-auto mt-8 flex max-w-[1400px] flex-col items-start gap-1 px-6 md:mt-12 md:flex-row md:gap-10 md:px-10">
         <a href="/services/" className="inline-flex min-h-11 items-center gap-3 font-sans text-[1rem] font-semibold">
-          <span className="underline decoration-2 underline-offset-[6px]">All sixteen treatments</span>
+          <span className="underline decoration-2 underline-offset-[6px]">All seventeen treatments</span>
           <span className="block w-5" aria-hidden="true">
             <Doodle name="markArrow" tone="cobalt" />
           </span>
@@ -316,7 +238,7 @@ function ServiceIndex() {
               : 'bg-cobalt/10 text-cobalt hover:bg-cobalt/20 active:scale-95',
           ].join(' ')}
         >
-          All treatments (16)
+          All treatments ({TREATMENTS.length})
         </button>
         {TREATMENT_CATEGORIES.map((cat) => {
           const isSelected = activeCategory === cat.id
@@ -354,7 +276,7 @@ function ServiceIndex() {
             onClick={() => selectCategory('all')}
             className="inline-flex items-center gap-1.5 font-sans text-[0.88rem] font-semibold text-cobalt underline decoration-2 underline-offset-4 hover:opacity-80"
           >
-            <span>← View all sixteen treatments</span>
+            <span>← View all {TREATMENTS.length} treatments</span>
           </button>
         </div>
       )}
@@ -371,7 +293,6 @@ function ServiceIndex() {
       >
         {displayedSlugs.map((slug) => {
           const href = TREATMENT_HREF[slug]
-          const disc = discAt(PAGE_ORDER_OF.get(slug) ?? 0, slug)
           const label = LABEL_OF.get(slug)
           const categoryName = CATEGORY_OF[slug]
 
@@ -383,11 +304,10 @@ function ServiceIndex() {
                     {categoryName}
                   </span>
                 ) : null}
-                <TreatmentDisc
+                <TreatmentGraphic
                   slug={slug}
-                  disc={disc}
-                  className="h-24 w-24 md:h-28 md:w-28 transition-transform duration-300 group-hover:scale-105"
-                  iconClassName="h-12 w-12 md:h-14 md:w-14"
+                  className="h-16 w-16 md:h-20 md:w-20 transition-transform duration-300 group-hover:scale-105"
+                  iconClassName="h-14 w-14 md:h-16 md:w-16"
                 />
                 <span className="font-display text-[1.02rem] md:text-[1.12rem] font-semibold leading-[1.2] text-cobalt">
                   {label}

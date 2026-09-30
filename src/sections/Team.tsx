@@ -98,7 +98,7 @@ export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
         </div>
 
         <div className="[grid-area:spec]">
-          <Sub className="font-display text-[1.4rem] font-semibold">Key specialities</Sub>
+          <Sub className="font-display text-[1.4rem] font-semibold">Key Specialties</Sub>
           <ul className="mt-4 flex flex-col gap-3">
             {DR_NUPUR.specialities.map((speciality) => (
               <li key={speciality} className="flex items-start gap-3.5 font-sans text-[1rem] leading-snug">

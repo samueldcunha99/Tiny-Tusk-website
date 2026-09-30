@@ -65,7 +65,7 @@ then in :root below:
 
 :root {
   --font-sans: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Encode Sans Condensed', 'Montserrat', system-ui, sans-serif;
+  --font-display: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Authoritative palette, guide p23. Mirrored in tailwind.config.ts. */
   --tt-cobalt: #18528e;

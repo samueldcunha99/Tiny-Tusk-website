@@ -36,10 +36,10 @@ export default {
       fontSize: {
         // p20 scale, converted to a fluid ramp with the guide's tracking and
         // leading ratios preserved.
-        display: ['clamp(4rem, 13vw, 13rem)', { lineHeight: '1.05', letterSpacing: '-0.025em' }],
-        h1: ['clamp(2.5rem, 5vw, 4rem)', { lineHeight: '1.125', letterSpacing: '-0.02em' }],
-        h2: ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.125', letterSpacing: '-0.01em' }],
-        body: ['clamp(1rem, 1.2vw, 1.25rem)', { lineHeight: '1.6', letterSpacing: '-0.01em' }],
+        display: ['clamp(3.5rem, 11vw, 11rem)', { lineHeight: '1.08', letterSpacing: '-0.015em' }],
+        h1: ['clamp(2.5rem, 5vw, 4rem)', { lineHeight: '1.15', letterSpacing: '-0.01em' }],
+        h2: ['clamp(1.5rem, 2.5vw, 2rem)', { lineHeight: '1.2', letterSpacing: '-0.005em' }],
+        body: ['clamp(1rem, 1.2vw, 1.25rem)', { lineHeight: '1.6', letterSpacing: '-0.005em' }],
       },
       maxWidth: { measure: '62ch' },
       transitionTimingFunction: {

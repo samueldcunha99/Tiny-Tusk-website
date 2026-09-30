@@ -58,6 +58,7 @@ export const DR_NUPUR = {
     'Airway-focused pediatric dentistry',
     'Myofunctional therapy',
     'Aligners for children and teens',
+    'Tongue and lip tie management & release',
     'Treatment for children with special healthcare needs',
     'Treatment under nitrous oxide sedation and general anaesthesia',
   ] as readonly string[],

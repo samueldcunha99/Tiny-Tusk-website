@@ -34,7 +34,7 @@ export const TREATMENT_CATEGORIES: readonly TreatmentCategory[] = [
     id: 'first-visit',
     title: { lead: 'Child’s', rest: 'first visit' },
     icon: 'infant-oral-care',
-    slugs: ['infant-oral-care'],
+    slugs: ['infant-oral-care', 'tongue-lip-tie'],
   },
   {
     id: 'preventive',

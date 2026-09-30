@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 17 52 35">
+  <defs>
+    <style>
+      .tlt-stroke {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8px;
+        stroke-miterlimit: 10;
+      }
+      .tlt-accent {
+        fill: none;
+        stroke: var(--tt-coral);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8px;
+      }
+    </style>
+  </defs>
+  <g>
+    <!-- Upper lip line -->
+    <path class="tlt-stroke" d="M18,34 C24,28 32,27 40,30 C48,27 56,28 62,34" />
+    <!-- Lower lip line -->
+    <path class="tlt-stroke" d="M18,34 C26,50 54,50 62,34" />
+    <!-- Upper central incisors outline -->
+    <path class="tlt-stroke" d="M34,31.5 L34,38 C34,39 35,40 36,40 L39.5,40 L39.5,31" />
+    <path class="tlt-stroke" d="M40.5,31 L40.5,40 L44,40 C45,40 46,39 46,38 L46,31.5" />
+    <!-- Tongue resting gently in elevation -->
+    <path class="tlt-stroke" d="M28,44 C33,39 47,39 52,44 C48,47 32,47 28,44 Z" />
+    <!-- Frenulum release arc / gentle release sparkle -->
+    <path class="tlt-accent" d="M40,39.5 L40,43.5" />
+    <path class="tlt-accent" d="M38,41.5 L42,41.5" />
+    <!-- Little gentle sparkles above lips -->
+    <path class="tlt-accent" d="M40,21 L40,24" />
+    <path class="tlt-accent" d="M38.5,22.5 L41.5,22.5" />
+  </g>
+</svg>

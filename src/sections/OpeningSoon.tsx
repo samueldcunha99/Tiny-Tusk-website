@@ -98,45 +98,55 @@ export function OpeningSoon() {
         data-surface="powder"
         className="relative flex min-h-svh flex-col overflow-hidden bg-powder"
       >
-        {/* The brand loop / ribbon (pp. 28-29): positioned with intention so it
-            never cuts across the logo, the headline, or the address card. */}
-        {/* Desktop upper-right loop */}
+        {/* The brand loop / ribbon: positioned high at the top to frame the screen gracefully */}
+        {/* Desktop / tablet upper loop */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -right-[16%] -top-[8%] hidden w-[48%] max-w-none opacity-45 lg:block xl:-right-[10%]"
+          className="pointer-events-none absolute -right-[12%] -top-[12%] hidden w-[45%] max-w-none opacity-30 md:block lg:-right-[8%] lg:-top-[15%]"
         />
-        {/* Desktop lower-left loop: placed low and wide so it stays clear of the CTA */}
+        {/* Mobile upper loop: sits high up to frame the top corner without cutting through the logo */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -left-[28%] -bottom-[14%] hidden w-[52%] max-w-none opacity-35 lg:block xl:-left-[22%]"
+          className="pointer-events-none absolute -right-[15%] -top-[6%] block w-[65%] max-w-none opacity-25 md:hidden"
         />
-        {/* Mobile loop: placed down near the address card away from logo, headline, and CTA */}
+        {/* Desktop lower-left loop */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -right-[32%] top-[56%] block w-[88%] max-w-none opacity-35 lg:hidden"
+          className="pointer-events-none absolute -left-[24%] -bottom-[12%] hidden w-[46%] max-w-none opacity-25 lg:block"
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-5 pt-8 md:px-10 lg:px-12">
+        <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-6 pt-10 md:px-10 md:pt-14 lg:px-12">
           {/* ---- the lockup, and the state of things ---- */}
           <div className="flex flex-wrap items-start justify-center md:justify-between gap-8">
             <div className="relative flex w-full md:w-auto items-end justify-center md:justify-start gap-7">
               <span className="tt-bounce-in tt-springy inline-block cursor-pointer">
-                <Logo
-                  variant="wordmark-mark-tag"
-                  tone="cobalt"
-                  size={124}
-                  drawable
-                  title={`${CLINIC.fullName} logo`}
-                />
+                <div className="md:hidden">
+                  <Logo
+                    variant="wordmark-mark-tag"
+                    tone="cobalt"
+                    size={88}
+                    drawable
+                    title={`${CLINIC.fullName} logo`}
+                  />
+                </div>
+                <div className="hidden md:block">
+                  <Logo
+                    variant="wordmark-mark-tag"
+                    tone="cobalt"
+                    size={116}
+                    drawable
+                    title={`${CLINIC.fullName} logo`}
+                  />
+                </div>
               </span>
             </div>
 
@@ -146,14 +156,15 @@ export function OpeningSoon() {
             </p>
           </div>
 
-          {/* ---- the message, and where to find us ---- */}
-          <div className="mt-5 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
+          {/* ---- the message, and where to find us (moved down with comfortable spacing) ---- */}
+          <div className="mt-8 sm:mt-10 md:mt-14 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
             <div className="tt-hop flex flex-col items-center text-center lg:items-start lg:text-left" style={{ animationDelay: '0.5s' }}>
-              <h1 className="font-display text-[clamp(1.95rem,6.2vw,4.25rem)] leading-[1.08] tracking-[-0.025em] text-cobalt">
-                <span className="block">Our doors are opening</span>
-                <span className="mt-1 inline-flex items-center gap-2">
+              <h1 className="font-display text-[clamp(1.55rem,5vw,3.75rem)] font-bold leading-[1.2] text-cobalt">
+                <span className="block">Our doors are</span>
+                <span className="mt-1 inline-flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+                  <span>opening</span>
                   <Circled tone="coral">{OPENING_COPY.headlineLasso}</Circled>
-                  <span className="tt-floating-doodle -mt-1 inline-block w-[36px] sm:w-[44px] md:w-[52px] shrink-0 align-middle" data-depth="26">
+                  <span className="tt-floating-doodle inline-block w-[32px] sm:w-[42px] md:w-[48px] shrink-0 align-middle" data-depth="26">
                     <Doodle name="doodleHeart" tone="coral" drawOnScroll className="w-full rotate-[-12deg]" />
                   </span>
                 </span>
@@ -191,9 +202,8 @@ export function OpeningSoon() {
             </div>
 
             {/* The address panel keeps the cobalt surface, so the practical
-                part of the page still reads as the official one. It is pulled
-                up on desktop so the whole map is visible without scrolling. */}
-            <div className="relative lg:-mt-[168px]">
+                part of the page still reads as the official one. */}
+            <div className="relative">
               <span className="tt-floating-doodle pointer-events-none absolute -right-4 -top-[52px] z-[3] block w-[104px]" data-depth="34">
                 <Doodle name="doodleToothbrush" tone="cobalt" drawOnScroll className="w-full rotate-[18deg]" />
               </span>
@@ -251,38 +261,40 @@ export function OpeningSoon() {
           </div>
         </div>
 
-        {/* The signature brand smile transition into the cobalt running marquee ribbon */}
+        {/* The signature brand smile transition into the cobalt footer */}
         <SmileIntoFooter from="powder" />
 
-        {/* ---- the strapline marquee ribbon ---- */}
-        <div className="relative z-10 overflow-hidden bg-cobalt py-4">
-          <div className="tt-marquee-track flex w-max [animation-duration:90s]">
-            {[0, 1].map((copy) => (
-              <div
-                key={copy}
-                aria-hidden={copy === 1 ? true : undefined}
-                className="flex flex-none items-center gap-10 pr-10 font-display text-[1.35rem] uppercase tracking-[0.12em] text-canary [white-space:nowrap] md:text-[1.75rem]"
-              >
-                {[0, 1, 2].map((i) => (
-                  <span key={i} className="flex items-center gap-10">
-                    <span>{CLINIC.tagline}</span>
-                    <span aria-hidden="true" className="text-coral">
-                      ✳
+        {/* Continuous cobalt footer with tagline marquee ribbon and copyright */}
+        <footer className="relative z-10 bg-cobalt text-white" data-surface="cobalt">
+          <div aria-hidden="true" className="overflow-hidden border-b border-white/15 bg-cobalt-80 py-3.5">
+            <div className="tt-marquee-track flex w-max [animation-duration:90s]">
+              {[0, 1].map((copy) => (
+                <div
+                  key={copy}
+                  aria-hidden={copy === 1 ? true : undefined}
+                  className="flex flex-none items-center gap-10 pr-10 font-display text-[1.15rem] uppercase tracking-[0.14em] text-canary [white-space:nowrap] md:text-[1.35rem]"
+                >
+                  {[0, 1, 2].map((i) => (
+                    <span key={i} className="flex items-center gap-10">
+                      <span>{CLINIC.tagline}</span>
+                      <span aria-hidden="true" className="text-coral">
+                        ✳
+                      </span>
+                      <span>{CLINIC.fullName}</span>
+                      <span aria-hidden="true" className="text-coral">
+                        ✳
+                      </span>
                     </span>
-                    <span>{CLINIC.fullName}</span>
-                    <span aria-hidden="true" className="text-coral">
-                      ✳
-                    </span>
-                  </span>
-                ))}
-              </div>
-            ))}
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <p className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-9 pt-5 text-center font-sans text-xs text-cobalt md:px-10 lg:px-12">
-          © {new Date().getFullYear()} {CLINIC.fullName}. All rights reserved.
-        </p>
+          <p className="mx-auto w-full max-w-[1240px] px-6 py-6 text-center font-sans text-xs text-white/80 md:px-10 lg:px-12">
+            © {new Date().getFullYear()} {CLINIC.fullName}. All rights reserved.
+          </p>
+        </footer>
       </main>
     </>
   )
