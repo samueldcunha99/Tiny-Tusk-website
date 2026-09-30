@@ -137,17 +137,24 @@ export function Hero() {
               so the accessible name reads "Tiny Tusk Pediatric Dental Clinic"
               rather than running the two together. */}
           <h1 id="hero-heading" className="font-display text-white">
-            {/* Inline-block so the mask is as wide as the name plus room for
-                the p34 dashes at its shoulder -- sized so "Tusk" has comfortable breathing
-                room from screen borders on mobile. */}
-            <span className="tt-mask relative -mt-[0.2em] inline-block whitespace-nowrap pr-[0.4em] pt-[0.2em] align-top text-[clamp(2.75rem,14.5vw,4.5rem)] sm:text-[clamp(4.5rem,16vw,10.5rem)] sm:pr-[0.5em] font-semibold leading-[0.92] tracking-[-0.035em]">
-              <span data-hero-text className="block">
-                {HERO.headline[1]}
+            {/* The brand wordmark with the signature heart-dotted "i",
+                sized so "Tusk" and its shoulder dashes fit comfortably on mobile
+                without crowding the screen border. */}
+            <span className="relative inline-block align-top pr-[clamp(1.5rem,6vw,3.5rem)] sm:pr-[clamp(2.5rem,5vw,4.5rem)]">
+              <span className="tt-mask block">
+                <span data-hero-text className="block">
+                  <span className="sr-only">{HERO.headline[1]}</span>
+                  <Wordmark
+                    tone="white"
+                    aria-hidden="true"
+                    className="h-auto w-[clamp(12.5rem,56vw,20rem)] sm:w-[clamp(19rem,48vw,30rem)] lg:w-[clamp(24rem,36vw,36rem)]"
+                  />
+                </span>
               </span>
               <span
                 data-hero-dashes
                 aria-hidden="true"
-                className="absolute right-0 top-[0.12em] block w-[0.34em] origin-bottom-left"
+                className="absolute right-0 top-[clamp(0.1rem,1vw,0.6rem)] block w-[clamp(1.35rem,5.5vw,2.8rem)] sm:w-[clamp(2.2rem,4vw,3.6rem)] origin-bottom-left"
               >
                 <Doodle name="markDashes" tone="canary" />
               </span>
