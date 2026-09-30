@@ -98,30 +98,32 @@ export function OpeningSoon() {
         data-surface="powder"
         className="relative flex min-h-svh flex-col overflow-hidden bg-powder"
       >
-        {/* The brand loop / ribbon: positioned high at the top to frame the screen gracefully */}
-        {/* Desktop / tablet upper loop */}
+        {/* The brand loop ribbons (pp. 28-29): positioned with intention so their
+            sweeping curves enter from the screen edges to frame the content gracefully
+            without ever being sliced off at the top border or obscuring the logo or text. */}
+        {/* Upper-right loop (desktop & tablet) */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -right-[12%] -top-[12%] hidden w-[45%] max-w-none opacity-30 md:block lg:-right-[8%] lg:-top-[15%]"
+          className="pointer-events-none absolute -right-[10%] top-[2%] hidden w-[46%] max-w-none opacity-65 md:block lg:-right-[6%] lg:top-[1%]"
         />
-        {/* Mobile upper loop: sits high up to frame the top corner without cutting through the logo */}
+        {/* Upper-right loop (mobile) */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -right-[15%] -top-[6%] block w-[65%] max-w-none opacity-25 md:hidden"
+          className="pointer-events-none absolute -right-[28%] top-[5%] block w-[72%] max-w-none opacity-55 md:hidden"
         />
-        {/* Desktop lower-left loop */}
+        {/* Lower-left loop (mobile & desktop) */}
         <Doodle
           name="loopStroke"
           tone="canary"
           drawOnScroll
           duration={2}
-          className="pointer-events-none absolute -left-[24%] -bottom-[12%] hidden w-[46%] max-w-none opacity-25 lg:block"
+          className="pointer-events-none absolute -left-[24%] top-[56%] block w-[78%] max-w-none opacity-55 md:w-[46%] md:top-[50%] lg:-left-[18%]"
         />
 
         <div className="relative z-10 mx-auto w-full max-w-[1240px] flex-1 px-6 pb-6 pt-10 md:px-10 md:pt-14 lg:px-12">
@@ -156,8 +158,8 @@ export function OpeningSoon() {
             </p>
           </div>
 
-          {/* ---- the message, and where to find us (moved down with comfortable spacing) ---- */}
-          <div className="mt-8 sm:mt-10 md:mt-14 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
+          {/* ---- the message, and where to find us (comfortable spacing) ---- */}
+          <div className="mt-8 sm:mt-10 md:mt-14 grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-start lg:gap-14">
             <div className="tt-hop flex flex-col items-center text-center lg:items-start lg:text-left" style={{ animationDelay: '0.5s' }}>
               <h1 className="font-display text-[clamp(1.55rem,5vw,3.75rem)] font-bold leading-[1.2] text-cobalt">
                 <span className="block">Our doors are</span>
@@ -204,7 +206,7 @@ export function OpeningSoon() {
             {/* The address panel keeps the cobalt surface, so the practical
                 part of the page still reads as the official one. */}
             <div className="relative">
-              <span className="tt-floating-doodle pointer-events-none absolute -right-4 -top-[52px] z-[3] block w-[104px]" data-depth="34">
+              <span className="tt-floating-doodle pointer-events-none absolute -right-2 -top-8 sm:-right-4 sm:-top-[52px] z-[3] block w-[80px] sm:w-[104px]" data-depth="34">
                 <Doodle name="doodleToothbrush" tone="cobalt" drawOnScroll className="w-full rotate-[18deg]" />
               </span>
               <div
@@ -266,6 +268,14 @@ export function OpeningSoon() {
 
         {/* Continuous cobalt footer with tagline marquee ribbon and copyright */}
         <footer className="relative z-10 bg-cobalt text-white" data-surface="cobalt">
+          {/* A ribbon of the primary palette, decorative only */}
+          <div aria-hidden="true" className="flex h-2.5 sm:h-3">
+            <span className="flex-[2] bg-coral" />
+            <span className="flex-1 bg-canary" />
+            <span className="flex-[3] bg-cobalt-60" />
+            <span className="flex-1 bg-coral" />
+          </div>
+
           <div aria-hidden="true" className="overflow-hidden border-b border-white/15 bg-cobalt-80 py-3.5">
             <div className="tt-marquee-track flex w-max [animation-duration:90s]">
               {[0, 1].map((copy) => (
