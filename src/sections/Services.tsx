@@ -25,12 +25,14 @@ function TreatmentGraphic({
   iconClassName?: string | undefined
 }) {
   return (
-    <span className={`relative grid shrink-0 place-items-center ${className ?? ''}`}>
+    <span
+      className={`relative grid shrink-0 place-items-center rounded-full bg-cobalt shadow-sm transition-transform duration-300 group-hover:scale-105 ${className ?? 'h-20 w-20 md:h-24 md:w-24'}`}
+    >
       <ServiceIcon
         slug={slug}
         className={[
-          'tt-service-icon relative text-cobalt transition-transform duration-300 group-hover:scale-110',
-          iconClassName ?? 'h-14 w-14 md:h-16 md:w-16',
+          'tt-disc-icon tt-service-icon relative text-canary',
+          iconClassName ?? 'h-10 w-10 md:h-12 md:w-12',
         ].join(' ')}
       />
     </span>
@@ -148,8 +150,8 @@ function ServiceStrip() {
             >
               <TreatmentGraphic
                 slug={slug}
-                className="h-16 w-16 md:h-20 md:w-20"
-                iconClassName="h-14 w-14 md:h-16 md:w-16"
+                className="h-[5.5rem] w-[5.5rem] md:h-24 md:w-24"
+                iconClassName="h-11 w-11 md:h-12 md:w-12"
               />
               <span className="font-display text-[1.02rem] font-semibold leading-[1.15] text-cobalt">{LABEL_OF.get(slug)}</span>
             </a>
@@ -306,8 +308,8 @@ function ServiceIndex() {
                 ) : null}
                 <TreatmentGraphic
                   slug={slug}
-                  className="h-16 w-16 md:h-20 md:w-20 transition-transform duration-300 group-hover:scale-105"
-                  iconClassName="h-14 w-14 md:h-16 md:w-16"
+                  className="h-20 w-20 md:h-24 md:w-24 transition-transform duration-300 group-hover:scale-105"
+                  iconClassName="h-10 w-10 md:h-12 md:w-12"
                 />
                 <span className="font-display text-[1.02rem] md:text-[1.12rem] font-semibold leading-[1.2] text-cobalt">
                   {label}
