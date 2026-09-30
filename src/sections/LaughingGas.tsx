@@ -151,7 +151,7 @@ function Welcome() {
             <br />
             Just <Circled tone="cobalt">a little air</Circled>
             <br />
-            <span className="font-normal">and a giggle.</span>
+            and a giggle.
           </h1>
           <p data-reveal="fast" className="mt-6 max-w-[46ch] font-sans text-[1.05rem] leading-[1.6] md:text-[1.2rem]">
             Nitrous oxide, or laughing gas, is a sweet smelling breath of calm. Your child stays
@@ -217,7 +217,7 @@ function StraightAnswer() {
             data-reveal
             className="max-w-[14ch] text-balance font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em]"
           >
-            The <Circled tone="canary">straight</Circled> answer, <span className="font-normal">both ways round</span>
+            The <Circled tone="canary">straight</Circled> answer, both ways round
           </h2>
           <p data-reveal="fast" className="max-w-[34ch] font-sans text-[1.05rem] leading-[1.6] text-white/90 md:text-[1.15rem] lg:pb-2">
             Most parents arrive with the same two lists in their head. Here they are, side by side.
@@ -277,7 +277,7 @@ function TheVisit() {
             data-reveal
             className="max-w-[12ch] font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em] md:max-w-none"
           >
-            Twenty minutes, <span className="font-normal">start to finish</span>
+            Twenty minutes, start to finish
           </h2>
           <span className="mb-4 hidden w-20 shrink-0 md:block" aria-hidden="true">
             <Doodle name="markArrow" tone="cobalt" drawOnScroll />

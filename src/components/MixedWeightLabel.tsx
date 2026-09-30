@@ -24,14 +24,14 @@ export function MixedWeightLabel({
 }: MixedWeightLabelProps) {
   return (
     <span
-      className={[display ? 'font-display' : 'font-sans', className].filter(Boolean).join(' ')}
-      style={style}
+      className={[display ? 'font-display' : 'font-sans', 'font-semibold', className].filter(Boolean).join(' ')}
+      style={{ fontWeight: 600, ...style }}
     >
       {/* A real no-break space, not an aria-hidden one: hidden, it dropped out
           of the accessible name and every CTA read as "ScheduleAppointment". */}
       <span style={{ fontWeight: 600 }}>{lead}</span>
       {' '}
-      <span style={{ fontWeight: 400 }}>{rest}</span>
+      <span style={{ fontWeight: 600 }}>{rest}</span>
     </span>
   )
 }

@@ -118,7 +118,7 @@ export function GamesArcade() {
           <h2
             id="arcade-heading"
             data-reveal
-            className="mt-5 font-display text-[clamp(2.4rem,10vw,4.5rem)] leading-[1.02] tracking-[-0.025em]"
+            className="mt-5 font-display text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.025em]"
           >
             <MixedWeightLabel lead={GAMES_ARCADE.title.lead} rest={GAMES_ARCADE.title.rest} display />
           </h2>

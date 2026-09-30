@@ -24,7 +24,7 @@ export interface Treatment {
 
 export const TREATMENTS: readonly Treatment[] = [
   { slug: 'infant-oral-care', label: 'Infant Oral Care' },
-  { slug: 'tongue-lip-tie', label: 'Tongue & Lip Tie Release' },
+  { slug: 'tongue-lip-tie', label: 'Tongue & Lip Tie Management' },
   { slug: 'cleaning', label: 'Cleaning' },
   { slug: 'fluoride-sealants', label: 'Fluoride Treatment + Sealants' },
   { slug: 'fillings', label: 'Fillings' },
