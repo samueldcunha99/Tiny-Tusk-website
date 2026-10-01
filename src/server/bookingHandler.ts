@@ -30,7 +30,7 @@ function getMailTransporter() {
   const host = process.env.EMAIL_HOST?.trim()
   const port = process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT.trim()) : undefined
   const user = process.env.EMAIL_USER?.trim() || 'hello@tinytuskdental.com'
-  const pass = process.env.EMAIL_PASS?.trim() || 'cwdjcuykqhalagnx'
+  const pass = process.env.EMAIL_PASS?.trim() || ''
 
   if (!user || !pass) {
     return null
