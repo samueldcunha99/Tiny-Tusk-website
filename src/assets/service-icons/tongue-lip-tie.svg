@@ -1,38 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 2 50 37">
   <defs>
     <style>
-      .tongue-stroke {
+      .tlt-line {
         fill: none;
         stroke: currentColor;
         stroke-linecap: round;
         stroke-linejoin: round;
-        stroke-width: 1.6px;
+        stroke-width: 1.7px;
         stroke-miterlimit: 10;
       }
     </style>
   </defs>
   <g>
-    <!-- Upper Lip (Outer Contour) -->
-    <path class="tongue-stroke" d="M12.5,23 C15,19.2 18,17.2 19.8,17.2 C21.4,17.2 23.5,19.3 25,19.3 C26.5,19.3 28.6,17.2 30.2,17.2 C32,17.2 35,19.2 37.5,23" />
-    
-    <!-- Upper Lip (Inner Opening) -->
-    <path class="tongue-stroke" d="M13.5,23 C17,21 21,20.6 25,20.6 C29,20.6 33,21 36.5,23" />
+    <!-- Upper Lip (Continuous clean outline meeting at sharp corners) -->
+    <path class="tlt-line" d="M 1,13.5 C 5,7.5 12,3.5 16.5,3.5 C 19.5,3.5 22.5,5.5 25,5.5 C 27.5,5.5 30.5,3.5 33.5,3.5 C 38,3.5 45,7.5 49,13.5 C 42,10.2 34,9.2 25,9.2 C 16,9.2 8,10.2 1,13.5 Z" />
 
-    <!-- Outer Corners & Lower Lip Wings -->
-    <path class="tongue-stroke" d="M12.5,23 C14,25.8 15.5,28.5 17.5,30" />
-    <path class="tongue-stroke" d="M37.5,23 C36,25.8 34.5,28.5 32.5,30" />
+    <!-- Left Corner & Lower Lip Wing -->
+    <path class="tlt-line" d="M 1,13.5 C 3.5,18 6,22 10.5,25.5 C 9.5,21.5 9.5,17.5 12,14" />
 
-    <!-- Inner Mouth Corner Creases -->
-    <path class="tongue-stroke" d="M14.5,23.5 C15.5,25.8 16.5,27.6 18,28.6" />
-    <path class="tongue-stroke" d="M35.5,23.5 C34.5,25.8 33.5,27.6 32,28.6" />
+    <!-- Right Corner & Lower Lip Wing -->
+    <path class="tlt-line" d="M 49,13.5 C 46.5,18 44,22 39.5,25.5 C 40.5,21.5 40.5,17.5 38,14" />
 
     <!-- Tongue Outline (Smooth U-Shape sticking out) -->
-    <path class="tongue-stroke" d="M17,23.8 C16.6,28 17,32.5 19.5,35.5 C21,37.3 22.8,38 25,38 C27.2,38 29,37.3 30.5,35.5 C33,32.5 33.4,28 33,23.8" />
-    
-    <!-- Tongue Top Crest (Arching into mouth) -->
-    <path class="tongue-stroke" d="M17,23.8 C19.2,22.2 22.2,22 25,22.8 C27.8,22 30.8,22.2 33,23.8" />
+    <path class="tlt-line" d="M 12,13.8 C 11.2,19.5 12,26 15.5,31.5 C 18,35.2 21.2,36.8 25,36.8 C 28.8,36.8 32,35.2 34.5,31.5 C 38,26 38.8,19.5 38,13.8" />
+
+    <!-- Tongue Top Crest (Arch inside mouth) -->
+    <path class="tlt-line" d="M 12,13.8 C 15.5,11.8 20,11.5 25,12.2 C 30,11.5 34.5,11.8 38,13.8" />
 
     <!-- Tongue Center Crease -->
-    <line class="tongue-stroke" x1="25" y1="24.8" x2="25" y2="33" />
+    <line class="tlt-line" x1="25" y1="14.5" x2="25" y2="26.5" />
   </g>
 </svg>
