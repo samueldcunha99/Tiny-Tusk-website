@@ -18,10 +18,10 @@ interface BookingApiResponse {
   error?: string
 }
 
-const BOOKING_API_URL = import.meta.env.VITE_BOOKING_API_URL?.trim() ?? ''
+const BOOKING_API_URL = import.meta.env.VITE_BOOKING_API_URL?.trim() || '/api/submit-booking'
 
 export function isBookingApiConfigured(): boolean {
-  return Boolean(BOOKING_API_URL && import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim())
+  return true
 }
 
 function messageFromResponse(body: unknown): string | undefined {

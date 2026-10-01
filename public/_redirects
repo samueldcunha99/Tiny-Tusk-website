@@ -5,3 +5,6 @@
 # The single-page-app rule that used to live here (/* /index.html 200) answered
 # robots.txt, llms.txt and every missing page with the home page's HTML and a
 # 200, which search engines and Lighthouse read as broken files.
+
+/api/submit-booking /.netlify/functions/submit-booking 200
+

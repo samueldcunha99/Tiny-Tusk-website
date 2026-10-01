@@ -257,9 +257,8 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
     const nextConsentError = consent
       ? ''
       : 'Please confirm that we may use these details to respond to this request.'
-    const nextTurnstileError = turnstileToken
-      ? ''
-      : 'Please complete the anti-spam check.'
+    const nextTurnstileError =
+      TURNSTILE_SITE_KEY && !turnstileToken ? 'Please complete the anti-spam check.' : ''
     setConsentError(nextConsentError)
     setTurnstileError(nextTurnstileError)
 
@@ -635,7 +634,7 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                   </p>
                 ) : null}
 
-                {bookingConfigured && TURNSTILE_SITE_KEY ? (
+                {TURNSTILE_SITE_KEY ? (
                   <div
                     className="mt-7"
                     aria-invalid={Boolean(turnstileError)}
@@ -647,13 +646,6 @@ export function Booking({ asPage = false }: { asPage?: boolean | undefined }) {
                       onError={onTurnstileError}
                     />
                   </div>
-                ) : !submitError ? (
-                  <p className="mt-7 flex items-start gap-3 font-sans text-sm leading-relaxed text-cobalt">
-                    <span className="mt-0.5 block w-5 shrink-0" aria-hidden="true">
-                      <Doodle name="markDashes" tone="coral" />
-                    </span>
-                    Online appointment requests are not connected in this environment yet.
-                  </p>
                 ) : null}
                 {turnstileError ? (
                   <p id="turnstile-error" className="mt-2 font-sans text-sm font-medium text-cobalt">
