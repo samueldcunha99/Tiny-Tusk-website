@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 17 52 35">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 5 44 44">
   <defs>
     <style>
-      .tlt-stroke {
+      .tlt-base {
         fill: none;
         stroke: currentColor;
         stroke-linecap: round;
         stroke-linejoin: round;
-        stroke-width: 1.8px;
+        stroke-width: 1.6px;
         stroke-miterlimit: 10;
       }
       .tlt-accent {
@@ -14,25 +14,24 @@
         stroke: var(--tt-coral);
         stroke-linecap: round;
         stroke-linejoin: round;
-        stroke-width: 1.8px;
+        stroke-width: 1.5px;
       }
     </style>
   </defs>
   <g>
-    <!-- Upper lip line -->
-    <path class="tlt-stroke" d="M18,34 C24,28 32,27 40,30 C48,27 56,28 62,34" />
-    <!-- Lower lip line -->
-    <path class="tlt-stroke" d="M18,34 C26,50 54,50 62,34" />
-    <!-- Upper central incisors outline -->
-    <path class="tlt-stroke" d="M34,31.5 L34,38 C34,39 35,40 36,40 L39.5,40 L39.5,31" />
-    <path class="tlt-stroke" d="M40.5,31 L40.5,40 L44,40 C45,40 46,39 46,38 L46,31.5" />
-    <!-- Tongue resting gently in elevation -->
-    <path class="tlt-stroke" d="M28,44 C33,39 47,39 52,44 C48,47 32,47 28,44 Z" />
-    <!-- Frenulum release arc / gentle release sparkle -->
-    <path class="tlt-accent" d="M40,39.5 L40,43.5" />
-    <path class="tlt-accent" d="M38,41.5 L42,41.5" />
-    <!-- Little gentle sparkles above lips -->
-    <path class="tlt-accent" d="M40,21 L40,24" />
-    <path class="tlt-accent" d="M38.5,22.5 L41.5,22.5" />
+    <!-- Soft Baby/Toddler Head Outline -->
+    <path class="tlt-base" d="M14,24 C14,14 20,11 27,11 C34,11 40,14 40,24 C40,34 34,39 27,39 C20,39 14,34 14,24 Z" />
+    <!-- Cheerful Hair Curl -->
+    <path class="tlt-base" d="M27,11 C25,7 21,7 20,9" />
+    <!-- Happy Smiling Eye Arches -->
+    <path class="tlt-base" d="M19,21 C20.5,18.5 23,18.5 24.5,21" />
+    <path class="tlt-base" d="M29.5,21 C31,18.5 33.5,18.5 35,21" />
+    <!-- Wide Open Warm Smile -->
+    <path class="tlt-base" d="M20.5,26 C22.5,33 31.5,33 33.5,26" />
+    <!-- Playful Tongue Peeking Out Freely (Full Mobility) -->
+    <path class="tlt-base" d="M24,28.5 C24,33.5 30,33.5 30,28.5" />
+    <line class="tlt-base" x1="27" y1="29" x2="27" y2="31.5" />
+    <!-- Tiny Tusk Coral Sparkle Accent -->
+    <path class="tlt-accent" d="M39,7 L39,13 M36,10 L42,10" />
   </g>
 </svg>
