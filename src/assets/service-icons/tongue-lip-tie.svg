@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 5 44 44">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
   <defs>
     <style>
-      .tlt-base {
+      .tongue-stroke {
         fill: none;
         stroke: currentColor;
         stroke-linecap: round;
@@ -9,29 +9,30 @@
         stroke-width: 1.6px;
         stroke-miterlimit: 10;
       }
-      .tlt-accent {
-        fill: none;
-        stroke: var(--tt-coral);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 1.5px;
-      }
     </style>
   </defs>
   <g>
-    <!-- Soft Baby/Toddler Head Outline -->
-    <path class="tlt-base" d="M14,24 C14,14 20,11 27,11 C34,11 40,14 40,24 C40,34 34,39 27,39 C20,39 14,34 14,24 Z" />
-    <!-- Cheerful Hair Curl -->
-    <path class="tlt-base" d="M27,11 C25,7 21,7 20,9" />
-    <!-- Happy Smiling Eye Arches -->
-    <path class="tlt-base" d="M19,21 C20.5,18.5 23,18.5 24.5,21" />
-    <path class="tlt-base" d="M29.5,21 C31,18.5 33.5,18.5 35,21" />
-    <!-- Wide Open Warm Smile -->
-    <path class="tlt-base" d="M20.5,26 C22.5,33 31.5,33 33.5,26" />
-    <!-- Playful Tongue Peeking Out Freely (Full Mobility) -->
-    <path class="tlt-base" d="M24,28.5 C24,33.5 30,33.5 30,28.5" />
-    <line class="tlt-base" x1="27" y1="29" x2="27" y2="31.5" />
-    <!-- Tiny Tusk Coral Sparkle Accent -->
-    <path class="tlt-accent" d="M39,7 L39,13 M36,10 L42,10" />
+    <!-- Upper Lip (Outer Contour) -->
+    <path class="tongue-stroke" d="M12.5,23 C15,19.2 18,17.2 19.8,17.2 C21.4,17.2 23.5,19.3 25,19.3 C26.5,19.3 28.6,17.2 30.2,17.2 C32,17.2 35,19.2 37.5,23" />
+    
+    <!-- Upper Lip (Inner Opening) -->
+    <path class="tongue-stroke" d="M13.5,23 C17,21 21,20.6 25,20.6 C29,20.6 33,21 36.5,23" />
+
+    <!-- Outer Corners & Lower Lip Wings -->
+    <path class="tongue-stroke" d="M12.5,23 C14,25.8 15.5,28.5 17.5,30" />
+    <path class="tongue-stroke" d="M37.5,23 C36,25.8 34.5,28.5 32.5,30" />
+
+    <!-- Inner Mouth Corner Creases -->
+    <path class="tongue-stroke" d="M14.5,23.5 C15.5,25.8 16.5,27.6 18,28.6" />
+    <path class="tongue-stroke" d="M35.5,23.5 C34.5,25.8 33.5,27.6 32,28.6" />
+
+    <!-- Tongue Outline (Smooth U-Shape sticking out) -->
+    <path class="tongue-stroke" d="M17,23.8 C16.6,28 17,32.5 19.5,35.5 C21,37.3 22.8,38 25,38 C27.2,38 29,37.3 30.5,35.5 C33,32.5 33.4,28 33,23.8" />
+    
+    <!-- Tongue Top Crest (Arching into mouth) -->
+    <path class="tongue-stroke" d="M17,23.8 C19.2,22.2 22.2,22 25,22.8 C27.8,22 30.8,22.2 33,23.8" />
+
+    <!-- Tongue Center Crease -->
+    <line class="tongue-stroke" x1="25" y1="24.8" x2="25" y2="33" />
   </g>
 </svg>
