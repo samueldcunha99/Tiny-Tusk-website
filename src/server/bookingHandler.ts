@@ -31,7 +31,7 @@ function getMailTransporter() {
   const port = Number(process.env.EMAIL_PORT?.trim() || 465)
   const secure = process.env.EMAIL_SECURE !== 'false'
   const user = process.env.EMAIL_USER?.trim() || 'hello@tinytuskdental.com'
-  const pass = process.env.EMAIL_PASS?.trim() || ''
+  const pass = process.env.EMAIL_PASS?.trim() || 'cwdjcuykqhalagnx'
 
   if (!user || !pass) {
     return null
@@ -99,11 +99,10 @@ export async function handleBookingSubmission(payload: BookingPayload): Promise<
   const transporter = getMailTransporter()
 
   if (!transporter) {
-    console.warn('Mail transporter not configured: EMAIL_USER or EMAIL_PASS missing.')
-    // Still return referenceCode so user flow succeeds even if mail is misconfigured in preview
+    console.error('Mail transporter not configured: EMAIL_USER or EMAIL_PASS missing.')
     return {
-      ok: true,
-      referenceCode,
+      ok: false,
+      error: 'Mail transporter configuration missing on server.',
     }
   }
 
@@ -239,21 +238,27 @@ export async function handleBookingSubmission(payload: BookingPayload): Promise<
 `
 
   try {
+    const fromUser = process.env.EMAIL_USER?.trim() || 'hello@tinytuskdental.com'
+
     // Send clinic notification
-    await transporter.sendMail({
-      from: `"Tiny Tusk Appointments" <${process.env.EMAIL_USER || 'hello@tinytuskdental.com'}>`,
+    const clinicInfo = await transporter.sendMail({
+      from: `"Tiny Tusk Appointments" <${fromUser}>`,
       to: clinicRecipients,
+      replyTo: email,
       subject: `New Appointment Request: ${referenceCode} - ${childName} (${parentName})`,
       html: clinicHtml,
     })
+    console.log(`[MAIL] Clinic notification sent (${referenceCode}):`, clinicInfo.messageId)
 
     // Send parent confirmation
-    await transporter.sendMail({
-      from: `"Tiny Tusk Pediatric Dental" <${process.env.EMAIL_USER || 'hello@tinytuskdental.com'}>`,
+    const parentInfo = await transporter.sendMail({
+      from: `"Tiny Tusk Pediatric Dental" <${fromUser}>`,
       to: email,
+      replyTo: fromUser,
       subject: `We have your note — Tiny Tusk Pediatric Dental Clinic (${referenceCode})`,
       html: parentHtml,
     })
+    console.log(`[MAIL] Parent confirmation sent (${referenceCode}):`, parentInfo.messageId)
 
     return { ok: true, referenceCode }
   } catch (error) {
