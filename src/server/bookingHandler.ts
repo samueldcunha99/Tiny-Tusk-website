@@ -27,9 +27,8 @@ function generateReferenceCode(): string {
 }
 
 function getMailTransporter() {
-  const host = process.env.EMAIL_HOST?.trim() || 'smtp.gmail.com'
-  const port = Number(process.env.EMAIL_PORT?.trim() || 465)
-  const secure = process.env.EMAIL_SECURE !== 'false'
+  const host = process.env.EMAIL_HOST?.trim()
+  const port = process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT.trim()) : undefined
   const user = process.env.EMAIL_USER?.trim() || 'hello@tinytuskdental.com'
   const pass = process.env.EMAIL_PASS?.trim() || 'cwdjcuykqhalagnx'
 
@@ -37,14 +36,29 @@ function getMailTransporter() {
     return null
   }
 
+  if (host && host !== 'smtp.gmail.com') {
+    const secure = process.env.EMAIL_SECURE !== 'false'
+    return nodemailer.createTransport({
+      host,
+      port: port || 465,
+      secure,
+      auth: { user, pass },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    })
+  }
+
+  // Use built-in 'gmail' service definition with explicit timeouts
   return nodemailer.createTransport({
-    host,
-    port,
-    secure,
+    service: 'gmail',
     auth: { user, pass },
-    tls: {
-      rejectUnauthorized: false,
-    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   })
 }
 
@@ -265,7 +279,7 @@ export async function handleBookingSubmission(payload: BookingPayload): Promise<
     const errMessage = error instanceof Error ? error.message : String(error)
     console.error('Failed to send booking notification email:', errMessage)
 
-    let userFacingError = 'Your request was received, but the email notification could not be sent.'
+    let userFacingError = `Your request was received, but the email notification could not be sent. (${errMessage})`
     if (errMessage.includes('BadCredentials') || errMessage.includes('Username and Password not accepted')) {
       userFacingError =
         'Email authentication failed. If using Gmail/Google Workspace, please create a 16-character Google App Password in Google Account Settings -> Security -> App Passwords and add it to .env as EMAIL_PASS.'
