@@ -4,7 +4,6 @@ import { Doodle } from '@/components/Doodle'
 import { Logo } from '@/components/Logo'
 import { MapEmbed } from '@/components/MapEmbed'
 import { RouteMeta } from '@/components/RouteMeta'
-import { SmileIntoFooter } from '@/components/SmileEdge'
 import { StylisedCTA } from '@/components/StylisedCTA'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import {
@@ -262,9 +261,6 @@ export function OpeningSoon() {
               </span>
           </div>
         </div>
-
-        {/* The signature brand smile transition into the cobalt footer */}
-        <SmileIntoFooter from="powder" />
 
         {/* Continuous cobalt footer with tagline marquee ribbon and copyright */}
         <footer className="relative z-10 bg-cobalt text-white" data-surface="cobalt">

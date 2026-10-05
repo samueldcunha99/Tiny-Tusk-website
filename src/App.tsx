@@ -14,14 +14,13 @@ import { OpeningSoon } from '@/sections/OpeningSoon'
 const Site = lazy(() => import('@/Site'))
 
 export default function App() {
-  const isPreviewComingSoon =
+  const isDevBypass =
     typeof window !== 'undefined' &&
-    (window.location.search.includes('coming-soon') || window.location.pathname === '/coming-soon')
+    (window.location.search.includes('site') || window.location.search.includes('full'))
 
-  // Pre-opening gate: every production URL renders the holding screen and
-  // nothing else mounts. Development mode on localhost bypasses this unless
-  // requested via ?coming-soon.
-  if (OPENING_SOON && (!import.meta.env.DEV || isPreviewComingSoon)) {
+  // Pre-opening gate: while OPENING_SOON is true, the holding screen renders
+  // for all routes. In development, ?site or ?full bypasses to preview the full site.
+  if (OPENING_SOON && !(import.meta.env.DEV && isDevBypass)) {
     return <OpeningSoon />
   }
 
