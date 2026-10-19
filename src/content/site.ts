@@ -51,10 +51,10 @@ export const OPENING_COPY = {
  * on 2026-09-28. Renders in production and structured data.
  */
 export const CLINIC_ADDRESS = {
-  unit: 'Shop No. 21, Ground Floor, Plot No. 3',
-  society: 'Mahaavir Heritage',
+  unit: 'Shop No. 21, Ground Floor',
+  society: 'Mahaavir Heritage, Plot No. 3',
   sector: 'Sector 35G',
-  landmark: 'Next to Empyrean School, near Tata Memorial Cancer Hospital',
+  landmark: 'Next to Empyrean School',
   locality: 'Kharghar',
   city: 'Panvel',
   region: 'Maharashtra',
@@ -64,17 +64,18 @@ export const CLINIC_ADDRESS = {
 
 /** One-line form matching the official Google Maps listing and structured data. */
 export const CLINIC_ADDRESS_LINE =
-  'Shop No. 21, Ground Floor, Plot No. 3, next to Empyrean School, near Tata Memorial Cancer Hospital, Sector 35G, Kharghar, Panvel, Maharashtra 410210'
+  'Shop No. 21 Ground Floor, Mahaavir Heritage, Plot No. 3, next to Empyrean School, Sector 35G, Kharghar, Panvel, Maharashtra 410210'
 
 /**
  * Official verified Google Maps listing URL.
- * Links directly to Tiny Tusk Pediatric & Family Dental Clinic.
+ * Links directly to Tiny Tusk Pediatric & Family Dental Clinic with place CID.
  */
 export const GOOGLE_MAPS_URL =
-  'https://www.google.com/maps?q=Shop+No.+21,+Ground+Floor,+Tiny+Tusk+Pediatric+%26+Family+Dental+Clinic,+Plot+No.+3,+next+to+Empyrean+School,+near+Tata+Memorial+Cancer+Hospital,+Sector+35G,+Kharghar,+Panvel,+Maharashtra+410210&ftid=0x3be7c138e17a7d81:0x25522769001ea343'
+  'https://www.google.com/maps?cid=2689255259420664643'
 
-/** Keyless Google embed — directly loads the verified clinic pin. */
-export const MAP_EMBED_SRC = `${GOOGLE_MAPS_URL}&output=embed`
+/** Keyless Google embed — directly loads the verified clinic pin with spotlit pointer. */
+export const MAP_EMBED_SRC =
+  'https://maps.google.com/maps?cid=2689255259420664643&output=embed'
 
 /** Opens the verified clinic place in Google Maps for directions and reviews. */
 export const MAP_DIRECTIONS_HREF = GOOGLE_MAPS_URL

@@ -69,6 +69,7 @@ export function Footer() {
           <h2 className="font-display text-[1.6rem] text-canary">Come say hi!</h2>
           <address className="max-w-[34ch] font-sans text-[0.95rem] not-italic leading-[1.65] text-white/90">
             <span className="block font-semibold text-white">{CLINIC_ADDRESS.unit}</span>
+            <span className="block">{CLINIC_ADDRESS.society}</span>
             <span className="block">
               {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
             </span>

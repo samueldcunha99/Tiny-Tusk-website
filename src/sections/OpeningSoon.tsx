@@ -216,6 +216,7 @@ export function OpeningSoon() {
 
                 <address className="mt-4 font-sans text-[0.9375rem] not-italic leading-relaxed text-white">
                   <p className="font-semibold">{CLINIC_ADDRESS.unit}</p>
+                  <p className="text-white/90">{CLINIC_ADDRESS.society}</p>
                   <p className="text-white/90">
                     {CLINIC_ADDRESS.sector}, {CLINIC_ADDRESS.locality}
                   </p>

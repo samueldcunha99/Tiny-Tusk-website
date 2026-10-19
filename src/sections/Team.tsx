@@ -158,7 +158,7 @@ function PortraitBadge() {
       />
       <div className="absolute inset-[13%] grid place-items-center overflow-hidden rounded-full bg-cobalt" data-surface="cobalt">
         {src ? (
-          <img src={src} alt={alt} className="h-full w-full object-cover" />
+          <img src={src} alt={alt} className="h-full w-full object-cover object-top" />
         ) : (
           <Doodle name="doodleHeart" tone="canary" drawOnScroll tap className="w-[44%]" />
         )}

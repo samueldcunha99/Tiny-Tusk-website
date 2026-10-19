@@ -27,7 +27,7 @@ export const DR_NUPUR = {
      * placeholder (the heart on a cobalt disc); set it and the photograph
      * takes the badge, cropped to a circle around the face.
      */
-    src: null as string | null,
+    src: '/images/dr-nupur.jpg',
     alt: 'Portrait of Dr. Nupur Agarwal',
     /**
      * Internal production note. NEVER render this in the UI — it is guidance
