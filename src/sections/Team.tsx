@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { Circled } from '@/components/Circled'
 import { Doodle } from '@/components/Doodle'
 import { SectionMarker } from '@/components/SectionMarker'
-import { TextOnPath } from '@/components/TextOnPath'
 import { DR_NUPUR } from '@/content/team'
 import { useSectionMeta } from '@/content/sectionOrder'
 import { useReveal } from '@/lib/motion'
@@ -80,8 +79,8 @@ export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
             asPage ? 'lg:sticky lg:top-28 lg:self-start' : 'lg:self-center',
           ].join(' ')}
         >
-          <PortraitBadge />
-          <Sub className="mt-6 font-display text-[clamp(1.75rem,6.5vw,2.5rem)] font-semibold leading-[1.05]">
+          <DrNupurPortrait />
+          <Sub className="mt-4 font-display text-[clamp(1.75rem,6.5vw,2.5rem)] font-semibold leading-[1.05]">
             {DR_NUPUR.name}
           </Sub>
           {/* CLIENT-VERIFIED credentials (content/team.ts). */}
@@ -142,27 +141,32 @@ export function Team({ asPage = false }: { asPage?: boolean | undefined }) {
 }
 
 /**
- * Her name ringed round her portrait. The ring's type sits outside a circle of
- * radius 100 in a 240 box, so the disc stops at 74% of the width, clear of the
- * letters' descenders.
+ * Dr. Nupur's portrait cutout placed directly on the yellow field.
  */
-function PortraitBadge() {
+function DrNupurPortrait() {
   const { src, alt } = DR_NUPUR.portrait
-  return (
-    <div className="relative aspect-square w-[17rem] md:w-[20rem] lg:w-[22rem]">
-      <TextOnPath
-        text="Dr. Nupur Agarwal • Pediatric Dentistry"
-        mode="ring"
-        tone="cobalt"
-        className="absolute inset-0 h-full w-full"
-      />
-      <div className="absolute inset-[13%] grid place-items-center overflow-hidden rounded-full bg-cobalt" data-surface="cobalt">
-        {src ? (
-          <img src={src} alt={alt} className="h-full w-full object-cover object-top" />
-        ) : (
+  if (!src) {
+    return (
+      <div className="relative aspect-square w-[17rem] md:w-[20rem] lg:w-[22rem]">
+        <div className="absolute inset-[13%] grid place-items-center overflow-hidden rounded-full bg-cobalt" data-surface="cobalt">
           <Doodle name="doodleHeart" tone="canary" drawOnScroll tap className="w-[44%]" />
-        )}
+        </div>
       </div>
+    )
+  }
+
+  return (
+    <div className="relative w-full max-w-[19rem] sm:max-w-[21rem] md:max-w-[23rem] lg:max-w-[25rem]">
+      <picture>
+        <source srcSet="/images/dr-nupur.webp" type="image/webp" />
+        <img
+          src={src}
+          alt={alt}
+          width={793}
+          height={1007}
+          className="mx-auto h-auto w-full max-h-[440px] md:max-h-[480px] object-contain drop-shadow-[0_16px_28px_rgba(24,82,142,0.12)]"
+        />
+      </picture>
     </div>
   )
 }
